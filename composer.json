@@ -1,0 +1,24 @@
+{
+    "name": "apiary-press/apiary-press",
+    "description": "Apiary Press - A WordPress app powered by WpApp",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=7.4",
+        "akirk/wp-app": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ApiaryPress\\": "src/"
+        }
+    },
+    "version": "0.1.0",
+    "authors": [
+        {
+            "name": "Francesco Bigiarini"
+        }
+    ],
+    "config": {
+        "autoloader-suffix": "apiarypress"
+    }
+}
