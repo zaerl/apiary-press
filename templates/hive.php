@@ -266,6 +266,33 @@ if ( ! $not_found && ! $forbidden ) {
             background: rgba(214, 126, 0, 0.14);
             border-color: rgba(214, 126, 0, 0.4);
         }
+        .weather-summary {
+            border-top: 1px solid var(--wp-app-color-border);
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+            padding-top: 12px;
+        }
+        .weather-title {
+            color: var(--wp-app-color-muted);
+            font-size: 12px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .weather-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+        .weather-chip {
+            background: rgba(42, 116, 161, 0.12);
+            border: 1px solid rgba(42, 116, 161, 0.35);
+            border-radius: 999px;
+            display: inline-flex;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 5px 9px;
+        }
         .muted {
             color: var(--wp-app-color-muted);
             font-size: 13px;
@@ -357,7 +384,9 @@ if ( ! $not_found && ! $forbidden ) {
                     <div class="visit-list">
                         <?php foreach ( $visits as $visit ) : ?>
                             <?php
-                            $active_flags = [];
+                            $active_flags    = [];
+                            $weather_error   = get_post_meta( $visit->ID, 'weather_error', true );
+                            $weather_summary = App::get_visit_weather_summary( $visit->ID );
 
                             foreach ( $meta_labels as $meta_key => $label ) {
                                 if ( rest_sanitize_boolean( get_post_meta( $visit->ID, $meta_key, true ) ) ) {
@@ -375,6 +404,22 @@ if ( ! $not_found && ! $forbidden ) {
 
                                 <?php if ( trim( $visit->post_content ) ) : ?>
                                     <p class="visit-notes"><?php echo esc_html( wp_strip_all_tags( $visit->post_content ) ); ?></p>
+                                <?php endif; ?>
+
+                                <?php if ( $weather_error || ! empty( $weather_summary ) ) : ?>
+                                    <div class="weather-summary" aria-label="<?php echo esc_attr__( 'Registered weather', 'apiary-press' ); ?>">
+                                        <div class="weather-title"><?php echo esc_html__( 'Registered Weather', 'apiary-press' ); ?></div>
+
+                                        <?php if ( $weather_error ) : ?>
+                                            <div class="muted"><?php echo esc_html( $weather_error ); ?></div>
+                                        <?php else : ?>
+                                            <div class="weather-chips">
+                                                <?php foreach ( $weather_summary as $weather_item ) : ?>
+                                                    <span class="weather-chip"><?php echo esc_html( $weather_item ); ?></span>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
                                 <?php endif; ?>
 
                                 <?php if ( empty( $active_flags ) ) : ?>

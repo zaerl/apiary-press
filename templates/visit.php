@@ -40,6 +40,7 @@ $action = isset( $_POST['ap_action'] ) ? sanitize_key( wp_unslash( $_POST['ap_ac
 if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action ) {
     $nonce          = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
     $visit_date_raw = isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : current_time( 'Y-m-d' );
+    $visit_time_raw = isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : current_time( 'H:i' );
     $notes          = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : '';
     $selected_meta  = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
         ? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
@@ -49,8 +50,10 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
         $form_error = __( 'The visit could not be saved. Reload and try again.', 'apiary-press' );
     } elseif ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $visit_date_raw ) ) {
         $form_error = __( 'Visit date is invalid.', 'apiary-press' );
+    } elseif ( ! preg_match( '/^(?:[01]\d|2[0-3]):[0-5]\d$/', $visit_time_raw ) ) {
+        $form_error = __( 'Visit time is invalid.', 'apiary-press' );
     } else {
-        $visit_timestamp = strtotime( $visit_date_raw . ' 12:00:00' );
+        $visit_timestamp = strtotime( $visit_date_raw . ' ' . $visit_time_raw . ':00' );
 
         if ( false === $visit_timestamp ) {
             $form_error = __( 'Visit date is invalid.', 'apiary-press' );
@@ -69,7 +72,7 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
                 'post_content' => $notes,
                 'post_parent'  => $hive_id,
                 'post_author'  => get_current_user_id(),
-                'post_date'    => $visit_date_raw . ' ' . current_time( 'H:i:s' ),
+                'post_date'    => $visit_date_raw . ' ' . $visit_time_raw . ':00',
             ], true );
 
             if ( is_wp_error( $visit_id ) ) {
@@ -78,6 +81,8 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
                 foreach ( App::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
                     update_post_meta( $visit_id, $meta_key, in_array( $meta_key, $selected_meta, true ) ? '1' : '0' );
                 }
+
+                App::store_visit_weather_snapshot( $visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
 
                 wp_safe_redirect( add_query_arg( 'created', '1', ap_app_url( 'hive/' . $hive_id . '/visit/' . absint( $visit_id ) ) ) );
                 exit;
@@ -108,6 +113,7 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'delete_visit' === $acti
 if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $action ) {
     $nonce          = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
     $visit_date_raw = isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : '';
+    $visit_time_raw = isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : mysql2date( 'H:i', $visit->post_date, false );
     $notes          = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : '';
     $selected_meta  = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
         ? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
@@ -117,8 +123,10 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
         $form_error = __( 'The visit could not be saved. Reload and try again.', 'apiary-press' );
     } elseif ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $visit_date_raw ) ) {
         $form_error = __( 'Visit date is invalid.', 'apiary-press' );
+    } elseif ( ! preg_match( '/^(?:[01]\d|2[0-3]):[0-5]\d$/', $visit_time_raw ) ) {
+        $form_error = __( 'Visit time is invalid.', 'apiary-press' );
     } else {
-        $visit_timestamp = strtotime( $visit_date_raw . ' 12:00:00' );
+        $visit_timestamp = strtotime( $visit_date_raw . ' ' . $visit_time_raw . ':00' );
 
         if ( false === $visit_timestamp ) {
             $form_error = __( 'Visit date is invalid.', 'apiary-press' );
@@ -130,12 +138,11 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
                 date_i18n( get_option( 'date_format' ), $visit_timestamp )
             );
 
-            $existing_time = mysql2date( 'H:i:s', $visit->post_date, false );
-            $updated_id    = wp_update_post( [
+            $updated_id = wp_update_post( [
                 'ID'           => $hive_visit_id,
                 'post_title'   => $visit_title,
                 'post_content' => $notes,
-                'post_date'    => $visit_date_raw . ' ' . $existing_time,
+                'post_date'    => $visit_date_raw . ' ' . $visit_time_raw . ':00',
                 'post_parent'  => $hive_id,
             ], true );
 
@@ -145,6 +152,8 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
                 foreach ( App::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
                     update_post_meta( $hive_visit_id, $meta_key, in_array( $meta_key, $selected_meta, true ) ? '1' : '0' );
                 }
+
+                App::store_visit_weather_snapshot( $hive_visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
 
                 wp_safe_redirect( add_query_arg( 'updated', '1', ap_app_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ) );
                 exit;
@@ -157,22 +166,39 @@ if ( ! $not_found && ! $is_new_visit ) {
     $visit = get_post( $hive_visit_id );
 }
 
-$visit_date     = ! $not_found && ! $is_new_visit ? mysql2date( 'Y-m-d', $visit->post_date, false ) : current_time( 'Y-m-d' );
-$visit_notes    = ! $not_found && ! $is_new_visit ? $visit->post_content : '';
-$active_flags   = [];
-$page_title     = $is_new_visit ? __( 'New Visit', 'apiary-press' ) : ( $visit ? get_the_title( $visit ) : __( 'Hive Visit', 'apiary-press' ) );
-$form_action    = $is_new_visit ? 'create_visit' : 'update_visit';
-$form_nonce     = $is_new_visit ? 'ap_create_visit_' . $hive_id : 'ap_update_visit_' . $hive_visit_id;
-$form_heading   = $is_new_visit ? __( 'New Visit', 'apiary-press' ) : __( 'Edit Visit', 'apiary-press' );
-$form_button    = $is_new_visit ? __( 'Save Visit', 'apiary-press' ) : __( 'Update Visit', 'apiary-press' );
-$form_url_visit = $is_new_visit ? 'new' : (string) $hive_visit_id;
+$visit_date        = ! $not_found && ! $is_new_visit ? mysql2date( 'Y-m-d', $visit->post_date, false ) : current_time( 'Y-m-d' );
+$visit_time        = ! $not_found && ! $is_new_visit ? mysql2date( 'H:i', $visit->post_date, false ) : current_time( 'H:i' );
+$visit_notes       = ! $not_found && ! $is_new_visit ? $visit->post_content : '';
+$active_flags      = [];
+$form_checked_meta = [];
+$weather_values    = [];
+$weather_error     = '';
+$page_title        = $is_new_visit ? __( 'New Visit', 'apiary-press' ) : ( $visit ? get_the_title( $visit ) : __( 'Hive Visit', 'apiary-press' ) );
+$form_action       = $is_new_visit ? 'create_visit' : 'update_visit';
+$form_nonce        = $is_new_visit ? 'ap_create_visit_' . $hive_id : 'ap_update_visit_' . $hive_visit_id;
+$form_heading      = $is_new_visit ? __( 'New Visit', 'apiary-press' ) : __( 'Edit Visit', 'apiary-press' );
+$form_button       = $is_new_visit ? __( 'Save Visit', 'apiary-press' ) : __( 'Update Visit', 'apiary-press' );
+$form_url_visit    = $is_new_visit ? 'new' : (string) $hive_visit_id;
 
 if ( ! $not_found && ! $is_new_visit ) {
     foreach ( $meta_labels as $meta_key => $label ) {
         if ( rest_sanitize_boolean( get_post_meta( $hive_visit_id, $meta_key, true ) ) ) {
             $active_flags[ $meta_key ] = $label;
+            $form_checked_meta[]       = $meta_key;
         }
     }
+
+    $weather_error  = get_post_meta( $hive_visit_id, 'weather_error', true );
+    $weather_values = App::get_visit_weather_display_values( $hive_visit_id );
+}
+
+if ( $form_error ) {
+    $visit_date        = isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : $visit_date;
+    $visit_time        = isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : $visit_time;
+    $visit_notes       = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : $visit_notes;
+    $form_checked_meta = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
+        ? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
+        : [];
 }
 ?>
 <!DOCTYPE html>
@@ -278,6 +304,7 @@ if ( ! $not_found && ! $is_new_visit ) {
             margin-bottom: 6px;
         }
         input[type="date"],
+        input[type="time"],
         textarea {
             width: 100%;
             border: 1px solid var(--wp-app-color-border);
@@ -289,6 +316,11 @@ if ( ! $not_found && ! $is_new_visit ) {
         }
         textarea { min-height: 140px; resize: vertical; }
         .field { margin-bottom: 16px; }
+        .date-time-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
         .check-grid {
             display: grid;
             gap: 8px;
@@ -349,6 +381,35 @@ if ( ! $not_found && ! $is_new_visit ) {
             color: var(--wp-app-color-muted);
             font-size: 13px;
         }
+        .summary-section {
+            border-top: 1px solid var(--wp-app-color-border);
+            margin-top: 18px;
+            padding-top: 18px;
+        }
+        .summary-section h3 {
+            font-size: 14px;
+            line-height: 1.3;
+            margin: 0 0 10px;
+        }
+        .weather-list {
+            display: grid;
+            gap: 9px;
+            margin: 0;
+        }
+        .weather-list div {
+            display: grid;
+            gap: 2px;
+        }
+        .weather-list dt {
+            color: var(--wp-app-color-muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .weather-list dd {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0;
+        }
         .delete-form {
             border-top: 1px solid var(--wp-app-color-border);
             margin-top: 18px;
@@ -364,6 +425,7 @@ if ( ! $not_found && ! $is_new_visit ) {
             .shell { width: min(100% - 24px, 960px); padding-top: 24px; }
             .topbar { flex-direction: column; }
             .layout { grid-template-columns: 1fr; }
+            .date-time-grid { grid-template-columns: 1fr; }
             .check-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -432,9 +494,16 @@ if ( ! $not_found && ! $is_new_visit ) {
                         <input type="hidden" name="ap_action" value="<?php echo esc_attr( $form_action ); ?>">
                         <?php wp_nonce_field( $form_nonce, 'ap_nonce' ); ?>
 
-                        <div class="field">
-                            <label for="ap_visit_date"><?php echo esc_html__( 'Date', 'apiary-press' ); ?></label>
-                            <input id="ap_visit_date" name="ap_visit_date" type="date" value="<?php echo esc_attr( $visit_date ); ?>" required>
+                        <div class="date-time-grid">
+                            <div class="field">
+                                <label for="ap_visit_date"><?php echo esc_html__( 'Date', 'apiary-press' ); ?></label>
+                                <input id="ap_visit_date" name="ap_visit_date" type="date" value="<?php echo esc_attr( $visit_date ); ?>" required>
+                            </div>
+
+                            <div class="field">
+                                <label for="ap_visit_time"><?php echo esc_html__( 'Time', 'apiary-press' ); ?></label>
+                                <input id="ap_visit_time" name="ap_visit_time" type="time" value="<?php echo esc_attr( $visit_time ); ?>" required>
+                            </div>
                         </div>
 
                         <div class="check-grid">
@@ -445,7 +514,7 @@ if ( ! $not_found && ! $is_new_visit ) {
                                         name="ap_visit_meta[]"
                                         type="checkbox"
                                         value="<?php echo esc_attr( $meta_key ); ?>"
-                                        <?php checked( ! $is_new_visit && rest_sanitize_boolean( get_post_meta( $hive_visit_id, $meta_key, true ) ) ); ?>
+                                        <?php checked( in_array( $meta_key, $form_checked_meta, true ) ); ?>
                                     >
                                     <label for="ap_visit_meta_<?php echo esc_attr( $meta_key ); ?>"><?php echo esc_html( $label ); ?></label>
                                 </div>
@@ -482,6 +551,25 @@ if ( ! $not_found && ! $is_new_visit ) {
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
+
+                        <div class="summary-section" aria-labelledby="visit-weather-heading">
+                            <h3 id="visit-weather-heading"><?php echo esc_html__( 'Registered Weather', 'apiary-press' ); ?></h3>
+
+                            <?php if ( $weather_error ) : ?>
+                                <div class="muted"><?php echo esc_html( $weather_error ); ?></div>
+                            <?php elseif ( empty( $weather_values ) ) : ?>
+                                <div class="muted"><?php echo esc_html__( 'No weather snapshot recorded.', 'apiary-press' ); ?></div>
+                            <?php else : ?>
+                                <dl class="weather-list">
+                                    <?php foreach ( $weather_values as $weather_value ) : ?>
+                                        <div>
+                                            <dt><?php echo esc_html( $weather_value['label'] ); ?></dt>
+                                            <dd><?php echo esc_html( $weather_value['value'] ); ?></dd>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </dl>
+                            <?php endif; ?>
+                        </div>
 
                         <form class="delete-form" method="post" action="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ); ?>">
                             <input type="hidden" name="ap_action" value="delete_visit">
