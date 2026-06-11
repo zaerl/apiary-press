@@ -6,6 +6,7 @@
  */
 
 use ApiaryPress\App;
+use ApiaryPress\Weather;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -91,7 +92,7 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
 					update_post_meta( $visit_id, $meta_key, in_array( $meta_key, $selected_meta, true ) ? '1' : '0' );
 				}
 
-				App::store_visit_weather_snapshot( $visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
+				Weather::store_visit_weather_snapshot( $visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
 
 				wp_safe_redirect( add_query_arg( 'created', '1', ap_app_url( 'hive/' . $hive_id . '/visit/' . absint( $visit_id ) ) ) );
 				exit;
@@ -165,7 +166,7 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
 					update_post_meta( $hive_visit_id, $meta_key, in_array( $meta_key, $selected_meta, true ) ? '1' : '0' );
 				}
 
-				App::store_visit_weather_snapshot( $hive_visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
+				Weather::store_visit_weather_snapshot( $hive_visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
 
 				wp_safe_redirect( add_query_arg( 'updated', '1', ap_app_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ) );
 				exit;
@@ -201,7 +202,7 @@ if ( ! $not_found && ! $is_new_visit ) {
 	}
 
 	$weather_error  = get_post_meta( $hive_visit_id, 'weather_error', true );
-	$weather_values = App::get_visit_weather_display_values( $hive_visit_id );
+	$weather_values = Weather::get_visit_weather_display_values( $hive_visit_id );
 }
 
 if ( $form_error ) {

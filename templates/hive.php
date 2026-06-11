@@ -6,6 +6,7 @@
  */
 
 use ApiaryPress\App;
+use ApiaryPress\Weather;
 use chillerlan\QRCode\QRCode;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -394,7 +395,7 @@ if ( ! $not_found && ! $forbidden ) {
 							<?php
 							$active_flags    = array();
 							$weather_error   = get_post_meta( $visit->ID, 'weather_error', true );
-							$weather_summary = App::get_visit_weather_summary( $visit->ID );
+							$weather_summary = Weather::get_visit_weather_summary( $visit->ID );
 
 							foreach ( $meta_labels as $meta_key => $label ) {
 								if ( rest_sanitize_boolean( get_post_meta( $visit->ID, $meta_key, true ) ) ) {
