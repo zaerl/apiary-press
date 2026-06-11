@@ -1,4 +1,8 @@
 <?php
+/**
+ * Visit template for displaying and managing individual hive visits in the Apiary Press app.
+ */
+
 use ApiaryPress\App;
 
 if ( ! defined( 'ABSPATH' ) ) {

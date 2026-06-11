@@ -1,4 +1,8 @@
 <?php
+/**
+ * Hive form template for creating and editing hives in the Apiary Press app.
+ */
+
 use ApiaryPress\App;
 
 if ( ! defined( 'ABSPATH' ) ) {

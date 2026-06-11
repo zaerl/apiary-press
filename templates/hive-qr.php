@@ -1,4 +1,7 @@
 <?php
+/**
+ * Hive QR template for displaying QR codes for hives in the Apiary Press app.
+ */
 
 use ApiaryPress\App;
 use chillerlan\QRCode\QRCode;

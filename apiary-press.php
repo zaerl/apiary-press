@@ -20,7 +20,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 spl_autoload_register( function( $class ) {
 	$prefix = 'ApiaryPress\\';
 	$len = strlen( $prefix );
-	
+
 	if ( strncmp( $prefix, $class, $len ) !== 0 ) {
 		return;
 	}

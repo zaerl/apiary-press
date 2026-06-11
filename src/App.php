@@ -1,15 +1,23 @@
 <?php
+/**
+ * Main plugin class and bootstrap.
+ *
+ * @package ApiaryPress
+ */
 
 namespace ApiaryPress;
 
 use WpApp\WpApp;
 use WpApp\BaseApp;
 
+/**
+ * Main plugin class. Initializes the app, registers routes, and sets up storage.
+ */
 class App extends BaseApp {
-	public const HIVE_POST_TYPE = 'ap_hive';
+	public const HIVE_POST_TYPE       = 'ap_hive';
 	public const HIVE_VISIT_POST_TYPE = 'ap_hive_visit';
 
-	public const VISIT_BOOLEAN_META_KEYS = [
+	public const VISIT_BOOLEAN_META_KEYS = array(
 		'eggs',
 		'larvae',
 		'capped_brood',
@@ -17,52 +25,59 @@ class App extends BaseApp {
 		'saw_queen',
 		'added_super',
 		'check_soon',
-	];
+	);
 
-	public const HIVE_LOCATION_META_KEYS = [
+	public const HIVE_LOCATION_META_KEYS = array(
 		'latitude',
 		'longitude',
-	];
+	);
 
-	public const VISIT_WEATHER_META_TYPES = [
-		'weather_temperature_2m'		  => 'number',
-		'weather_relative_humidity_2m'   => 'integer',
-		'weather_precipitation'		  => 'number',
-		'weather_weather_code'		   => 'integer',
-		'weather_description'			=> 'string',
-		'weather_cloud_cover'			=> 'integer',
-		'weather_wind_speed_10m'		 => 'number',
-		'weather_wind_direction_10m'	 => 'integer',
-		'weather_wind_gusts_10m'		 => 'number',
-		'weather_surface_pressure'	   => 'number',
-		'weather_observed_at'			=> 'string',
-		'weather_source'				 => 'string',
-		'weather_latitude'			   => 'number',
-		'weather_longitude'			  => 'number',
-		'weather_error'				  => 'string',
-	];
+	public const VISIT_WEATHER_META_TYPES = array(
+		'weather_temperature_2m'       => 'number',
+		'weather_relative_humidity_2m' => 'integer',
+		'weather_precipitation'        => 'number',
+		'weather_weather_code'         => 'integer',
+		'weather_description'          => 'string',
+		'weather_cloud_cover'          => 'integer',
+		'weather_wind_speed_10m'       => 'number',
+		'weather_wind_direction_10m'   => 'integer',
+		'weather_wind_gusts_10m'       => 'number',
+		'weather_surface_pressure'     => 'number',
+		'weather_observed_at'          => 'string',
+		'weather_source'               => 'string',
+		'weather_latitude'             => 'number',
+		'weather_longitude'            => 'number',
+		'weather_error'                => 'string',
+	);
 
+	/**
+	 * Initialize the app, register routes, and set up storage.
+	 */
 	public function __construct() {
 		// See https://github.com/akirk/wp-app for documentation.
-		$this->app = new WpApp( $this->get_template_dir(), $this->get_url_path(), [
-			// Access control
-			'require_login'	  => true,
-			'require_capability' => 'edit_posts',
+		$this->app = new WpApp(
+			$this->get_template_dir(),
+			$this->get_url_path(),
+			array(
+				// Access control.
+				'require_login'	     => true,
+				'require_capability' => 'edit_posts',
 
-			// Masterbar
-			// 'show_masterbar_for_anonymous' => false,
-			// 'show_wp_logo'				 => true,
-			// 'show_site_name'			   => true,
-			// 'show_dark_mode_toggle'		=> false,
-			// 'clear_admin_bar'			  => false,
-			// 'add_app_node'				 => false,
+				// Masterbar.
+				// 'show_masterbar_for_anonymous' => false,
+				// 'show_wp_logo'                 => true,
+				// 'show_site_name'               => true,
+				// 'show_dark_mode_toggle'        => false,
+				// 'clear_admin_bar'              => false,
+				// 'add_app_node'                 => false,
 
-			// App identity
-			// 'app_name'	 => 'Apiary Press',
-			// 'my_apps'	  => true,
-			// 'my_apps_icon' => null,
-			'app_name' => 'Apiary Press',
-		] );
+				// App identity
+				// 'app_name'     => 'Apiary Press',
+				// 'my_apps'      => true,
+				// 'my_apps_icon' => null,
+				'app_name' => 'Apiary Press',
+			)
+		);
 
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_hive_meta' ] );
@@ -77,14 +92,23 @@ class App extends BaseApp {
 		// add_filter( 'ai_assistant_ability_instructions', [ $this, 'get_ai_assistant_ability_instructions' ], 10, 4 );
 	}
 
+	/**
+	 * Get the base URL path for the app. This is used to route requests and generate links.
+	 */
 	protected function get_url_path(): string {
 		return 'apiary-press';
 	}
 
+	/**
+	 * Get the directory path for the app's templates. This is used by the routing system to locate template files.
+	 */
 	protected function get_template_dir(): string {
 		return dirname( __DIR__ ) . '/templates';
 	}
 
+	/**
+	 * Set up storage for the app. This can include creating custom database tables or using WordPress post types and meta.
+	 */
 	protected function setup_storage(): void {
 		/*
 		 * Prefer WordPress-native storage before custom tables:
@@ -118,10 +142,16 @@ class App extends BaseApp {
 		 */
 	}
 
+	/**
+	 * Generate the storage.
+	 */
 	protected function setup_database(): void {
 		$this->setup_storage();
 	}
 
+	/**
+	 * Initialize all the routes.
+	 */
 	protected function setup_routes(): void {
 		$this->app->route( '' );
 		$this->app->route( 'hive/new', 'hive-form.php' );
@@ -140,52 +170,52 @@ class App extends BaseApp {
 	}
 
 	public function register_post_types(): void {
-		register_post_type( self::HIVE_POST_TYPE, [
-			'labels'	   => [
-				'name'		  => __( 'Hives', 'apiary-press' ),
+		register_post_type( self::HIVE_POST_TYPE, array(
+			'labels'       => array(
+				'name'          => __( 'Hives', 'apiary-press' ),
 				'singular_name' => __( 'Hive', 'apiary-press' ),
 				'add_new_item'  => __( 'Add New Hive', 'apiary-press' ),
-				'edit_item'	 => __( 'Edit Hive', 'apiary-press' ),
-				'new_item'	  => __( 'New Hive', 'apiary-press' ),
-				'view_item'	 => __( 'View Hive', 'apiary-press' ),
+				'edit_item'     => __( 'Edit Hive', 'apiary-press' ),
+				'new_item'      => __( 'New Hive', 'apiary-press' ),
+				'view_item'     => __( 'View Hive', 'apiary-press' ),
 				'search_items'  => __( 'Search Hives', 'apiary-press' ),
-			],
+			),
 			'description'  => __( 'Bee hives managed in Apiary Press.', 'apiary-press' ),
-			'public'	   => false,
-			'show_ui'	  => true,
+			'public'       => false,
+			'show_ui'      => true,
 			'show_in_menu' => true,
 			'show_in_rest' => true,
-			'menu_icon'	=> 'dashicons-location-alt',
-			'supports'	 => [ 'title', 'editor', 'author' ],
+			'menu_icon'	   => 'dashicons-location-alt',
+			'supports'     => [ 'title', 'editor', 'author' ],
 			'map_meta_cap' => true,
-		] );
+		) );
 
-		register_post_type( self::HIVE_VISIT_POST_TYPE, [
-			'labels'	   => [
-				'name'		  => __( 'Hive Visits', 'apiary-press' ),
+		register_post_type( self::HIVE_VISIT_POST_TYPE, array(
+			'labels'       => array(
+				'name'          => __( 'Hive Visits', 'apiary-press' ),
 				'singular_name' => __( 'Hive Visit', 'apiary-press' ),
 				'add_new_item'  => __( 'Add New Hive Visit', 'apiary-press' ),
-				'edit_item'	 => __( 'Edit Hive Visit', 'apiary-press' ),
-				'new_item'	  => __( 'New Hive Visit', 'apiary-press' ),
-				'view_item'	 => __( 'View Hive Visit', 'apiary-press' ),
+				'edit_item'     => __( 'Edit Hive Visit', 'apiary-press' ),
+				'new_item'      => __( 'New Hive Visit', 'apiary-press' ),
+				'view_item'     => __( 'View Hive Visit', 'apiary-press' ),
 				'search_items'  => __( 'Search Hive Visits', 'apiary-press' ),
-			],
+			),
 			'description'  => __( 'Inspection visits for Apiary Press hives.', 'apiary-press' ),
-			'public'	   => false,
-			'show_ui'	  => true,
+			'public'       => false,
+			'show_ui'      => true,
 			'show_in_menu' => 'edit.php?post_type=' . self::HIVE_POST_TYPE,
 			'show_in_rest' => true,
-			'supports'	 => [ 'title', 'editor', 'author', 'custom-fields' ],
+			'supports'     => [ 'title', 'editor', 'author', 'custom-fields' ],
 			'map_meta_cap' => true,
-		] );
+		) );
 	}
 
 	public function register_hive_meta(): void {
 		foreach ( self::HIVE_LOCATION_META_KEYS as $meta_key ) {
-			register_post_meta( self::HIVE_POST_TYPE, $meta_key, [
-				'type'			  => 'number',
-				'single'			=> true,
-				'show_in_rest'	  => true,
+			register_post_meta( self::HIVE_POST_TYPE, $meta_key, array(
+				'type'              => 'number',
+				'single'            => true,
+				'show_in_rest'      => true,
 				'sanitize_callback' => [ $this, 'sanitize_number_meta' ],
 				'auth_callback'	 => function( ...$args ) {
 					$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
@@ -197,17 +227,17 @@ class App extends BaseApp {
 
 					return user_can( $user_id, 'edit_posts' );
 				},
-			] );
+			) );
 		}
 	}
 
 	public function register_visit_meta(): void {
 		foreach ( self::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
-			register_post_meta( self::HIVE_VISIT_POST_TYPE, $meta_key, [
-				'type'			  => 'boolean',
-				'single'			=> true,
-				'default'		   => false,
-				'show_in_rest'	  => true,
+			register_post_meta( self::HIVE_VISIT_POST_TYPE, $meta_key, array(
+				'type'              => 'boolean',
+				'single'            => true,
+				'default'           => false,
+				'show_in_rest'      => true,
 				'sanitize_callback' => [ $this, 'sanitize_boolean_meta' ],
 				'auth_callback'	 => function( ...$args ) {
 					$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
@@ -219,7 +249,7 @@ class App extends BaseApp {
 
 					return user_can( $user_id, 'edit_posts' );
 				},
-			] );
+			) );
 		}
 
 		foreach ( self::VISIT_WEATHER_META_TYPES as $meta_key => $type ) {
@@ -227,12 +257,12 @@ class App extends BaseApp {
 				? [ $this, 'sanitize_text_meta' ]
 				: ( 'integer' === $type ? [ $this, 'sanitize_integer_meta' ] : [ $this, 'sanitize_number_meta' ] );
 
-			register_post_meta( self::HIVE_VISIT_POST_TYPE, $meta_key, [
-				'type'			  => $type,
-				'single'			=> true,
-				'show_in_rest'	  => true,
+			register_post_meta( self::HIVE_VISIT_POST_TYPE, $meta_key, array(
+				'type'              => $type,
+				'single'            => true,
+				'show_in_rest'      => true,
 				'sanitize_callback' => $sanitize_callback,
-				'auth_callback'	 => function( ...$args ) {
+				'auth_callback'	    => function( ...$args ) {
 					$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
 					$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
 
@@ -242,7 +272,7 @@ class App extends BaseApp {
 
 					return user_can( $user_id, 'edit_posts' );
 				},
-			] );
+			) );
 		}
 	}
 
@@ -263,31 +293,31 @@ class App extends BaseApp {
 	}
 
 	public static function get_visit_boolean_meta_labels(): array {
-		return [
-			'eggs'		  => __( 'Eggs', 'apiary-press' ),
-			'larvae'		=> __( 'Larvae', 'apiary-press' ),
-			'capped_brood'  => __( 'Capped brood', 'apiary-press' ),
-			'queen_cells'   => __( 'Queen cells', 'apiary-press' ),
-			'saw_queen'	 => __( 'Saw queen', 'apiary-press' ),
-			'added_super'   => __( 'Added super', 'apiary-press' ),
-			'check_soon'	=> __( 'Check soon', 'apiary-press' ),
-		];
+		return array(
+			'eggs'         => __( 'Eggs', 'apiary-press' ),
+			'larvae'       => __( 'Larvae', 'apiary-press' ),
+			'capped_brood' => __( 'Capped brood', 'apiary-press' ),
+			'queen_cells'  => __( 'Queen cells', 'apiary-press' ),
+			'saw_queen'    => __( 'Saw queen', 'apiary-press' ),
+			'added_super'  => __( 'Added super', 'apiary-press' ),
+			'check_soon'   => __( 'Check soon', 'apiary-press' ),
+		);
 	}
 
 	public static function get_weather_meta_labels(): array {
-		return [
-			'weather_description'		  => __( 'Conditions', 'apiary-press' ),
-			'weather_temperature_2m'	   => __( 'Temperature', 'apiary-press' ),
+		return array(
+			'weather_description'          => __( 'Conditions', 'apiary-press' ),
+			'weather_temperature_2m'       => __( 'Temperature', 'apiary-press' ),
 			'weather_relative_humidity_2m' => __( 'Humidity', 'apiary-press' ),
-			'weather_precipitation'		=> __( 'Precipitation', 'apiary-press' ),
-			'weather_cloud_cover'		  => __( 'Cloud cover', 'apiary-press' ),
-			'weather_wind_speed_10m'	   => __( 'Wind speed', 'apiary-press' ),
+			'weather_precipitation'        => __( 'Precipitation', 'apiary-press' ),
+			'weather_cloud_cover'          => __( 'Cloud cover', 'apiary-press' ),
+			'weather_wind_speed_10m'       => __( 'Wind speed', 'apiary-press' ),
 			'weather_wind_direction_10m'   => __( 'Wind direction', 'apiary-press' ),
-			'weather_wind_gusts_10m'	   => __( 'Wind gusts', 'apiary-press' ),
-			'weather_surface_pressure'	 => __( 'Pressure', 'apiary-press' ),
-			'weather_observed_at'		  => __( 'Observed at', 'apiary-press' ),
-			'weather_source'			   => __( 'Source', 'apiary-press' ),
-		];
+			'weather_wind_gusts_10m'       => __( 'Wind gusts', 'apiary-press' ),
+			'weather_surface_pressure'     => __( 'Pressure', 'apiary-press' ),
+			'weather_observed_at'          => __( 'Observed at', 'apiary-press' ),
+			'weather_source'               => __( 'Source', 'apiary-press' ),
+		);
 	}
 
 	public static function format_weather_number( $value ): string {
@@ -341,10 +371,10 @@ class App extends BaseApp {
 			$formatted_value = self::format_weather_meta_value( $meta_key, get_post_meta( $visit_id, $meta_key, true ) );
 
 			if ( '' !== $formatted_value ) {
-				$weather_values[ $meta_key ] = [
+				$weather_values[ $meta_key ] = array(
 					'label' => $label,
 					'value' => $formatted_value,
-				];
+				);
 			}
 		}
 
@@ -355,16 +385,19 @@ class App extends BaseApp {
 		$summary = [];
 
 		$description = self::format_weather_meta_value( 'weather_description', get_post_meta( $visit_id, 'weather_description', true ) );
+
 		if ( '' !== $description ) {
 			$summary['description'] = $description;
 		}
 
 		$temperature = self::format_weather_meta_value( 'weather_temperature_2m', get_post_meta( $visit_id, 'weather_temperature_2m', true ) );
+
 		if ( '' !== $temperature ) {
 			$summary['temperature'] = $temperature;
 		}
 
 		$humidity = self::format_weather_meta_value( 'weather_relative_humidity_2m', get_post_meta( $visit_id, 'weather_relative_humidity_2m', true ) );
+
 		if ( '' !== $humidity ) {
 			$summary['humidity'] = sprintf(
 				/* translators: %s: humidity value */
@@ -374,6 +407,7 @@ class App extends BaseApp {
 		}
 
 		$precipitation = self::format_weather_meta_value( 'weather_precipitation', get_post_meta( $visit_id, 'weather_precipitation', true ) );
+
 		if ( '' !== $precipitation ) {
 			$summary['precipitation'] = sprintf(
 				/* translators: %s: precipitation value */
@@ -383,6 +417,7 @@ class App extends BaseApp {
 		}
 
 		$wind_speed = self::format_weather_meta_value( 'weather_wind_speed_10m', get_post_meta( $visit_id, 'weather_wind_speed_10m', true ) );
+
 		if ( '' !== $wind_speed ) {
 			$summary['wind'] = sprintf(
 				/* translators: %s: wind speed value */
@@ -395,7 +430,7 @@ class App extends BaseApp {
 	}
 
 	public static function get_weather_code_description( int $code ): string {
-		$codes = [
+		$codes = array(
 			0  => __( 'Clear sky', 'apiary-press' ),
 			1  => __( 'Mainly clear', 'apiary-press' ),
 			2  => __( 'Partly cloudy', 'apiary-press' ),
@@ -424,7 +459,7 @@ class App extends BaseApp {
 			95 => __( 'Thunderstorm', 'apiary-press' ),
 			96 => __( 'Thunderstorm with slight hail', 'apiary-press' ),
 			99 => __( 'Thunderstorm with heavy hail', 'apiary-press' ),
-		];
+		);
 
 		return $codes[ $code ] ?? sprintf( __( 'Weather code %d', 'apiary-press' ), $code );
 	}
@@ -444,10 +479,10 @@ class App extends BaseApp {
 			return [];
 		}
 
-		return [
+		return array(
 			'latitude'  => $latitude,
 			'longitude' => $longitude,
-		];
+		);
 	}
 
 	public static function store_visit_weather_snapshot( int $visit_id, int $hive_id, string $visit_date, string $visit_time ): string {
@@ -458,6 +493,7 @@ class App extends BaseApp {
 		if ( empty( $coordinates ) ) {
 			$message = __( 'Hive coordinates are missing.', 'apiary-press' );
 			update_post_meta( $visit_id, 'weather_error', $message );
+
 			return $message;
 		}
 
@@ -471,6 +507,7 @@ class App extends BaseApp {
 		if ( is_wp_error( $snapshot ) ) {
 			$message = $snapshot->get_error_message();
 			update_post_meta( $visit_id, 'weather_error', $message );
+
 			return $message;
 		}
 
@@ -492,9 +529,9 @@ class App extends BaseApp {
 	}
 
 	public static function fetch_open_meteo_weather_snapshot( float $latitude, float $longitude, string $visit_date, string $visit_time ) {
-		$current_date	  = current_time( 'Y-m-d' );
-		$visit_day		 = strtotime( $visit_date . ' 00:00:00' );
-		$current_day	   = strtotime( $current_date . ' 00:00:00' );
+		$current_date      = current_time( 'Y-m-d' );
+		$visit_day         = strtotime( $visit_date . ' 00:00:00' );
+		$current_day       = strtotime( $current_date . ' 00:00:00' );
 		$days_from_current = false !== $visit_day && false !== $current_day ? (int) floor( ( $visit_day - $current_day ) / DAY_IN_SECONDS ) : 0;
 
 		if ( $days_from_current > 15 ) {
@@ -502,11 +539,11 @@ class App extends BaseApp {
 		}
 
 		$use_forecast_api = $days_from_current >= -92;
-		$endpoint		 = $use_forecast_api
+		$endpoint         = $use_forecast_api
 			? 'https://api.open-meteo.com/v1/forecast'
 			: 'https://archive-api.open-meteo.com/v1/archive';
 
-		$variables = [
+		$variables = array(
 			'temperature_2m',
 			'relative_humidity_2m',
 			'precipitation',
@@ -516,19 +553,19 @@ class App extends BaseApp {
 			'wind_direction_10m',
 			'wind_gusts_10m',
 			'surface_pressure',
-		];
+		);
 
-		$query_args = [
-			'latitude'		   => $latitude,
-			'longitude'		  => $longitude,
-			'start_date'		 => $visit_date,
-			'end_date'		   => $visit_date,
-			'hourly'			 => implode( ',', $variables ),
-			'timezone'		   => 'auto',
+		$query_args = array(
+			'latitude'           => $latitude,
+			'longitude'          => $longitude,
+			'start_date'         => $visit_date,
+			'end_date'           => $visit_date,
+			'hourly'             => implode( ',', $variables ),
+			'timezone'           => 'auto',
 			'temperature_unit'   => 'celsius',
-			'wind_speed_unit'	=> 'kmh',
+			'wind_speed_unit'    => 'kmh',
 			'precipitation_unit' => 'mm',
-		];
+		);
 
 		if ( $use_forecast_api && $days_from_current < 0 ) {
 			$query_args['past_days'] = min( abs( $days_from_current ), 92 );
@@ -538,10 +575,10 @@ class App extends BaseApp {
 
 		$url = add_query_arg( $query_args, $endpoint );
 
-		$response = wp_remote_get( $url, [
-			'timeout'	=> 8,
+		$response = wp_remote_get( $url, array(
+			'timeout'    => 8,
 			'user-agent' => 'Apiary Press; ' . home_url( '/' ),
-		] );
+		) );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -565,7 +602,7 @@ class App extends BaseApp {
 			return new \WP_Error( 'apiary_press_weather_invalid_datetime', __( 'Weather lookup needs a valid visit date and time.', 'apiary-press' ) );
 		}
 
-		$nearest_index	= null;
+		$nearest_index    = null;
 		$nearest_distance = null;
 
 		foreach ( $body['hourly']['time'] as $index => $time ) {
@@ -579,7 +616,7 @@ class App extends BaseApp {
 
 			if ( null === $nearest_distance || $distance < $nearest_distance ) {
 				$nearest_distance = $distance;
-				$nearest_index	= $index;
+				$nearest_index    = $index;
 			}
 		}
 
@@ -587,25 +624,25 @@ class App extends BaseApp {
 			return new \WP_Error( 'apiary_press_weather_no_hour', __( 'Weather lookup did not return an hourly record.', 'apiary-press' ) );
 		}
 
-		$hourly	   = $body['hourly'];
+		$hourly       = $body['hourly'];
 		$weather_code = isset( $hourly['weather_code'][ $nearest_index ] ) ? (int) $hourly['weather_code'][ $nearest_index ] : 0;
 
-		return [
-			'weather_temperature_2m'		=> self::get_hourly_value( $hourly, 'temperature_2m', $nearest_index ),
+		return array(
+			'weather_temperature_2m'       => self::get_hourly_value( $hourly, 'temperature_2m', $nearest_index ),
 			'weather_relative_humidity_2m' => self::get_hourly_value( $hourly, 'relative_humidity_2m', $nearest_index ),
-			'weather_precipitation'		=> self::get_hourly_value( $hourly, 'precipitation', $nearest_index ),
-			'weather_weather_code'		 => $weather_code,
-			'weather_description'		  => self::get_weather_code_description( $weather_code ),
-			'weather_cloud_cover'		  => self::get_hourly_value( $hourly, 'cloud_cover', $nearest_index ),
-			'weather_wind_speed_10m'	   => self::get_hourly_value( $hourly, 'wind_speed_10m', $nearest_index ),
+			'weather_precipitation'        => self::get_hourly_value( $hourly, 'precipitation', $nearest_index ),
+			'weather_weather_code'         => $weather_code,
+			'weather_description'          => self::get_weather_code_description( $weather_code ),
+			'weather_cloud_cover'          => self::get_hourly_value( $hourly, 'cloud_cover', $nearest_index ),
+			'weather_wind_speed_10m'       => self::get_hourly_value( $hourly, 'wind_speed_10m', $nearest_index ),
 			'weather_wind_direction_10m'   => self::get_hourly_value( $hourly, 'wind_direction_10m', $nearest_index ),
-			'weather_wind_gusts_10m'	   => self::get_hourly_value( $hourly, 'wind_gusts_10m', $nearest_index ),
-			'weather_surface_pressure'	 => self::get_hourly_value( $hourly, 'surface_pressure', $nearest_index ),
-			'weather_observed_at'		  => isset( $hourly['time'][ $nearest_index ] ) ? sanitize_text_field( $hourly['time'][ $nearest_index ] ) : '',
-			'weather_source'			   => $use_forecast_api ? 'Open-Meteo Forecast' : 'Open-Meteo Historical',
-			'weather_latitude'			 => $latitude,
-			'weather_longitude'			=> $longitude,
-		];
+			'weather_wind_gusts_10m'       => self::get_hourly_value( $hourly, 'wind_gusts_10m', $nearest_index ),
+			'weather_surface_pressure'     => self::get_hourly_value( $hourly, 'surface_pressure', $nearest_index ),
+			'weather_observed_at'          => isset( $hourly['time'][ $nearest_index ] ) ? sanitize_text_field( $hourly['time'][ $nearest_index ] ) : '',
+			'weather_source'               => $use_forecast_api ? 'Open-Meteo Forecast' : 'Open-Meteo Historical',
+			'weather_latitude'             => $latitude,
+			'weather_longitude'            => $longitude,
+		);
 	}
 
 	private static function get_hourly_value( array $hourly, string $key, int $index ) {
@@ -730,9 +767,9 @@ class App extends BaseApp {
 		//		 ],
 		//	 ],
 		// ];
-		return [
+		return array(
 			'items' => [],
-		];
+		);
 	}
 
 	public function register_ai_assistant_ability_domains( array $domains ): array {

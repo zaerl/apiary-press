@@ -1,4 +1,8 @@
 <?php
+/**
+ * Index template for listing all hives in the Apiary Press app.
+ */
+
 use ApiaryPress\App;
 
 if ( ! defined( 'ABSPATH' ) ) {

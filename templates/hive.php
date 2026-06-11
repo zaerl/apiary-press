@@ -1,4 +1,8 @@
 <?php
+/**
+ * Hive template for displaying hive details and visits in the Apiary Press app.
+ */
+
 use ApiaryPress\App;
 use chillerlan\QRCode\QRCode;
 
