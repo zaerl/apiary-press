@@ -18,13 +18,13 @@ if ( ! function_exists( 'ap_app_url' ) ) {
 
 global $wp_app_route;
 
-$route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : [];
-$hive_id	  = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
-$hive		 = $hive_id ? get_post( $hive_id ) : null;
-$not_found	= ! $hive || App::HIVE_POST_TYPE !== $hive->post_type;
-$forbidden	= ! $not_found && ! current_user_can( 'edit_post', $hive_id );
-$hive_url	 = '';
-$hive_qr	  = '';
+$route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$hive_id      = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
+$hive         = $hive_id ? get_post( $hive_id ) : null;
+$not_found    = ! $hive || App::HIVE_POST_TYPE !== $hive->post_type;
+$forbidden    = ! $not_found && ! current_user_can( 'edit_post', $hive_id );
+$hive_url     = '';
+$hive_qr      = '';
 
 if ( $not_found ) {
 	status_header( 404 );

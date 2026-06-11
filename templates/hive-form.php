@@ -20,27 +20,27 @@ if ( ! function_exists( 'ap_read_coordinate_input' ) ) {
 		$raw_value = isset( $_POST[ $field_name ] ) ? trim( sanitize_text_field( wp_unslash( $_POST[ $field_name ] ) ) ) : '';
 
 		if ( '' === $raw_value ) {
-			return [
+			return array(
 				'value' => '',
 				'error' => '',
-			];
+			);
 		}
 
 		if ( ! is_numeric( $raw_value ) ) {
-			return [
+			return array(
 				'value' => '',
 				'error' => sprintf(
 					/* translators: %s: coordinate field label */
 					__( '%s must be a number.', 'apiary-press' ),
 					$label
 				),
-			];
+			);
 		}
 
 		$value = (float) $raw_value;
 
 		if ( $value < $minimum || $value > $maximum ) {
-			return [
+			return array(
 				'value' => '',
 				'error' => sprintf(
 					/* translators: 1: coordinate field label, 2: minimum value, 3: maximum value */
@@ -49,13 +49,13 @@ if ( ! function_exists( 'ap_read_coordinate_input' ) ) {
 					(string) $minimum,
 					(string) $maximum
 				),
-			];
+			);
 		}
 
-		return [
+		return array(
 			'value' => (string) $value,
 			'error' => '',
-		];
+		);
 	}
 }
 
@@ -72,10 +72,10 @@ if ( ! function_exists( 'ap_update_coordinate_meta' ) ) {
 
 global $wp_app_route;
 
-$route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : [];
-$hive_id	  = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
+$route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$hive_id      = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
 $is_new_hive  = 0 === $hive_id;
-$hive		 = $hive_id ? get_post( $hive_id ) : null;
+$hive         = $hive_id ? get_post( $hive_id ) : null;
 $form_error   = '';
 
 $not_found = ! $is_new_hive && ( ! $hive || App::HIVE_POST_TYPE !== $hive->post_type );
@@ -90,9 +90,9 @@ if ( $not_found ) {
 $action = isset( $_POST['ap_action'] ) ? sanitize_key( wp_unslash( $_POST['ap_action'] ) ) : '';
 
 if ( ! $not_found && ! $forbidden && $is_new_hive && 'create_hive' === $action ) {
-	$nonce		   = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
-	$title		   = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : '';
-	$notes		   = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
+	$nonce           = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
+	$title           = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : '';
+	$notes           = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
 	$latitude_input  = ap_read_coordinate_input( 'ap_hive_latitude', __( 'Latitude', 'apiary-press' ), -90, 90 );
 	$longitude_input = ap_read_coordinate_input( 'ap_hive_longitude', __( 'Longitude', 'apiary-press' ), -180, 180 );
 
@@ -107,13 +107,16 @@ if ( ! $not_found && ! $forbidden && $is_new_hive && 'create_hive' === $action )
 	} elseif ( ( '' === $latitude_input['value'] ) !== ( '' === $longitude_input['value'] ) ) {
 		$form_error = __( 'Add both latitude and longitude, or leave both blank.', 'apiary-press' );
 	} else {
-		$new_hive_id = wp_insert_post( [
-			'post_type'	=> App::HIVE_POST_TYPE,
-			'post_status'  => 'publish',
-			'post_title'   => $title,
-			'post_content' => $notes,
-			'post_author'  => get_current_user_id(),
-		], true );
+		$new_hive_id = wp_insert_post(
+			array(
+				'post_type'    => App::HIVE_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => $title,
+				'post_content' => $notes,
+				'post_author'  => get_current_user_id(),
+			),
+			true
+		);
 
 		if ( is_wp_error( $new_hive_id ) ) {
 			$form_error = $new_hive_id->get_error_message();
@@ -128,9 +131,9 @@ if ( ! $not_found && ! $forbidden && $is_new_hive && 'create_hive' === $action )
 }
 
 if ( ! $not_found && ! $forbidden && ! $is_new_hive && 'update_hive' === $action ) {
-	$nonce		   = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
-	$title		   = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : '';
-	$notes		   = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
+	$nonce           = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
+	$title           = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : '';
+	$notes           = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
 	$latitude_input  = ap_read_coordinate_input( 'ap_hive_latitude', __( 'Latitude', 'apiary-press' ), -90, 90 );
 	$longitude_input = ap_read_coordinate_input( 'ap_hive_longitude', __( 'Longitude', 'apiary-press' ), -180, 180 );
 
@@ -145,11 +148,14 @@ if ( ! $not_found && ! $forbidden && ! $is_new_hive && 'update_hive' === $action
 	} elseif ( ( '' === $latitude_input['value'] ) !== ( '' === $longitude_input['value'] ) ) {
 		$form_error = __( 'Add both latitude and longitude, or leave both blank.', 'apiary-press' );
 	} else {
-		$updated_id = wp_update_post( [
-			'ID'		   => $hive_id,
-			'post_title'   => $title,
-			'post_content' => $notes,
-		], true );
+		$updated_id = wp_update_post(
+			array(
+				'ID'           => $hive_id,
+				'post_title'   => $title,
+				'post_content' => $notes,
+			),
+			true
+		);
 
 		if ( is_wp_error( $updated_id ) ) {
 			$form_error = $updated_id->get_error_message();
@@ -167,19 +173,19 @@ if ( ! $not_found && ! $is_new_hive ) {
 	$hive = get_post( $hive_id );
 }
 
-$hive_title	 = ! $not_found && ! $is_new_hive ? get_the_title( $hive ) : '';
-$hive_notes	 = ! $not_found && ! $is_new_hive ? $hive->post_content : '';
+$hive_title     = ! $not_found && ! $is_new_hive ? get_the_title( $hive ) : '';
+$hive_notes     = ! $not_found && ! $is_new_hive ? $hive->post_content : '';
 $hive_latitude  = ! $not_found && ! $is_new_hive ? get_post_meta( $hive_id, 'latitude', true ) : '';
 $hive_longitude = ! $not_found && ! $is_new_hive ? get_post_meta( $hive_id, 'longitude', true ) : '';
-$page_title	 = $is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
-$form_action	= $is_new_hive ? 'create_hive' : 'update_hive';
-$form_nonce	 = $is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $hive_id;
-$form_url	   = $is_new_hive ? ap_app_url( 'hive/new' ) : ap_app_url( 'hive/' . $hive_id . '/edit' );
-$button_text	= $is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
+$page_title     = $is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
+$form_action    = $is_new_hive ? 'create_hive' : 'update_hive';
+$form_nonce     = $is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $hive_id;
+$form_url       = $is_new_hive ? ap_app_url( 'hive/new' ) : ap_app_url( 'hive/' . $hive_id . '/edit' );
+$button_text    = $is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
 
 if ( $form_error ) {
-	$hive_title	 = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : $hive_title;
-	$hive_notes	 = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : $hive_notes;
+	$hive_title     = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : $hive_title;
+	$hive_notes     = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : $hive_notes;
 	$hive_latitude  = isset( $_POST['ap_hive_latitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_latitude'] ) ) : $hive_latitude;
 	$hive_longitude = isset( $_POST['ap_hive_longitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_longitude'] ) ) : $hive_longitude;
 }
@@ -419,15 +425,21 @@ if ( $form_error ) {
 			const latitudeInput = document.getElementById('ap_hive_latitude');
 			const longitudeInput = document.getElementById('ap_hive_longitude');
 			const status = document.getElementById('ap_location_status');
-			const messages = <?php echo wp_json_encode( [
-				'idle'		=> '',
-				'locating'	=> __( 'Getting current location...', 'apiary-press' ),
-				'ready'	   => __( 'Current location set.', 'apiary-press' ),
-				'unavailable' => __( 'Location access is unavailable in this browser.', 'apiary-press' ),
-				'insecure'	=> __( 'Location access requires HTTPS or localhost.', 'apiary-press' ),
-				'denied'	  => __( 'Allow location access and try again.', 'apiary-press' ),
-				'failed'	  => __( 'Current location could not be read.', 'apiary-press' ),
-			] ); ?>;
+			const messages = 
+			<?php
+			echo wp_json_encode(
+				array(
+					'idle'        => '',
+					'locating'    => __( 'Getting current location...', 'apiary-press' ),
+					'ready'       => __( 'Current location set.', 'apiary-press' ),
+					'unavailable' => __( 'Location access is unavailable in this browser.', 'apiary-press' ),
+					'insecure'    => __( 'Location access requires HTTPS or localhost.', 'apiary-press' ),
+					'denied'      => __( 'Allow location access and try again.', 'apiary-press' ),
+					'failed'      => __( 'Current location could not be read.', 'apiary-press' ),
+				)
+			);
+			?>
+			;
 
 			if (!locationButton || !latitudeInput || !longitudeInput || !status) {
 				return;

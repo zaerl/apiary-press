@@ -18,14 +18,14 @@ if ( ! function_exists( 'ap_app_url' ) ) {
 
 global $wp_app_route;
 
-$route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : [];
-$hive_id	  = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
-$hive		 = $hive_id ? get_post( $hive_id ) : null;
-$not_found	= ! $hive || App::HIVE_POST_TYPE !== $hive->post_type;
-$forbidden	= ! $not_found && ! current_user_can( 'edit_post', $hive_id );
+$route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$hive_id      = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
+$hive         = $hive_id ? get_post( $hive_id ) : null;
+$not_found    = ! $hive || App::HIVE_POST_TYPE !== $hive->post_type;
+$forbidden    = ! $not_found && ! current_user_can( 'edit_post', $hive_id );
 $meta_labels  = App::get_visit_boolean_meta_labels();
-$hive_url	 = '';
-$hive_qr	  = '';
+$hive_url     = '';
+$hive_qr      = '';
 
 if ( $not_found ) {
 	status_header( 404 );
@@ -33,21 +33,23 @@ if ( $not_found ) {
 	status_header( 403 );
 }
 
-$visits = [];
+$visits = array();
 
 if ( ! $not_found && ! $forbidden ) {
 	$hive_url = ap_app_url( 'hive/' . $hive_id );
-	$hive_qr  = (new QRCode)->render( $hive_url );
+	$hive_qr  = ( new QRCode() )->render( $hive_url );
 
-	$visits = get_posts( [
-		'post_type'		=> App::HIVE_VISIT_POST_TYPE,
-		'post_status'	  => [ 'publish', 'draft', 'pending', 'private' ],
-		'post_parent'	  => $hive_id,
-		'numberposts'	  => -1,
-		'orderby'		  => 'date',
-		'order'			=> 'DESC',
-		'suppress_filters' => false,
-	] );
+	$visits = get_posts(
+		array(
+			'post_type'        => App::HIVE_VISIT_POST_TYPE,
+			'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+			'post_parent'      => $hive_id,
+			'numberposts'      => -1,
+			'orderby'          => 'date',
+			'order'            => 'DESC',
+			'suppress_filters' => false,
+		)
+	);
 }
 ?>
 <!DOCTYPE html>
@@ -388,7 +390,7 @@ if ( ! $not_found && ! $forbidden ) {
 					<div class="visit-list">
 						<?php foreach ( $visits as $visit ) : ?>
 							<?php
-							$active_flags	= [];
+							$active_flags    = array();
 							$weather_error   = get_post_meta( $visit->ID, 'weather_error', true );
 							$weather_summary = App::get_visit_weather_summary( $visit->ID );
 

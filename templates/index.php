@@ -15,15 +15,17 @@ if ( ! function_exists( 'ap_app_url' ) ) {
 	}
 }
 
-$hives = get_posts( [
-	'post_type'		=> App::HIVE_POST_TYPE,
-	'post_status'	  => [ 'publish', 'draft', 'pending', 'private' ],
-	'author'		   => get_current_user_id(),
-	'numberposts'	  => -1,
-	'orderby'		  => 'date',
-	'order'			=> 'DESC',
-	'suppress_filters' => false,
-] );
+$hives = get_posts(
+	array(
+		'post_type'        => App::HIVE_POST_TYPE,
+		'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+		'author'           => get_current_user_id(),
+		'numberposts'      => -1,
+		'orderby'          => 'date',
+		'order'            => 'DESC',
+		'suppress_filters' => false,
+	)
+);
 ?>
 <!DOCTYPE html>
 <html <?php wp_app_language_attributes(); ?>>
@@ -207,28 +209,32 @@ $hives = get_posts( [
 				<div class="hive-list">
 					<?php foreach ( $hives as $hive ) : ?>
 						<?php
-						$visit_ids = get_posts( [
-							'post_type'		=> App::HIVE_VISIT_POST_TYPE,
-							'post_status'	  => [ 'publish', 'draft', 'pending', 'private' ],
-							'post_parent'	  => $hive->ID,
-							'numberposts'	  => -1,
-							'fields'		   => 'ids',
-							'suppress_filters' => false,
-						] );
+						$visit_ids = get_posts(
+							array(
+								'post_type'        => App::HIVE_VISIT_POST_TYPE,
+								'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+								'post_parent'      => $hive->ID,
+								'numberposts'      => -1,
+								'fields'           => 'ids',
+								'suppress_filters' => false,
+							)
+						);
 
-						$latest_visit = get_posts( [
-							'post_type'		=> App::HIVE_VISIT_POST_TYPE,
-							'post_status'	  => [ 'publish', 'draft', 'pending', 'private' ],
-							'post_parent'	  => $hive->ID,
-							'numberposts'	  => 1,
-							'orderby'		  => 'date',
-							'order'			=> 'DESC',
-							'suppress_filters' => false,
-						] );
+						$latest_visit = get_posts(
+							array(
+								'post_type'        => App::HIVE_VISIT_POST_TYPE,
+								'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+								'post_parent'      => $hive->ID,
+								'numberposts'      => 1,
+								'orderby'          => 'date',
+								'order'            => 'DESC',
+								'suppress_filters' => false,
+							)
+						);
 
 						$latest_visit_id = ! empty( $latest_visit ) ? $latest_visit[0]->ID : 0;
-						$check_soon	  = $latest_visit_id ? rest_sanitize_boolean( get_post_meta( $latest_visit_id, 'check_soon', true ) ) : false;
-						$summary		 = wp_trim_words( wp_strip_all_tags( $hive->post_content ), 24 );
+						$check_soon      = $latest_visit_id ? rest_sanitize_boolean( get_post_meta( $latest_visit_id, 'check_soon', true ) ) : false;
+						$summary         = wp_trim_words( wp_strip_all_tags( $hive->post_content ), 24 );
 						?>
 						<article class="hive-row">
 							<div>

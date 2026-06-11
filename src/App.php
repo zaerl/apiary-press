@@ -59,37 +59,15 @@ class App extends BaseApp {
 			$this->get_template_dir(),
 			$this->get_url_path(),
 			array(
-				// Access control.
-				'require_login'	     => true,
+				'require_login'      => true,
 				'require_capability' => 'edit_posts',
-
-				// Masterbar.
-				// 'show_masterbar_for_anonymous' => false,
-				// 'show_wp_logo'                 => true,
-				// 'show_site_name'               => true,
-				// 'show_dark_mode_toggle'        => false,
-				// 'clear_admin_bar'              => false,
-				// 'add_app_node'                 => false,
-
-				// App identity
-				// 'app_name'     => 'Apiary Press',
-				// 'my_apps'      => true,
-				// 'my_apps_icon' => null,
-				'app_name' => 'Apiary Press',
+				'app_name'           => 'Apiary Press',
 			)
 		);
 
-		add_action( 'init', [ $this, 'register_post_types' ] );
-		add_action( 'init', [ $this, 'register_hive_meta' ] );
-		add_action( 'init', [ $this, 'register_visit_meta' ] );
-
-		// Uncomment only when these extension points contain real code.
-		// add_action( 'init', [ $this, 'register_taxonomies' ] );
-		// add_action( 'wp_dashboard_setup', [ $this, 'register_dashboard_widgets' ] );
-		// add_action( 'wp_abilities_api_categories_init', [ $this, 'register_ability_category' ] );
-		// add_action( 'wp_abilities_api_init', [ $this, 'register_abilities' ] );
-		// add_filter( 'ai_assistant_ability_domains', [ $this, 'register_ai_assistant_ability_domains' ] );
-		// add_filter( 'ai_assistant_ability_instructions', [ $this, 'get_ai_assistant_ability_instructions' ], 10, 4 );
+		add_action( 'init', array( $this, 'register_post_types' ) );
+		add_action( 'init', array( $this, 'register_hive_meta' ) );
+		add_action( 'init', array( $this, 'register_visit_meta' ) );
 	}
 
 	/**
@@ -161,6 +139,16 @@ class App extends BaseApp {
 		$this->app->route( 'hive/{id}/visit/{hive_visit}', 'visit.php' );
 	}
 
+	/**
+	 * Generate the storage.
+	 */
+	protected function setup_database(): void {
+
+	}
+
+	/**
+	 * Add the app's menu items.
+	 */
 	protected function setup_menu(): void {
 		$this->app->add_menu_item(
 			'hives',
@@ -169,129 +157,179 @@ class App extends BaseApp {
 		);
 	}
 
+	/**
+	 * Register the hive and hive visit custom post types.
+	 */
 	public function register_post_types(): void {
-		register_post_type( self::HIVE_POST_TYPE, array(
-			'labels'       => array(
-				'name'          => __( 'Hives', 'apiary-press' ),
-				'singular_name' => __( 'Hive', 'apiary-press' ),
-				'add_new_item'  => __( 'Add New Hive', 'apiary-press' ),
-				'edit_item'     => __( 'Edit Hive', 'apiary-press' ),
-				'new_item'      => __( 'New Hive', 'apiary-press' ),
-				'view_item'     => __( 'View Hive', 'apiary-press' ),
-				'search_items'  => __( 'Search Hives', 'apiary-press' ),
-			),
-			'description'  => __( 'Bee hives managed in Apiary Press.', 'apiary-press' ),
-			'public'       => false,
-			'show_ui'      => true,
-			'show_in_menu' => true,
-			'show_in_rest' => true,
-			'menu_icon'	   => 'dashicons-location-alt',
-			'supports'     => [ 'title', 'editor', 'author' ],
-			'map_meta_cap' => true,
-		) );
+		register_post_type(
+			self::HIVE_POST_TYPE,
+			array(
+				'labels'       => array(
+					'name'          => __( 'Hives', 'apiary-press' ),
+					'singular_name' => __( 'Hive', 'apiary-press' ),
+					'add_new_item'  => __( 'Add New Hive', 'apiary-press' ),
+					'edit_item'     => __( 'Edit Hive', 'apiary-press' ),
+					'new_item'      => __( 'New Hive', 'apiary-press' ),
+					'view_item'     => __( 'View Hive', 'apiary-press' ),
+					'search_items'  => __( 'Search Hives', 'apiary-press' ),
+				),
+				'description'  => __( 'Bee hives managed in Apiary Press.', 'apiary-press' ),
+				'public'       => false,
+				'show_ui'      => true,
+				'show_in_menu' => true,
+				'show_in_rest' => true,
+				'menu_icon'    => 'dashicons-location-alt',
+				'supports'     => array( 'title', 'editor', 'author' ),
+				'map_meta_cap' => true,
+			)
+		);
 
-		register_post_type( self::HIVE_VISIT_POST_TYPE, array(
-			'labels'       => array(
-				'name'          => __( 'Hive Visits', 'apiary-press' ),
-				'singular_name' => __( 'Hive Visit', 'apiary-press' ),
-				'add_new_item'  => __( 'Add New Hive Visit', 'apiary-press' ),
-				'edit_item'     => __( 'Edit Hive Visit', 'apiary-press' ),
-				'new_item'      => __( 'New Hive Visit', 'apiary-press' ),
-				'view_item'     => __( 'View Hive Visit', 'apiary-press' ),
-				'search_items'  => __( 'Search Hive Visits', 'apiary-press' ),
-			),
-			'description'  => __( 'Inspection visits for Apiary Press hives.', 'apiary-press' ),
-			'public'       => false,
-			'show_ui'      => true,
-			'show_in_menu' => 'edit.php?post_type=' . self::HIVE_POST_TYPE,
-			'show_in_rest' => true,
-			'supports'     => [ 'title', 'editor', 'author', 'custom-fields' ],
-			'map_meta_cap' => true,
-		) );
+		register_post_type(
+			self::HIVE_VISIT_POST_TYPE,
+			array(
+				'labels'       => array(
+					'name'          => __( 'Hive Visits', 'apiary-press' ),
+					'singular_name' => __( 'Hive Visit', 'apiary-press' ),
+					'add_new_item'  => __( 'Add New Hive Visit', 'apiary-press' ),
+					'edit_item'     => __( 'Edit Hive Visit', 'apiary-press' ),
+					'new_item'      => __( 'New Hive Visit', 'apiary-press' ),
+					'view_item'     => __( 'View Hive Visit', 'apiary-press' ),
+					'search_items'  => __( 'Search Hive Visits', 'apiary-press' ),
+				),
+				'description'  => __( 'Inspection visits for Apiary Press hives.', 'apiary-press' ),
+				'public'       => false,
+				'show_ui'      => true,
+				'show_in_menu' => 'edit.php?post_type=' . self::HIVE_POST_TYPE,
+				'show_in_rest' => true,
+				'supports'     => array( 'title', 'editor', 'author', 'custom-fields' ),
+				'map_meta_cap' => true,
+			)
+		);
 	}
 
+	/**
+	 * Register the location post meta fields for the hive post type.
+	 */
 	public function register_hive_meta(): void {
 		foreach ( self::HIVE_LOCATION_META_KEYS as $meta_key ) {
-			register_post_meta( self::HIVE_POST_TYPE, $meta_key, array(
-				'type'              => 'number',
-				'single'            => true,
-				'show_in_rest'      => true,
-				'sanitize_callback' => [ $this, 'sanitize_number_meta' ],
-				'auth_callback'	 => function( ...$args ) {
-					$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
-					$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
+			register_post_meta(
+				self::HIVE_POST_TYPE,
+				$meta_key,
+				array(
+					'type'              => 'number',
+					'single'            => true,
+					'show_in_rest'      => true,
+					'sanitize_callback' => array( $this, 'sanitize_number_meta' ),
+					'auth_callback'     => function ( ...$args ) {
+						$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
+						$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
 
-					if ( $post_id ) {
-						return user_can( $user_id, 'edit_post', $post_id );
-					}
+						if ( $post_id ) {
+							return user_can( $user_id, 'edit_post', $post_id );
+						}
 
-					return user_can( $user_id, 'edit_posts' );
-				},
-			) );
+						return user_can( $user_id, 'edit_posts' );
+					},
+				)
+			);
 		}
 	}
 
+	/**
+	 * Register the boolean and weather post meta fields for the hive visit post type.
+	 */
 	public function register_visit_meta(): void {
 		foreach ( self::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
-			register_post_meta( self::HIVE_VISIT_POST_TYPE, $meta_key, array(
-				'type'              => 'boolean',
-				'single'            => true,
-				'default'           => false,
-				'show_in_rest'      => true,
-				'sanitize_callback' => [ $this, 'sanitize_boolean_meta' ],
-				'auth_callback'	 => function( ...$args ) {
-					$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
-					$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
+			register_post_meta(
+				self::HIVE_VISIT_POST_TYPE,
+				$meta_key,
+				array(
+					'type'              => 'boolean',
+					'single'            => true,
+					'default'           => false,
+					'show_in_rest'      => true,
+					'sanitize_callback' => array( $this, 'sanitize_boolean_meta' ),
+					'auth_callback'     => function ( ...$args ) {
+						$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
+						$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
 
-					if ( $post_id ) {
-						return user_can( $user_id, 'edit_post', $post_id );
-					}
+						if ( $post_id ) {
+							return user_can( $user_id, 'edit_post', $post_id );
+						}
 
-					return user_can( $user_id, 'edit_posts' );
-				},
-			) );
+						return user_can( $user_id, 'edit_posts' );
+					},
+				)
+			);
 		}
 
 		foreach ( self::VISIT_WEATHER_META_TYPES as $meta_key => $type ) {
 			$sanitize_callback = 'string' === $type
-				? [ $this, 'sanitize_text_meta' ]
-				: ( 'integer' === $type ? [ $this, 'sanitize_integer_meta' ] : [ $this, 'sanitize_number_meta' ] );
+				? array( $this, 'sanitize_text_meta' )
+				: ( 'integer' === $type ? array( $this, 'sanitize_integer_meta' ) : array( $this, 'sanitize_number_meta' ) );
 
-			register_post_meta( self::HIVE_VISIT_POST_TYPE, $meta_key, array(
-				'type'              => $type,
-				'single'            => true,
-				'show_in_rest'      => true,
-				'sanitize_callback' => $sanitize_callback,
-				'auth_callback'	    => function( ...$args ) {
-					$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
-					$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
+			register_post_meta(
+				self::HIVE_VISIT_POST_TYPE,
+				$meta_key,
+				array(
+					'type'              => $type,
+					'single'            => true,
+					'show_in_rest'      => true,
+					'sanitize_callback' => $sanitize_callback,
+					'auth_callback'     => function ( ...$args ) {
+						$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
+						$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
 
-					if ( $post_id ) {
-						return user_can( $user_id, 'edit_post', $post_id );
-					}
+						if ( $post_id ) {
+							return user_can( $user_id, 'edit_post', $post_id );
+						}
 
-					return user_can( $user_id, 'edit_posts' );
-				},
-			) );
+						return user_can( $user_id, 'edit_posts' );
+					},
+				)
+			);
 		}
 	}
 
+	/**
+	 * Sanitize a meta value into a boolean.
+	 *
+	 * @param mixed $value The value to sanitize.
+	 */
 	public function sanitize_boolean_meta( $value ): bool {
 		return rest_sanitize_boolean( $value );
 	}
 
+	/**
+	 * Sanitize a meta value into a float, defaulting to 0.0.
+	 *
+	 * @param mixed $value The value to sanitize.
+	 */
 	public function sanitize_number_meta( $value ): float {
 		return is_numeric( $value ) ? (float) $value : 0.0;
 	}
 
+	/**
+	 * Sanitize a meta value into an integer, defaulting to 0.
+	 *
+	 * @param mixed $value The value to sanitize.
+	 */
 	public function sanitize_integer_meta( $value ): int {
 		return is_numeric( $value ) ? (int) $value : 0;
 	}
 
+	/**
+	 * Sanitize a meta value into a plain text string.
+	 *
+	 * @param mixed $value The value to sanitize.
+	 */
 	public function sanitize_text_meta( $value ): string {
 		return sanitize_text_field( (string) $value );
 	}
 
+	/**
+	 * Get the translated labels for the visit boolean meta keys.
+	 */
 	public static function get_visit_boolean_meta_labels(): array {
 		return array(
 			'eggs'         => __( 'Eggs', 'apiary-press' ),
@@ -304,6 +342,9 @@ class App extends BaseApp {
 		);
 	}
 
+	/**
+	 * Get the translated labels for the displayable weather meta keys.
+	 */
 	public static function get_weather_meta_labels(): array {
 		return array(
 			'weather_description'          => __( 'Conditions', 'apiary-press' ),
@@ -320,11 +361,22 @@ class App extends BaseApp {
 		);
 	}
 
+	/**
+	 * Format a numeric weather value to one decimal place, trimming trailing zeros.
+	 *
+	 * @param mixed $value The value to format.
+	 */
 	public static function format_weather_number( $value ): string {
 		$formatted = sprintf( '%.1f', (float) $value );
 		return rtrim( rtrim( $formatted, '0' ), '.' );
 	}
 
+	/**
+	 * Format a stored weather meta value for display, including its unit.
+	 *
+	 * @param string $meta_key The meta key of the weather value.
+	 * @param mixed  $value    The raw meta value to format.
+	 */
 	public static function format_weather_meta_value( string $meta_key, $value ): string {
 		if ( '' === (string) $value ) {
 			return '';
@@ -334,7 +386,7 @@ class App extends BaseApp {
 			return str_replace( 'T', ' ', sanitize_text_field( (string) $value ) );
 		}
 
-		if ( in_array( $meta_key, [ 'weather_description', 'weather_source' ], true ) ) {
+		if ( in_array( $meta_key, array( 'weather_description', 'weather_source' ), true ) ) {
 			return sanitize_text_field( (string) $value );
 		}
 
@@ -364,8 +416,13 @@ class App extends BaseApp {
 		return $number;
 	}
 
+	/**
+	 * Get the formatted, non-empty weather meta values for a visit, keyed with labels.
+	 *
+	 * @param int $visit_id The ID of the hive visit post.
+	 */
 	public static function get_visit_weather_display_values( int $visit_id ): array {
-		$weather_values = [];
+		$weather_values = array();
 
 		foreach ( self::get_weather_meta_labels() as $meta_key => $label ) {
 			$formatted_value = self::format_weather_meta_value( $meta_key, get_post_meta( $visit_id, $meta_key, true ) );
@@ -381,8 +438,13 @@ class App extends BaseApp {
 		return $weather_values;
 	}
 
+	/**
+	 * Build a short weather summary (description, temperature, humidity, etc.) for a visit.
+	 *
+	 * @param int $visit_id The ID of the hive visit post.
+	 */
 	public static function get_visit_weather_summary( int $visit_id ): array {
-		$summary = [];
+		$summary = array();
 
 		$description = self::format_weather_meta_value( 'weather_description', get_post_meta( $visit_id, 'weather_description', true ) );
 
@@ -400,7 +462,7 @@ class App extends BaseApp {
 
 		if ( '' !== $humidity ) {
 			$summary['humidity'] = sprintf(
-				/* translators: %s: humidity value */
+				// translators: %s: humidity value.
 				__( '%s humidity', 'apiary-press' ),
 				$humidity
 			);
@@ -410,7 +472,7 @@ class App extends BaseApp {
 
 		if ( '' !== $precipitation ) {
 			$summary['precipitation'] = sprintf(
-				/* translators: %s: precipitation value */
+				// translators: %s: precipitation value.
 				__( '%s precipitation', 'apiary-press' ),
 				$precipitation
 			);
@@ -420,7 +482,7 @@ class App extends BaseApp {
 
 		if ( '' !== $wind_speed ) {
 			$summary['wind'] = sprintf(
-				/* translators: %s: wind speed value */
+				// translators: %s: wind speed value.
 				__( 'Wind %s', 'apiary-press' ),
 				$wind_speed
 			);
@@ -429,6 +491,11 @@ class App extends BaseApp {
 		return $summary;
 	}
 
+	/**
+	 * Map an Open-Meteo WMO weather code to a translated description.
+	 *
+	 * @param int $code The Open-Meteo weather code.
+	 */
 	public static function get_weather_code_description( int $code ): string {
 		$codes = array(
 			0  => __( 'Clear sky', 'apiary-press' ),
@@ -461,22 +528,29 @@ class App extends BaseApp {
 			99 => __( 'Thunderstorm with heavy hail', 'apiary-press' ),
 		);
 
+		// Translators: %d: the numeric weather code from the Open-Meteo API. This is used when no specific description is available for a code.
 		return $codes[ $code ] ?? sprintf( __( 'Weather code %d', 'apiary-press' ), $code );
 	}
 
+	/**
+	 * Get a hive's validated latitude/longitude, or an empty array if missing or out of range.
+	 *
+	 * @param int $hive_id The ID of the hive post.
+	 * @return array The validated coordinates, or an empty array if invalid.
+	 */
 	public static function get_hive_coordinates( int $hive_id ): array {
 		$latitude  = get_post_meta( $hive_id, 'latitude', true );
 		$longitude = get_post_meta( $hive_id, 'longitude', true );
 
 		if ( ! is_numeric( $latitude ) || ! is_numeric( $longitude ) ) {
-			return [];
+			return array();
 		}
 
 		$latitude  = (float) $latitude;
 		$longitude = (float) $longitude;
 
 		if ( $latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180 ) {
-			return [];
+			return array();
 		}
 
 		return array(
@@ -485,6 +559,15 @@ class App extends BaseApp {
 		);
 	}
 
+	/**
+	 * Fetch and store a weather snapshot for a visit. Returns an error message, or an empty string on success.
+	 *
+	 * @param int    $visit_id   The ID of the hive visit post.
+	 * @param int    $hive_id    The ID of the hive post.
+	 * @param string $visit_date The date of the visit in Y-m-d format.
+	 * @param string $visit_time The time of the visit in H:i format (24-hour).
+	 * @return string An error message if the snapshot could not be stored, or an empty string on success.
+	 */
 	public static function store_visit_weather_snapshot( int $visit_id, int $hive_id, string $visit_date, string $visit_time ): string {
 		self::clear_visit_weather_snapshot( $visit_id );
 
@@ -522,12 +605,26 @@ class App extends BaseApp {
 		return '';
 	}
 
+	/**
+	 * Delete all stored weather meta for a visit.
+	 *
+	 * @param int $visit_id The ID of the hive visit post.
+	 */
 	public static function clear_visit_weather_snapshot( int $visit_id ): void {
 		foreach ( array_keys( self::VISIT_WEATHER_META_TYPES ) as $meta_key ) {
 			delete_post_meta( $visit_id, $meta_key );
 		}
 	}
 
+	/**
+	 * Query the Open-Meteo API for the hour nearest a visit and return a weather meta array, or a WP_Error.
+	 *
+	 * @param float  $latitude   The latitude of the location to query.
+	 * @param float  $longitude  The longitude of the location to query.
+	 * @param string $visit_date The date of the visit in Y-m-d format.
+	 * @param string $visit_time The time of the visit in H:i format (24-hour).
+	 * @return array|\WP_Error The weather snapshot as an associative array, or a WP_Error on failure.
+	 */
 	public static function fetch_open_meteo_weather_snapshot( float $latitude, float $longitude, string $visit_date, string $visit_time ) {
 		$current_date      = current_time( 'Y-m-d' );
 		$visit_day         = strtotime( $visit_date . ' 00:00:00' );
@@ -575,10 +672,13 @@ class App extends BaseApp {
 
 		$url = add_query_arg( $query_args, $endpoint );
 
-		$response = wp_remote_get( $url, array(
-			'timeout'    => 8,
-			'user-agent' => 'Apiary Press; ' . home_url( '/' ),
-		) );
+		$response = wp_remote_get(
+			$url,
+			array(
+				'timeout'    => 8,
+				'user-agent' => 'Apiary Press; ' . home_url( '/' ),
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -587,6 +687,7 @@ class App extends BaseApp {
 		$status_code = wp_remote_retrieve_response_code( $response );
 
 		if ( $status_code < 200 || $status_code >= 300 ) {
+			// translators: %d: the HTTP status code returned by the Open-Meteo API.
 			return new \WP_Error( 'apiary_press_weather_http_error', sprintf( __( 'Weather lookup failed with HTTP %d.', 'apiary-press' ), $status_code ) );
 		}
 
@@ -645,6 +746,14 @@ class App extends BaseApp {
 		);
 	}
 
+	/**
+	 * Read a single hourly value from an Open-Meteo response, returning '' when absent.
+	 *
+	 * @param array  $hourly The 'hourly' section of the Open-Meteo response body.
+	 * @param string $key    The specific hourly variable key to read.
+	 * @param int    $index  The index of the hour to read, as determined by the nearest time match.
+	 * @return float|string The numeric value as a float, or a sanitized string, or an empty string if the value is missing or null.
+	 */
 	private static function get_hourly_value( array $hourly, string $key, int $index ) {
 		if ( ! isset( $hourly[ $key ][ $index ] ) || null === $hourly[ $key ][ $index ] ) {
 			return '';
@@ -653,142 +762,9 @@ class App extends BaseApp {
 		return is_numeric( $hourly[ $key ][ $index ] ) ? (float) $hourly[ $key ][ $index ] : sanitize_text_field( $hourly[ $key ][ $index ] );
 	}
 
-	public function register_taxonomies(): void {
-		/*
-		 * Register taxonomies here. This method runs on WordPress init.
-		 *
-		 * register_taxonomy( 'apiary_press_category', 'apiary_press_item', [
-		 *	 'label'		=> 'Apiary Press Categories',
-		 *	 'hierarchical' => true,
-		 *	 'show_ui'	  => true,
-		 *	 'show_in_rest' => true,
-		 * ] );
-		 */
-	}
-
-	public function register_dashboard_widgets(): void {
-		/*
-		 * Register dashboard widgets here. This method runs on
-		 * wp_dashboard_setup.
-		 *
-		 * wp_add_dashboard_widget(
-		 *	 'apiary_press_dashboard',
-		 *	 'Apiary Press',
-		 *	 [ $this, 'render_dashboard_widget' ]
-		 * );
-		 */
-	}
-
-	public function render_dashboard_widget(): void {
-		/*
-		 * echo esc_html__( 'Add your dashboard summary here.', 'apiary-press' );
-		 */
-	}
-
-	public function register_ability_category(): void {
-		// Register an Abilities API category for this plugin.
-		//
-		// if ( ! function_exists( 'wp_register_ability_category' ) ) {
-		//	 return;
-		// }
-		//
-		// wp_register_ability_category( 'apiary-press', [
-		//	 'label'	   => __( 'Apiary Press', 'apiary-press' ),
-		//	 'description' => __( 'Abilities for Apiary Press.', 'apiary-press' ),
-		// ] );
-	}
-
-	public function register_abilities(): void {
-		// Register focused WordPress Abilities here. AI Assistant can discover
-		// and execute these instead of guessing plugin internals.
-		// See https://github.com/akirk/ai-assistant/blob/main/docs/plugin-integration.md
-		// for AI Assistant-specific guidance.
-		//
-		// if ( ! function_exists( 'wp_register_ability' ) ) {
-		//	 return;
-		// }
-		//
-		// wp_register_ability( 'apiary-press/list-items', [
-		//	 'label'			   => __( 'List Apiary Press Items', 'apiary-press' ),
-		//	 'description'		 => 'Returns Apiary Press items with IDs and titles for follow-up ability calls.',
-		//	 'category'			=> 'apiary-press',
-		//	 'input_schema'		=> [
-		//		 'type'				 => 'object',
-		//		 'properties'		   => [
-		//			 'search' => [
-		//				 'type'		=> 'string',
-		//				 'description' => 'Optional search term for item titles.',
-		//			 ],
-		//		 ],
-		//		 'additionalProperties' => false,
-		//	 ],
-		//	 'output_schema'	   => [
-		//		 'type'	   => 'object',
-		//		 'properties' => [
-		//			 'items' => [
-		//				 'type'  => 'array',
-		//				 'items' => [
-		//					 'type'	   => 'object',
-		//					 'properties' => [
-		//						 'id'	=> [ 'type' => 'integer', 'description' => 'Use with apiary-press/get-item.' ],
-		//						 'title' => [ 'type' => 'string' ],
-		//					 ],
-		//				 ],
-		//			 ],
-		//		 ],
-		//	 ],
-		//	 'execute_callback'	=> [ $this, 'list_ability_items' ],
-		//	 'permission_callback' => function() {
-		//		 return current_user_can( 'read' );
-		//	 },
-		//	 'meta'				=> [
-		//		 'annotations' => [
-		//			 'instructions' => 'Use returned item IDs for follow-up detail or edit abilities.',
-		//			 'readonly'	 => true,
-		//			 'destructive'  => false,
-		//			 'idempotent'   => true,
-		//		 ],
-		//	 ],
-		// ] );
-	}
-
-	public function list_ability_items( $input ): array {
-		// Sanitize ability input and return structured data. Return WP_Error
-		// for failures.
-		//
-		// $input = is_array( $input ) ? $input : [];
-		// $search = isset( $input['search'] ) ? sanitize_text_field( $input['search'] ) : '';
-		//
-		// return [
-		//	 'items' => [
-		//		 [
-		//			 'id'	=> 123,
-		//			 'title' => __( 'Example item', 'apiary-press' ),
-		//		 ],
-		//	 ],
-		// ];
-		return array(
-			'items' => [],
-		);
-	}
-
-	public function register_ai_assistant_ability_domains( array $domains ): array {
-		// Tell AI Assistant which user terms belong to this plugin so it
-		// considers your abilities for domain-specific requests.
-		//
-		// $domains['apiary-press'] = 'Apiary Press, items, records, dashboard';
-		return $domains;
-	}
-
-	public function get_ai_assistant_ability_instructions( string $instructions, string $ability_id, $args, $result ): string {
-		// Add presentation or follow-up guidance after a specific ability runs.
-		//
-		// if ( 'apiary-press/list-items' === $ability_id && ! empty( $result['items'] ) ) {
-		//	 $instructions = 'Present the items as a compact table. Mention that item IDs can be used for follow-up changes.';
-		// }
-		return $instructions;
-	}
-
+	/**
+	 * Activation hook: register post types and meta, then flush rewrite rules.
+	 */
 	public function activate(): void {
 		/*
 		 * If using BaseStorage, create/update custom tables here:
@@ -801,6 +777,9 @@ class App extends BaseApp {
 		flush_rewrite_rules();
 	}
 
+	/**
+	 * Deactivation hook: flush rewrite rules.
+	 */
 	public function deactivate(): void {
 		flush_rewrite_rules();
 	}

@@ -17,15 +17,15 @@ if ( ! function_exists( 'ap_app_url' ) ) {
 
 global $wp_app_route;
 
-$route_params	= isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : [];
-$hive_id		 = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
+$route_params    = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$hive_id         = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
 $hive_visit_slug = isset( $route_params['hive_visit'] ) ? sanitize_key( $route_params['hive_visit'] ) : sanitize_key( get_query_var( 'hive_visit' ) );
-$is_new_visit	= 'new' === $hive_visit_slug;
+$is_new_visit    = 'new' === $hive_visit_slug;
 $hive_visit_id   = $is_new_visit ? 0 : absint( $hive_visit_slug );
-$hive			= $hive_id ? get_post( $hive_id ) : null;
-$visit		   = $hive_visit_id ? get_post( $hive_visit_id ) : null;
-$meta_labels	 = App::get_visit_boolean_meta_labels();
-$form_error	  = '';
+$hive            = $hive_id ? get_post( $hive_id ) : null;
+$visit           = $hive_visit_id ? get_post( $hive_visit_id ) : null;
+$meta_labels     = App::get_visit_boolean_meta_labels();
+$form_error      = '';
 
 $not_found = ! $hive
 	|| App::HIVE_POST_TYPE !== $hive->post_type
@@ -42,13 +42,13 @@ if ( $not_found ) {
 $action = isset( $_POST['ap_action'] ) ? sanitize_key( wp_unslash( $_POST['ap_action'] ) ) : '';
 
 if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action ) {
-	$nonce		  = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
+	$nonce          = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
 	$visit_date_raw = isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : current_time( 'Y-m-d' );
 	$visit_time_raw = isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : current_time( 'H:i' );
-	$notes		  = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : '';
+	$notes          = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : '';
 	$selected_meta  = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
-		: [];
+		: array();
 
 	if ( ! wp_verify_nonce( $nonce, 'ap_create_visit_' . $hive_id ) ) {
 		$form_error = __( 'The visit could not be saved. Reload and try again.', 'apiary-press' );
@@ -69,15 +69,18 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
 				date_i18n( get_option( 'date_format' ), $visit_timestamp )
 			);
 
-			$visit_id = wp_insert_post( [
-				'post_type'	=> App::HIVE_VISIT_POST_TYPE,
-				'post_status'  => 'publish',
-				'post_title'   => $visit_title,
-				'post_content' => $notes,
-				'post_parent'  => $hive_id,
-				'post_author'  => get_current_user_id(),
-				'post_date'	=> $visit_date_raw . ' ' . $visit_time_raw . ':00',
-			], true );
+			$visit_id = wp_insert_post(
+				array(
+					'post_type'    => App::HIVE_VISIT_POST_TYPE,
+					'post_status'  => 'publish',
+					'post_title'   => $visit_title,
+					'post_content' => $notes,
+					'post_parent'  => $hive_id,
+					'post_author'  => get_current_user_id(),
+					'post_date'    => $visit_date_raw . ' ' . $visit_time_raw . ':00',
+				),
+				true
+			);
 
 			if ( is_wp_error( $visit_id ) ) {
 				$form_error = $visit_id->get_error_message();
@@ -115,13 +118,13 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'delete_visit' === $acti
 }
 
 if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $action ) {
-	$nonce		  = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
+	$nonce          = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
 	$visit_date_raw = isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : '';
 	$visit_time_raw = isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : mysql2date( 'H:i', $visit->post_date, false );
-	$notes		  = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : '';
+	$notes          = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : '';
 	$selected_meta  = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
-		: [];
+		: array();
 
 	if ( ! wp_verify_nonce( $nonce, 'ap_update_visit_' . $hive_visit_id ) ) {
 		$form_error = __( 'The visit could not be saved. Reload and try again.', 'apiary-press' );
@@ -142,13 +145,16 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
 				date_i18n( get_option( 'date_format' ), $visit_timestamp )
 			);
 
-			$updated_id = wp_update_post( [
-				'ID'		   => $hive_visit_id,
-				'post_title'   => $visit_title,
-				'post_content' => $notes,
-				'post_date'	=> $visit_date_raw . ' ' . $visit_time_raw . ':00',
-				'post_parent'  => $hive_id,
-			], true );
+			$updated_id = wp_update_post(
+				array(
+					'ID'           => $hive_visit_id,
+					'post_title'   => $visit_title,
+					'post_content' => $notes,
+					'post_date'    => $visit_date_raw . ' ' . $visit_time_raw . ':00',
+					'post_parent'  => $hive_id,
+				),
+				true
+			);
 
 			if ( is_wp_error( $updated_id ) ) {
 				$form_error = $updated_id->get_error_message();
@@ -170,25 +176,25 @@ if ( ! $not_found && ! $is_new_visit ) {
 	$visit = get_post( $hive_visit_id );
 }
 
-$visit_date		= ! $not_found && ! $is_new_visit ? mysql2date( 'Y-m-d', $visit->post_date, false ) : current_time( 'Y-m-d' );
-$visit_time		= ! $not_found && ! $is_new_visit ? mysql2date( 'H:i', $visit->post_date, false ) : current_time( 'H:i' );
-$visit_notes	   = ! $not_found && ! $is_new_visit ? $visit->post_content : '';
-$active_flags	  = [];
-$form_checked_meta = [];
-$weather_values	= [];
-$weather_error	 = '';
-$page_title		= $is_new_visit ? __( 'New Visit', 'apiary-press' ) : ( $visit ? get_the_title( $visit ) : __( 'Hive Visit', 'apiary-press' ) );
-$form_action	   = $is_new_visit ? 'create_visit' : 'update_visit';
-$form_nonce		= $is_new_visit ? 'ap_create_visit_' . $hive_id : 'ap_update_visit_' . $hive_visit_id;
-$form_heading	  = $is_new_visit ? __( 'New Visit', 'apiary-press' ) : __( 'Edit Visit', 'apiary-press' );
-$form_button	   = $is_new_visit ? __( 'Save Visit', 'apiary-press' ) : __( 'Update Visit', 'apiary-press' );
-$form_url_visit	= $is_new_visit ? 'new' : (string) $hive_visit_id;
+$visit_date        = ! $not_found && ! $is_new_visit ? mysql2date( 'Y-m-d', $visit->post_date, false ) : current_time( 'Y-m-d' );
+$visit_time        = ! $not_found && ! $is_new_visit ? mysql2date( 'H:i', $visit->post_date, false ) : current_time( 'H:i' );
+$visit_notes       = ! $not_found && ! $is_new_visit ? $visit->post_content : '';
+$active_flags      = array();
+$form_checked_meta = array();
+$weather_values    = array();
+$weather_error     = '';
+$page_title        = $is_new_visit ? __( 'New Visit', 'apiary-press' ) : ( $visit ? get_the_title( $visit ) : __( 'Hive Visit', 'apiary-press' ) );
+$form_action       = $is_new_visit ? 'create_visit' : 'update_visit';
+$form_nonce        = $is_new_visit ? 'ap_create_visit_' . $hive_id : 'ap_update_visit_' . $hive_visit_id;
+$form_heading      = $is_new_visit ? __( 'New Visit', 'apiary-press' ) : __( 'Edit Visit', 'apiary-press' );
+$form_button       = $is_new_visit ? __( 'Save Visit', 'apiary-press' ) : __( 'Update Visit', 'apiary-press' );
+$form_url_visit    = $is_new_visit ? 'new' : (string) $hive_visit_id;
 
 if ( ! $not_found && ! $is_new_visit ) {
 	foreach ( $meta_labels as $meta_key => $label ) {
 		if ( rest_sanitize_boolean( get_post_meta( $hive_visit_id, $meta_key, true ) ) ) {
 			$active_flags[ $meta_key ] = $label;
-			$form_checked_meta[]	   = $meta_key;
+			$form_checked_meta[]       = $meta_key;
 		}
 	}
 
@@ -197,12 +203,12 @@ if ( ! $not_found && ! $is_new_visit ) {
 }
 
 if ( $form_error ) {
-	$visit_date		= isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : $visit_date;
-	$visit_time		= isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : $visit_time;
-	$visit_notes	   = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : $visit_notes;
+	$visit_date        = isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : $visit_date;
+	$visit_time        = isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : $visit_time;
+	$visit_notes       = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : $visit_notes;
 	$form_checked_meta = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
-		: [];
+		: array();
 }
 ?>
 <!DOCTYPE html>
