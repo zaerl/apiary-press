@@ -1,25 +1,37 @@
 {
-    "name": "apiary-press/apiary-press",
-    "description": "Apiary Press - A WordPress app powered by WpApp",
-    "type": "wordpress-plugin",
-    "license": "GPL-2.0-or-later",
-    "require": {
-        "php": ">=7.4",
-        "akirk/wp-app": "^1.0",
-        "chillerlan/php-qrcode": "^6.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "ApiaryPress\\": "src/"
-        }
-    },
-    "version": "0.1.0",
-    "authors": [
-        {
-            "name": "Francesco Bigiarini"
-        }
-    ],
-    "config": {
-        "autoloader-suffix": "apiarypress"
-    }
+	"name": "apiary-press/apiary-press",
+	"description": "Apiary Press - A WordPress app powered by WpApp",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=7.4",
+		"akirk/wp-app": "^1.0",
+		"chillerlan/php-qrcode": "^6.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"ApiaryPress\\": "src/"
+		}
+	},
+	"version": "0.1.0",
+	"authors": [
+		{
+			"name": "Francesco Bigiarini"
+		}
+	],
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"autoloader-suffix": "apiarypress"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.2",
+		"squizlabs/php_codesniffer": "^3.13",
+		"wp-coding-standards/wpcs": "^3.3"
+	},
+	"scripts": {
+		"lint": "phpcs --standard=phpcs.xml.dist",
+		"format": "phpcbf --standard=phpcs.xml.dist"
+	}
 }

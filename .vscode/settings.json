@@ -1,0 +1,13 @@
+{
+	"phpsab.executablePathCS": "${workspaceFolder}/vendor/bin/phpcs",
+	"phpsab.executablePathCBF": "${workspaceFolder}/vendor/bin/phpcbf",
+	"phpsab.standard": "${workspaceFolder}/phpcs.xml.dist",
+	"phpsab.snifferEnable": true,
+	"phpsab.snifferMode": "onType",
+	"phpsab.snifferShowSources": true,
+	"phpsab.fixerEnable": true,
+	"phpsab.autoRulesetSearch": false,
+	"[php]": {
+		"editor.defaultFormatter": "valeryanm.vscode-phpsab"
+	}
+}
