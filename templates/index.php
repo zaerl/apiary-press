@@ -1,6 +1,8 @@
 <?php
 /**
  * Index template for listing all hives in the Apiary Press app.
+ *
+ * @package ApiaryPress
  */
 
 use ApiaryPress\App;

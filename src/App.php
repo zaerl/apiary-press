@@ -85,49 +85,6 @@ class App extends BaseApp {
 	}
 
 	/**
-	 * Set up storage for the app. This can include creating custom database tables or using WordPress post types and meta.
-	 */
-	protected function setup_storage(): void {
-		/*
-		 * Prefer WordPress-native storage before custom tables:
-		 * - Custom post types and post meta for content-like records.
-		 * - Taxonomies, terms, and term meta for shared categories or labels.
-		 * - User meta for per-user settings, preferences, and profile data.
-		 *
-		 * Use BaseStorage only when native entities do not fit, such as
-		 * high-volume rows, relational data, or non-content records.
-		 *
-		 * If you do need custom tables:
-		 *
-		 * class ApiaryPressStorage extends BaseStorage {
-		 *	 protected function get_schema() {
-		 *		 $charset_collate = $this->wpdb->get_charset_collate();
-		 *		 return [
-		 *			 "CREATE TABLE {$this->wpdb->prefix}apiary_press_items (
-		 *				 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-		 *				 user_id bigint(20) unsigned NOT NULL,
-		 *				 title varchar(255) NOT NULL,
-		 *				 created_at datetime DEFAULT CURRENT_TIMESTAMP,
-		 *				 PRIMARY KEY (id),
-		 *				 KEY user_id (user_id)
-		 *			 ) $charset_collate;",
-		 *		 ];
-		 *	 }
-		 * }
-		 *
-		 * Then in __construct(): $this->storage = new ApiaryPressStorage();
-		 * And in activate():	 $this->storage->create_tables();
-		 */
-	}
-
-	/**
-	 * Generate the storage.
-	 */
-	protected function setup_database(): void {
-		$this->setup_storage();
-	}
-
-	/**
 	 * Initialize all the routes.
 	 */
 	protected function setup_routes(): void {

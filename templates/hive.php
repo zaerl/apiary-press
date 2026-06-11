@@ -1,6 +1,8 @@
 <?php
 /**
  * Hive template for displaying hive details and visits in the Apiary Press app.
+ *
+ * @package ApiaryPress
  */
 
 use ApiaryPress\App;
