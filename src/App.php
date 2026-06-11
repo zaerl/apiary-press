@@ -638,6 +638,10 @@ class App extends BaseApp {
 		);
 
 		if ( is_wp_error( $response ) ) {
+			if ( str_starts_with( $response->get_error_message(), 'cURL error 28' ) ) {
+				return new \WP_Error( 'apiary_press_weather_timeout', __( 'Weather system offline.', 'apiary-press' ) );
+			}
+
 			return $response;
 		}
 
