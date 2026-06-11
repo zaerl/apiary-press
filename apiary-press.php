@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Apiary Press
- * Description: A WordPress app powered by WpApp.
+ * Description: Take care of your 🐝
  * Version: 1.0.0
  * Author: Francesco Bigiarini
  * Text Domain: apiary-press
