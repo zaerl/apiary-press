@@ -5,18 +5,14 @@
  * @package ApiaryPress
  */
 
+namespace ApiaryPress;
+
 use ApiaryPress\App;
 use ApiaryPress\Weather;
 use chillerlan\QRCode\QRCode;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-}
-
-if ( ! function_exists( 'ap_app_url' ) ) {
-	function ap_app_url( string $path = '' ): string {
-		return trailingslashit( home_url( '/apiary-press/' . ltrim( $path, '/' ) ) );
-	}
 }
 
 global $wp_app_route;
@@ -39,7 +35,7 @@ if ( $not_found ) {
 $visits = array();
 
 if ( ! $not_found && ! $forbidden ) {
-	$hive_url = ap_app_url( 'hive/' . $hive_id );
+	$hive_url = App::get_url( 'hive/' . $hive_id );
 	$hive_qr  = ( new QRCode() )->render( $hive_url );
 
 	$visits = get_posts(
@@ -327,31 +323,31 @@ if ( ! $not_found && ! $forbidden ) {
 			<section class="message">
 				<h1><?php echo esc_html__( 'Hive Not Found', 'apiary-press' ); ?></h1>
 				<p class="hive-notes"><?php echo esc_html__( 'The requested hive is not available.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( ap_app_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php elseif ( $forbidden ) : ?>
 			<section class="message">
 				<h1><?php echo esc_html__( 'Access Denied', 'apiary-press' ); ?></h1>
 				<p class="hive-notes"><?php echo esc_html__( 'You do not have permission to edit this hive.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( ap_app_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( ap_app_url() ); ?>"><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></a>
+					<a class="crumb" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></a>
 					<h1><?php echo esc_html( get_the_title( $hive ) ); ?></h1>
 					<?php if ( trim( $hive->post_content ) ) : ?>
 						<p class="hive-notes"><?php echo esc_html( wp_strip_all_tags( $hive->post_content ) ); ?></p>
 					<?php endif; ?>
 				</div>
 				<div class="actions">
-					<a class="admin-link admin-link-primary" href="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id . '/visit/new' ) ); ?>">
+					<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'hive/' . $hive_id . '/visit/new' ) ); ?>">
 						<?php echo esc_html__( 'New Visit', 'apiary-press' ); ?>
 					</a>
-					<a class="admin-link" href="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id . '/qr' ) ); ?>">
+					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . $hive_id . '/qr' ) ); ?>">
 						<?php echo esc_html__( 'Print QR', 'apiary-press' ); ?>
 					</a>
-					<a class="admin-link" href="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id . '/edit' ) ); ?>">
+					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . $hive_id . '/edit' ) ); ?>">
 						<?php echo esc_html__( 'Edit Hive', 'apiary-press' ); ?>
 					</a>
 				</div>
@@ -379,7 +375,7 @@ if ( ! $not_found && ! $forbidden ) {
 					<div>
 						<h2 id="hive-qr-heading"><?php echo esc_html__( 'Hive QR', 'apiary-press' ); ?></h2>
 						<a class="qr-link" href="<?php echo esc_url( $hive_url ); ?>"><?php echo esc_html( $hive_url ); ?></a>
-						<p><a class="admin-link" href="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id . '/qr' ) ); ?>"><?php echo esc_html__( 'Print QR', 'apiary-press' ); ?></a></p>
+						<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . $hive_id . '/qr' ) ); ?>"><?php echo esc_html__( 'Print QR', 'apiary-press' ); ?></a></p>
 					</div>
 				</section>
 			<?php endif; ?>
@@ -406,7 +402,7 @@ if ( ! $not_found && ! $forbidden ) {
 							<article class="visit-row">
 								<div class="visit-head">
 									<div class="visit-date"><?php echo esc_html( mysql2date( get_option( 'date_format' ), $visit->post_date ) ); ?></div>
-									<a href="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id . '/visit/' . absint( $visit->ID ) ) ); ?>" class="muted">
+									<a href="<?php echo esc_url( App::get_url( 'hive/' . $hive_id . '/visit/' . absint( $visit->ID ) ) ); ?>" class="muted">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>
 								</div>

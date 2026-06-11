@@ -5,16 +5,12 @@
  * @package ApiaryPress
  */
 
+namespace ApiaryPress;
+
 use ApiaryPress\App;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-}
-
-if ( ! function_exists( 'ap_app_url' ) ) {
-	function ap_app_url( string $path = '' ): string {
-		return trailingslashit( home_url( '/apiary-press/' . ltrim( $path, '/' ) ) );
-	}
 }
 
 $hives = get_posts(
@@ -189,7 +185,7 @@ $hives = get_posts(
 				<h1><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></h1>
 			</div>
 			<div class="actions">
-				<a class="admin-link admin-link-primary" href="<?php echo esc_url( ap_app_url( 'hive/new' ) ); ?>">
+				<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'hive/new' ) ); ?>">
 					<?php echo esc_html__( 'New Hive', 'apiary-press' ); ?>
 				</a>
 				<a class="admin-link" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . App::HIVE_POST_TYPE ) ); ?>">
@@ -241,7 +237,7 @@ $hives = get_posts(
 						<article class="hive-row">
 							<div>
 								<h3>
-									<a href="<?php echo esc_url( ap_app_url( 'hive/' . absint( $hive->ID ) ) ); ?>">
+									<a href="<?php echo esc_url( App::get_url( 'hive/' . absint( $hive->ID ) ) ); ?>">
 										<?php echo esc_html( get_the_title( $hive ) ); ?>
 									</a>
 								</h3>
@@ -260,7 +256,7 @@ $hives = get_posts(
 								<?php if ( $check_soon ) : ?>
 									<span class="badge badge-attention"><?php echo esc_html__( 'Check soon', 'apiary-press' ); ?></span>
 								<?php endif; ?>
-								<a class="admin-link" href="<?php echo esc_url( ap_app_url( 'hive/' . absint( $hive->ID ) ) ); ?>">
+								<a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . absint( $hive->ID ) ) ); ?>">
 									<?php echo esc_html__( 'Open', 'apiary-press' ); ?>
 								</a>
 							</div>

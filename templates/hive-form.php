@@ -5,26 +5,16 @@
  * @package ApiaryPress
  */
 
+namespace ApiaryPress;
+
 use ApiaryPress\App;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! function_exists( 'appr_app_url' ) ) {
-	/**
-	 * Helper function to generate URLs for the Apiary Press app.
-	 *
-	 * @param string $path Optional path to append to the app base URL.
-	 * @return string The generated URL.
-	 */
-	function appr_app_url( string $path = '' ): string {
-		return trailingslashit( home_url( '/apiary-press/' . ltrim( $path, '/' ) ) );
-	}
-}
-
 if ( ! function_exists( 'appr_read_coordinate_input' ) ) {
-	/*
+	/**
 	 * Helper function to read and validate coordinate input from the form.
 	 *
 	 * @param string $field_name The name of the form field.
@@ -141,7 +131,7 @@ if ( ! $not_found && ! $forbidden && $is_new_hive && 'create_hive' === $action )
 			appr_update_coordinate_meta( $new_hive_id, 'latitude', $latitude_input['value'] );
 			appr_update_coordinate_meta( $new_hive_id, 'longitude', $longitude_input['value'] );
 
-			wp_safe_redirect( add_query_arg( 'created', '1', appr_app_url( 'hive/' . absint( $new_hive_id ) ) ) );
+			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'hive/' . absint( $new_hive_id ) ) ) );
 			exit;
 		}
 	}
@@ -180,7 +170,7 @@ if ( ! $not_found && ! $forbidden && ! $is_new_hive && 'update_hive' === $action
 			appr_update_coordinate_meta( $hive_id, 'latitude', $latitude_input['value'] );
 			appr_update_coordinate_meta( $hive_id, 'longitude', $longitude_input['value'] );
 
-			wp_safe_redirect( add_query_arg( 'updated', '1', appr_app_url( 'hive/' . $hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'hive/' . $hive_id ) ) );
 			exit;
 		}
 	}
@@ -197,7 +187,7 @@ $hive_longitude = ! $not_found && ! $is_new_hive ? get_post_meta( $hive_id, 'lon
 $page_title     = $is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
 $form_action    = $is_new_hive ? 'create_hive' : 'update_hive';
 $form_nonce     = $is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $hive_id;
-$form_url       = $is_new_hive ? appr_app_url( 'hive/new' ) : appr_app_url( 'hive/' . $hive_id . '/edit' );
+$form_url       = $is_new_hive ? App::get_url( 'hive/new' ) : App::get_url( 'hive/' . $hive_id . '/edit' );
 $button_text    = $is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
 
 if ( $form_error ) {
@@ -364,7 +354,7 @@ if ( $form_error ) {
 			<section class="message">
 				<h1><?php echo esc_html__( 'Hive Not Found', 'apiary-press' ); ?></h1>
 				<p class="hive-notes"><?php echo esc_html__( 'The requested hive is not available.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( appr_app_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php elseif ( $forbidden ) : ?>
 			<section class="message">
@@ -378,12 +368,12 @@ if ( $form_error ) {
 					);
 					?>
 				</p>
-				<p><a class="admin-link" href="<?php echo esc_url( appr_app_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( $is_new_hive ? appr_app_url() : appr_app_url( 'hive/' . $hive_id ) ); ?>">
+					<a class="crumb" href="<?php echo esc_url( $is_new_hive ? App::get_url() : App::get_url( 'hive/' . $hive_id ) ); ?>">
 						<?php echo esc_html( $is_new_hive ? __( 'Hives', 'apiary-press' ) : get_the_title( $hive ) ); ?>
 					</a>
 					<h1><?php echo esc_html( $page_title ); ?></h1>

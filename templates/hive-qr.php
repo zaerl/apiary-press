@@ -5,17 +5,13 @@
  * @package ApiaryPress
  */
 
+namespace ApiaryPress;
+
 use ApiaryPress\App;
 use chillerlan\QRCode\QRCode;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-}
-
-if ( ! function_exists( 'ap_app_url' ) ) {
-	function ap_app_url( string $path = '' ): string {
-		return trailingslashit( home_url( '/apiary-press/' . ltrim( $path, '/' ) ) );
-	}
 }
 
 global $wp_app_route;
@@ -33,7 +29,7 @@ if ( $not_found ) {
 } elseif ( $forbidden ) {
 	status_header( 403 );
 } else {
-	$hive_url = ap_app_url( 'hive/' . $hive_id );
+	$hive_url = App::get_url( 'hive/' . $hive_id );
 	$hive_qr  = ( new QRCode() )->render( $hive_url );
 }
 ?>
@@ -152,13 +148,13 @@ if ( $not_found ) {
 			<section class="message">
 				<h1><?php echo esc_html__( 'Hive Not Found', 'apiary-press' ); ?></h1>
 				<p><?php echo esc_html__( 'The requested hive is not available.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( ap_app_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php elseif ( $forbidden ) : ?>
 			<section class="message">
 				<h1><?php echo esc_html__( 'Access Denied', 'apiary-press' ); ?></h1>
 				<p><?php echo esc_html__( 'You do not have permission to view this hive QR.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( ap_app_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<section class="print-sheet" aria-label="<?php echo esc_attr( sprintf( __( 'QR code for %s', 'apiary-press' ), get_the_title( $hive ) ) ); ?>">

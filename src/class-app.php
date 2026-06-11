@@ -329,4 +329,14 @@ class App extends BaseApp {
 	public function deactivate(): void {
 		flush_rewrite_rules();
 	}
+
+	/**
+	 * Helper function to generate a URL for the app, given a path relative to the app's base URL.
+	 *
+	 * @param string $path The path relative to the app's base URL.
+	 * @return string The full URL.
+	 */
+	public static function get_url( string $path = '' ): string {
+		return trailingslashit( home_url( '/apiary-press/' . ltrim( $path, '/' ) ) );
+	}
 }

@@ -5,17 +5,13 @@
  * @package ApiaryPress
  */
 
+namespace ApiaryPress;
+
 use ApiaryPress\App;
 use ApiaryPress\Weather;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
-}
-
-if ( ! function_exists( 'ap_app_url' ) ) {
-	function ap_app_url( string $path = '' ): string {
-		return trailingslashit( home_url( '/apiary-press/' . ltrim( $path, '/' ) ) );
-	}
 }
 
 global $wp_app_route;
@@ -94,7 +90,7 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
 
 				Weather::store_visit_weather_snapshot( $visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
 
-				wp_safe_redirect( add_query_arg( 'created', '1', ap_app_url( 'hive/' . $hive_id . '/visit/' . absint( $visit_id ) ) ) );
+				wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'hive/' . $hive_id . '/visit/' . absint( $visit_id ) ) ) );
 				exit;
 			}
 		}
@@ -114,7 +110,7 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'delete_visit' === $acti
 		if ( ! $deleted ) {
 			$form_error = __( 'The visit could not be removed.', 'apiary-press' );
 		} else {
-			wp_safe_redirect( add_query_arg( 'visit_deleted', '1', ap_app_url( 'hive/' . $hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'visit_deleted', '1', App::get_url( 'hive/' . $hive_id ) ) );
 			exit;
 		}
 	}
@@ -168,7 +164,7 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
 
 				Weather::store_visit_weather_snapshot( $hive_visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
 
-				wp_safe_redirect( add_query_arg( 'updated', '1', ap_app_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ) );
+				wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ) );
 				exit;
 			}
 		}
@@ -451,7 +447,7 @@ if ( $form_error ) {
 			<section class="message">
 				<h1><?php echo esc_html__( 'Visit Not Found', 'apiary-press' ); ?></h1>
 				<p class="visit-notes"><?php echo esc_html__( 'The requested visit is not available for this hive.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( ap_app_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php elseif ( $forbidden ) : ?>
 			<section class="message">
@@ -465,12 +461,12 @@ if ( $form_error ) {
 					);
 					?>
 				</p>
-				<p><a class="admin-link" href="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . $hive_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id ) ); ?>"><?php echo esc_html( get_the_title( $hive ) ); ?></a>
+					<a class="crumb" href="<?php echo esc_url( App::get_url( 'hive/' . $hive_id ) ); ?>"><?php echo esc_html( get_the_title( $hive ) ); ?></a>
 					<h1>
 						<?php
 						echo esc_html(
@@ -503,7 +499,7 @@ if ( $form_error ) {
 			<div class="layout <?php echo $is_new_visit ? 'layout-single' : ''; ?>">
 				<section class="panel" aria-labelledby="edit-visit-heading">
 					<h2 id="edit-visit-heading"><?php echo esc_html( $form_heading ); ?></h2>
-					<form method="post" action="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id . '/visit/' . $form_url_visit ) ); ?>">
+					<form method="post" action="<?php echo esc_url( App::get_url( 'hive/' . $hive_id . '/visit/' . $form_url_visit ) ); ?>">
 						<input type="hidden" name="ap_action" value="<?php echo esc_attr( $form_action ); ?>">
 						<?php wp_nonce_field( $form_nonce, 'ap_nonce' ); ?>
 
@@ -584,7 +580,7 @@ if ( $form_error ) {
 							<?php endif; ?>
 						</div>
 
-						<form class="delete-form" method="post" action="<?php echo esc_url( ap_app_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ); ?>">
+						<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ); ?>">
 							<input type="hidden" name="ap_action" value="delete_visit">
 							<?php wp_nonce_field( 'ap_delete_visit_' . $hive_visit_id, 'ap_delete_nonce' ); ?>
 							<p class="danger-text"><?php echo esc_html__( 'Remove this visit from the hive record.', 'apiary-press' ); ?></p>
