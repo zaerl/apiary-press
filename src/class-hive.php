@@ -21,7 +21,7 @@ class Hive {
 	/**
 	 * Register the location post meta fields for the hive post type.
 	 */
-	public static function register_hive_meta(): void {
+	public static function register_meta(): void {
 		foreach ( self::HIVE_LOCATION_META_KEYS as $meta_key ) {
 			register_post_meta(
 				self::HIVE_POST_TYPE,

@@ -132,14 +132,14 @@ class App extends BaseApp {
 	 * Register the location post meta fields for the hive post type.
 	 */
 	public function register_hive_meta(): void {
-		Hive::register_hive_meta();
+		Hive::register_meta();
 	}
 
 	/**
 	 * Register the boolean and weather post meta fields for the hive visit post type.
 	 */
 	public function register_visit_meta(): void {
-		Visit::register_visit_meta();
+		Visit::register_meta();
 	}
 
 	/**

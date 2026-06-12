@@ -1,6 +1,6 @@
 <?php
 /**
- * Weather forecast helpers for hive visits.
+ * Hive visit helpers for apiary press.
  *
  * @package ApiaryPress
  */
@@ -90,7 +90,7 @@ class Visit {
 	/**
 	 * Register the boolean and weather post meta fields for the hive visit post type.
 	 */
-	public static function register_visit_meta(): void {
+	public static function register_meta(): void {
 		foreach ( self::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
 			register_post_meta(
 				self::HIVE_VISIT_POST_TYPE,
