@@ -202,7 +202,7 @@ class App extends BaseApp {
 			);
 		}
 
-		foreach ( Weather::VISIT_WEATHER_META_TYPES as $meta_key => $type ) {
+		foreach ( Weather::FORECAST_UNITS as $meta_key => $type ) {
 			$sanitize_callback = 'string' === $type
 				? array( $this, 'sanitize_text_meta' )
 				: ( 'integer' === $type ? array( $this, 'sanitize_integer_meta' ) : array( $this, 'sanitize_number_meta' ) );

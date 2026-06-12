@@ -162,8 +162,6 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
 					update_post_meta( $hive_visit_id, $meta_key, in_array( $meta_key, $selected_meta, true ) ? '1' : '0' );
 				}
 
-				Weather::store_visit_weather_snapshot( $hive_visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
-
 				wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ) );
 				exit;
 			}
@@ -198,7 +196,18 @@ if ( ! $not_found && ! $is_new_visit ) {
 	}
 
 	$weather_error  = get_post_meta( $hive_visit_id, 'weather_error', true );
-	$weather_values = Weather::get_visit_weather_display_values( $hive_visit_id );
+
+	foreach ( Weather::FORECAST_UNITS as $meta_key => $label ) {
+		$value = get_post_meta( $hive_visit_id, $meta_key, true );
+
+		if ( '' !== $value && null !== $value ) {
+			$value = Weather::get_forecast_display_value( $meta_key, $value );
+
+			if ( $value ) {
+				$weather_values[ $meta_key ] = $value;
+			}
+		}
+	}
 }
 
 if ( $form_error ) {
@@ -570,10 +579,10 @@ if ( $form_error ) {
 								<div class="muted"><?php echo esc_html__( 'No weather snapshot recorded.', 'apiary-press' ); ?></div>
 							<?php else : ?>
 								<dl class="weather-list">
-									<?php foreach ( $weather_values as $weather_value ) : ?>
+									<?php foreach ( $weather_values as $name => $weather_value ) : ?>
 										<div>
-											<dt><?php echo esc_html( $weather_value['label'] ); ?></dt>
-											<dd><?php echo esc_html( $weather_value['value'] ); ?></dd>
+											<dt><?php echo esc_html( $name ); ?></dt>
+											<dd><?php echo esc_html( $weather_value ); ?></dd>
 										</div>
 									<?php endforeach; ?>
 								</dl>

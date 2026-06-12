@@ -8,44 +8,102 @@
 namespace ApiaryPress;
 
 /**
- * Fetch, store, and format Open-Meteo weather snapshots for hive visits.
+ * Fetch, store, and format MET Weather API weather snapshots for hive visits.
  */
 class Weather {
-	public const VISIT_WEATHER_META_TYPES = array(
-		'weather_temperature_2m'       => 'number',
-		'weather_relative_humidity_2m' => 'integer',
-		'weather_precipitation'        => 'number',
-		'weather_weather_code'         => 'integer',
-		'weather_description'          => 'string',
-		'weather_cloud_cover'          => 'integer',
-		'weather_wind_speed_10m'       => 'number',
-		'weather_wind_direction_10m'   => 'integer',
-		'weather_wind_gusts_10m'       => 'number',
-		'weather_surface_pressure'     => 'number',
-		'weather_observed_at'          => 'string',
-		'weather_source'               => 'string',
-		'weather_latitude'             => 'number',
-		'weather_longitude'            => 'number',
-		'weather_error'                => 'string',
+	// MET Weather API units.
+	public const FORECAST_UNITS = array(
+		'air_pressure_at_sea_level'       => 'string',
+		'air_temperature'                 => 'string',
+		'air_temperature_max'             => 'string',
+		'air_temperature_min'             => 'string',
+		'cloud_area_fraction'             => 'string',
+		'cloud_area_fraction_high'        => 'string',
+		'cloud_area_fraction_low'         => 'string',
+		'cloud_area_fraction_medium'      => 'string',
+		'dew_point_temperature'           => 'string',
+		'fog_area_fraction'               => 'string',
+		'precipitation_amount'            => 'string',
+		'precipitation_amount_max'        => 'string',
+		'precipitation_amount_min'        => 'string',
+		'probability_of_precipitation'    => 'string',
+		'probability_of_thunder'          => 'string',
+		'relative_humidity'               => 'string',
+		'ultraviolet_index_clear_sky_max' => 'string',
+		'wind_from_direction'             => 'string',
+		'wind_speed'                      => 'string',
+		'wind_speed_of_gust'              => 'string',
+		'symbol_code'                     => 'string', // Icon.
 	);
 
 	/**
-	 * Get the translated labels for the displayable weather meta keys.
+	 * Get list of human-readable forecast details for a specific hour in a MET Weather API response, keyed with translated labels.
+	 *
+	 * @param string $name The specific forecast detail name.
+	 * @param string $value The specific forecast detail value.
+	 *
+	 * @return string|null A human-readable forecast detail with a translated label, or null if not available.
 	 */
-	public static function get_weather_meta_labels(): array {
-		return array(
-			'weather_description'          => __( 'Conditions', 'apiary-press' ),
-			'weather_temperature_2m'       => __( 'Temperature', 'apiary-press' ),
-			'weather_relative_humidity_2m' => __( 'Humidity', 'apiary-press' ),
-			'weather_precipitation'        => __( 'Precipitation', 'apiary-press' ),
-			'weather_cloud_cover'          => __( 'Cloud cover', 'apiary-press' ),
-			'weather_wind_speed_10m'       => __( 'Wind speed', 'apiary-press' ),
-			'weather_wind_direction_10m'   => __( 'Wind direction', 'apiary-press' ),
-			'weather_wind_gusts_10m'       => __( 'Wind gusts', 'apiary-press' ),
-			'weather_surface_pressure'     => __( 'Pressure', 'apiary-press' ),
-			'weather_observed_at'          => __( 'Observed at', 'apiary-press' ),
-			'weather_source'               => __( 'Source', 'apiary-press' ),
-		);
+	public static function get_forecast_display_value( string $name, string $value ): string|null {
+		if ( ! isset( self::FORECAST_UNITS[ $name ] ) ) {
+			null;
+		}
+
+		$value = self::format_weather_number( $value );
+
+		switch ( $name ) {
+			case 'air_pressure_at_sea_level':
+				return sprintf(
+					// translators: %s: the air pressure value with unit, e.g. "42 hPa".
+					__( 'Air pressure at sea level %s hPa', 'apiary-press' ),
+					esc_html( $value )
+				);
+			case 'air_temperature':
+				return sprintf(
+					// translators: %s: the air temperature value with unit, e.g. "15 °C".
+					__( 'Air temperature %s °C', 'apiary-press' ),
+					esc_html( $value )
+				);
+			case 'cloud_area_fraction':
+				return sprintf(
+					// translators: %s: the cloud area fraction value with unit, e.g. "15 %".
+					__( 'Cloud area fraction %s%%', 'apiary-press' ),
+					esc_html( $value )
+				);
+			case 'precipitation_amount':
+				return sprintf(
+					// translators: %s: the precipitation amount value with unit, e.g. "15 mm".
+					__( 'Precipitation amount %s mm', 'apiary-press' ),
+					esc_html( $value )
+				);
+			case 'relative_humidity':
+				return sprintf(
+					// translators: %s: the relative humidity value with unit, e.g. "15 %".
+					__( 'Relative humidity %s%%', 'apiary-press' ),
+					esc_html( $value )
+				);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the forecast icon code for a specific hour in a MET Weather API response, or null if not available.
+	 *
+	 * @param array  $forecast_step The specific forecast step data (ForecastTimeStep) from the MET Weather API.
+	 * @param string $data_type The specific data type to retrieve from the timeseries, e.g., 'instant', 'next_1_hours'.
+	 *
+	 * @return string|null The forecast icon code, or null if not available.
+	 */
+	public static function get_forecast_icon_url( array $forecast_step, string $data_type = 'instant' ): ?string {
+		if (
+			empty( $forecast_step[ $data_type ] ) ||
+			! array_key_exists( 'summary', $forecast_step[ $data_type ] ) ||
+			! is_array( $forecast_step[ $data_type ]['summary'] ) ) {
+			return null;
+		}
+
+		return $forecast_step[ $data_type ]['summary']['symbol_code'] ?? null;
 	}
 
 	/**
@@ -55,180 +113,18 @@ class Weather {
 	 */
 	public static function format_weather_number( $value ): string {
 		$formatted = sprintf( '%.1f', (float) $value );
+
 		return rtrim( rtrim( $formatted, '0' ), '.' );
-	}
-
-	/**
-	 * Format a stored weather meta value for display, including its unit.
-	 *
-	 * @param string $meta_key The meta key of the weather value.
-	 * @param mixed  $value    The raw meta value to format.
-	 */
-	public static function format_weather_meta_value( string $meta_key, $value ): string {
-		if ( '' === (string) $value ) {
-			return '';
-		}
-
-		if ( 'weather_observed_at' === $meta_key ) {
-			return str_replace( 'T', ' ', sanitize_text_field( (string) $value ) );
-		}
-
-		if ( in_array( $meta_key, array( 'weather_description', 'weather_source' ), true ) ) {
-			return sanitize_text_field( (string) $value );
-		}
-
-		if ( ! is_numeric( $value ) ) {
-			return sanitize_text_field( (string) $value );
-		}
-
-		$number = self::format_weather_number( $value );
-
-		switch ( $meta_key ) {
-			case 'weather_temperature_2m':
-				return sprintf( '%s C', $number );
-			case 'weather_relative_humidity_2m':
-			case 'weather_cloud_cover':
-				return sprintf( '%s%%', $number );
-			case 'weather_precipitation':
-				return sprintf( '%s mm', $number );
-			case 'weather_wind_speed_10m':
-			case 'weather_wind_gusts_10m':
-				return sprintf( '%s km/h', $number );
-			case 'weather_wind_direction_10m':
-				return sprintf( '%s deg', $number );
-			case 'weather_surface_pressure':
-				return sprintf( '%s hPa', $number );
-		}
-
-		return $number;
-	}
-
-	/**
-	 * Get the formatted, non-empty weather meta values for a visit, keyed with labels.
-	 *
-	 * @param int $visit_id The ID of the hive visit post.
-	 */
-	public static function get_visit_weather_display_values( int $visit_id ): array {
-		$weather_values = array();
-
-		foreach ( self::get_weather_meta_labels() as $meta_key => $label ) {
-			$formatted_value = self::format_weather_meta_value( $meta_key, get_post_meta( $visit_id, $meta_key, true ) );
-
-			if ( '' !== $formatted_value ) {
-				$weather_values[ $meta_key ] = array(
-					'label' => $label,
-					'value' => $formatted_value,
-				);
-			}
-		}
-
-		return $weather_values;
-	}
-
-	/**
-	 * Build a short weather summary (description, temperature, humidity, etc.) for a visit.
-	 *
-	 * @param int $visit_id The ID of the hive visit post.
-	 */
-	public static function get_visit_weather_summary( int $visit_id ): array {
-		$summary = array();
-
-		$description = self::format_weather_meta_value( 'weather_description', get_post_meta( $visit_id, 'weather_description', true ) );
-
-		if ( '' !== $description ) {
-			$summary['description'] = $description;
-		}
-
-		$temperature = self::format_weather_meta_value( 'weather_temperature_2m', get_post_meta( $visit_id, 'weather_temperature_2m', true ) );
-
-		if ( '' !== $temperature ) {
-			$summary['temperature'] = $temperature;
-		}
-
-		$humidity = self::format_weather_meta_value( 'weather_relative_humidity_2m', get_post_meta( $visit_id, 'weather_relative_humidity_2m', true ) );
-
-		if ( '' !== $humidity ) {
-			$summary['humidity'] = sprintf(
-				// translators: %s: humidity value.
-				__( '%s humidity', 'apiary-press' ),
-				$humidity
-			);
-		}
-
-		$precipitation = self::format_weather_meta_value( 'weather_precipitation', get_post_meta( $visit_id, 'weather_precipitation', true ) );
-
-		if ( '' !== $precipitation ) {
-			$summary['precipitation'] = sprintf(
-				// translators: %s: precipitation value.
-				__( '%s precipitation', 'apiary-press' ),
-				$precipitation
-			);
-		}
-
-		$wind_speed = self::format_weather_meta_value( 'weather_wind_speed_10m', get_post_meta( $visit_id, 'weather_wind_speed_10m', true ) );
-
-		if ( '' !== $wind_speed ) {
-			$summary['wind'] = sprintf(
-				// translators: %s: wind speed value.
-				__( 'Wind %s', 'apiary-press' ),
-				$wind_speed
-			);
-		}
-
-		return $summary;
-	}
-
-	/**
-	 * Map an Open-Meteo WMO weather code to a translated description.
-	 *
-	 * @param int $code The Open-Meteo weather code.
-	 */
-	public static function get_weather_code_description( int $code ): string {
-		$codes = array(
-			0  => __( 'Clear sky', 'apiary-press' ),
-			1  => __( 'Mainly clear', 'apiary-press' ),
-			2  => __( 'Partly cloudy', 'apiary-press' ),
-			3  => __( 'Overcast', 'apiary-press' ),
-			45 => __( 'Fog', 'apiary-press' ),
-			48 => __( 'Depositing rime fog', 'apiary-press' ),
-			51 => __( 'Light drizzle', 'apiary-press' ),
-			53 => __( 'Moderate drizzle', 'apiary-press' ),
-			55 => __( 'Dense drizzle', 'apiary-press' ),
-			56 => __( 'Light freezing drizzle', 'apiary-press' ),
-			57 => __( 'Dense freezing drizzle', 'apiary-press' ),
-			61 => __( 'Slight rain', 'apiary-press' ),
-			63 => __( 'Moderate rain', 'apiary-press' ),
-			65 => __( 'Heavy rain', 'apiary-press' ),
-			66 => __( 'Light freezing rain', 'apiary-press' ),
-			67 => __( 'Heavy freezing rain', 'apiary-press' ),
-			71 => __( 'Slight snow fall', 'apiary-press' ),
-			73 => __( 'Moderate snow fall', 'apiary-press' ),
-			75 => __( 'Heavy snow fall', 'apiary-press' ),
-			77 => __( 'Snow grains', 'apiary-press' ),
-			80 => __( 'Slight rain showers', 'apiary-press' ),
-			81 => __( 'Moderate rain showers', 'apiary-press' ),
-			82 => __( 'Violent rain showers', 'apiary-press' ),
-			85 => __( 'Slight snow showers', 'apiary-press' ),
-			86 => __( 'Heavy snow showers', 'apiary-press' ),
-			95 => __( 'Thunderstorm', 'apiary-press' ),
-			96 => __( 'Thunderstorm with slight hail', 'apiary-press' ),
-			99 => __( 'Thunderstorm with heavy hail', 'apiary-press' ),
-		);
-
-		// Translators: %d: the numeric weather code from the Open-Meteo API. This is used when no specific description is available for a code.
-		return $codes[ $code ] ?? sprintf( __( 'Weather code %d', 'apiary-press' ), $code );
 	}
 
 	/**
 	 * Fetch and store a weather snapshot for a visit. Returns an error message, or an empty string on success.
 	 *
-	 * @param int    $visit_id   The ID of the hive visit post.
-	 * @param int    $hive_id    The ID of the hive post.
-	 * @param string $visit_date The date of the visit in Y-m-d format.
-	 * @param string $visit_time The time of the visit in H:i format (24-hour).
+	 * @param int $visit_id The ID of the hive visit post.
+	 * @param int $hive_id  The ID of the hive post.
 	 * @return string An error message if the snapshot could not be stored, or an empty string on success.
 	 */
-	public static function store_visit_weather_snapshot( int $visit_id, int $hive_id, string $visit_date, string $visit_time ): string {
+	public static function store_visit_weather_snapshot( int $visit_id, int $hive_id ): string {
 		self::clear_visit_weather_snapshot( $visit_id );
 
 		$coordinates = App::get_hive_coordinates( $hive_id );
@@ -240,11 +136,9 @@ class Weather {
 			return $message;
 		}
 
-		$snapshot = self::fetch_open_meteo_weather_snapshot(
+		$snapshot = self::fetch_met_weather_snapshot(
 			$coordinates['latitude'],
 			$coordinates['longitude'],
-			$visit_date,
-			$visit_time
 		);
 
 		if ( is_wp_error( $snapshot ) ) {
@@ -271,7 +165,7 @@ class Weather {
 	 * @param int $visit_id The ID of the hive visit post.
 	 */
 	public static function clear_visit_weather_snapshot( int $visit_id ): void {
-		foreach ( array_keys( self::VISIT_WEATHER_META_TYPES ) as $meta_key ) {
+		foreach ( array_keys( self::FORECAST_UNITS ) as $meta_key ) {
 			delete_post_meta( $visit_id, $meta_key );
 		}
 	}
@@ -279,56 +173,17 @@ class Weather {
 	/**
 	 * Query the Open-Meteo API for the hour nearest a visit and return a weather meta array, or a WP_Error.
 	 *
-	 * @param float  $latitude   The latitude of the location to query.
-	 * @param float  $longitude  The longitude of the location to query.
-	 * @param string $visit_date The date of the visit in Y-m-d format.
-	 * @param string $visit_time The time of the visit in H:i format (24-hour).
+	 * @param float $latitude   The latitude of the location to query.
+	 * @param float $longitude  The longitude of the location to query.
 	 * @return array|\WP_Error The weather snapshot as an associative array, or a WP_Error on failure.
 	 */
-	public static function fetch_open_meteo_weather_snapshot( float $latitude, float $longitude, string $visit_date, string $visit_time ) {
-		$current_date      = current_time( 'Y-m-d' );
-		$visit_day         = strtotime( $visit_date . ' 00:00:00' );
-		$current_day       = strtotime( $current_date . ' 00:00:00' );
-		$days_from_current = false !== $visit_day && false !== $current_day ? (int) floor( ( $visit_day - $current_day ) / DAY_IN_SECONDS ) : 0;
-
-		if ( $days_from_current > 15 ) {
-			return new \WP_Error( 'apiary_press_weather_future_range', __( 'Weather lookup is only available within Open-Meteo forecast range.', 'apiary-press' ) );
-		}
-
-		$use_forecast_api = $days_from_current >= -92;
-		$endpoint         = $use_forecast_api
-			? 'https://api.open-meteo.com/v1/forecast'
-			: 'https://archive-api.open-meteo.com/v1/archive';
-
-		$variables = array(
-			'temperature_2m',
-			'relative_humidity_2m',
-			'precipitation',
-			'weather_code',
-			'cloud_cover',
-			'wind_speed_10m',
-			'wind_direction_10m',
-			'wind_gusts_10m',
-			'surface_pressure',
-		);
+	public static function fetch_met_weather_snapshot( float $latitude, float $longitude ) {
+		$endpoint = 'https://api.met.no/weatherapi/locationforecast/2.0/compact';
 
 		$query_args = array(
-			'latitude'           => $latitude,
-			'longitude'          => $longitude,
-			'start_date'         => $visit_date,
-			'end_date'           => $visit_date,
-			'hourly'             => implode( ',', $variables ),
-			'timezone'           => 'auto',
-			'temperature_unit'   => 'celsius',
-			'wind_speed_unit'    => 'kmh',
-			'precipitation_unit' => 'mm',
+			'lat' => $latitude,
+			'lon' => $longitude,
 		);
-
-		if ( $use_forecast_api && $days_from_current < 0 ) {
-			$query_args['past_days'] = min( abs( $days_from_current ), 92 );
-		} elseif ( $use_forecast_api && $days_from_current >= 7 ) {
-			$query_args['forecast_days'] = min( $days_from_current + 1, 16 );
-		}
 
 		$url = add_query_arg( $query_args, $endpoint );
 
@@ -336,7 +191,7 @@ class Weather {
 			$url,
 			array(
 				'timeout'    => 8,
-				'user-agent' => 'Apiary Press; ' . home_url( '/' ),
+				'user-agent' => 'ApiaryPress/1.0 admin@w.org',
 			)
 		);
 
@@ -357,72 +212,32 @@ class Weather {
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
-		if ( ! is_array( $body ) || empty( $body['hourly']['time'] ) || ! is_array( $body['hourly']['time'] ) ) {
+		if ( ! is_array( $body ) || empty( $body['properties'] ) || ! is_array( $body['properties']['timeseries'] ) ) {
 			return new \WP_Error( 'apiary_press_weather_invalid_response', __( 'Weather lookup returned an invalid response.', 'apiary-press' ) );
 		}
 
-		$target_timestamp = strtotime( $visit_date . ' ' . $visit_time );
+		$timeseries = $body['properties']['timeseries'];
 
-		if ( false === $target_timestamp ) {
-			return new \WP_Error( 'apiary_press_weather_invalid_datetime', __( 'Weather lookup needs a valid visit date and time.', 'apiary-press' ) );
-		}
+		if (
+			isset( $timeseries[0] ) &&
+			isset( $timeseries[0]['data'] ) &&
+			isset( $timeseries[0]['data']['instant'] )
+		) {
+			$ret  = $timeseries[0]['data']['instant']['details'] ?? array();
+			$icon = self::get_forecast_icon_url( $timeseries[0]['data'], 'instant' );
 
-		$nearest_index    = null;
-		$nearest_distance = null;
-
-		foreach ( $body['hourly']['time'] as $index => $time ) {
-			$time_timestamp = strtotime( str_replace( 'T', ' ', $time ) );
-
-			if ( false === $time_timestamp ) {
-				continue;
+			if ( empty( $icon ) ) {
+				// If no symbol code is available for current instant, try to get it from the 'next_1_hours' data as a fallback.
+				$icon = self::get_forecast_icon_url( $timeseries[0]['data'], 'next_1_hours' );
 			}
 
-			$distance = abs( $time_timestamp - $target_timestamp );
-
-			if ( null === $nearest_distance || $distance < $nearest_distance ) {
-				$nearest_distance = $distance;
-				$nearest_index    = $index;
+			if ( ! empty( $icon ) ) {
+				$ret['symbol_code'] = $icon;
 			}
+
+			return $ret;
 		}
 
-		if ( null === $nearest_index ) {
-			return new \WP_Error( 'apiary_press_weather_no_hour', __( 'Weather lookup did not return an hourly record.', 'apiary-press' ) );
-		}
-
-		$hourly       = $body['hourly'];
-		$weather_code = isset( $hourly['weather_code'][ $nearest_index ] ) ? (int) $hourly['weather_code'][ $nearest_index ] : 0;
-
-		return array(
-			'weather_temperature_2m'       => self::get_hourly_value( $hourly, 'temperature_2m', $nearest_index ),
-			'weather_relative_humidity_2m' => self::get_hourly_value( $hourly, 'relative_humidity_2m', $nearest_index ),
-			'weather_precipitation'        => self::get_hourly_value( $hourly, 'precipitation', $nearest_index ),
-			'weather_weather_code'         => $weather_code,
-			'weather_description'          => self::get_weather_code_description( $weather_code ),
-			'weather_cloud_cover'          => self::get_hourly_value( $hourly, 'cloud_cover', $nearest_index ),
-			'weather_wind_speed_10m'       => self::get_hourly_value( $hourly, 'wind_speed_10m', $nearest_index ),
-			'weather_wind_direction_10m'   => self::get_hourly_value( $hourly, 'wind_direction_10m', $nearest_index ),
-			'weather_wind_gusts_10m'       => self::get_hourly_value( $hourly, 'wind_gusts_10m', $nearest_index ),
-			'weather_surface_pressure'     => self::get_hourly_value( $hourly, 'surface_pressure', $nearest_index ),
-			'weather_observed_at'          => isset( $hourly['time'][ $nearest_index ] ) ? sanitize_text_field( $hourly['time'][ $nearest_index ] ) : '',
-			'weather_source'               => $use_forecast_api ? 'Open-Meteo Forecast' : 'Open-Meteo Historical',
-			'weather_latitude'             => $latitude,
-			'weather_longitude'            => $longitude,
-		);
-	}
-
-	/**
-	 * Read a single hourly value from an Open-Meteo response, returning '' when absent.
-	 *
-	 * @param array  $hourly The 'hourly' section of the Open-Meteo response body.
-	 * @param string $key    The specific hourly variable key to read.
-	 * @param int    $index  The index of the hour to read, as determined by the nearest time match.
-	 * @return float|string The numeric value as a float, or a sanitized string, or an empty string if the value is missing or null.
-	 */
-	private static function get_hourly_value( array $hourly, string $key, int $index ) {
-		if ( ! isset( $hourly[ $key ][ $index ] ) || null === $hourly[ $key ][ $index ] ) {
-			return '';
-		}
-
-		return is_numeric( $hourly[ $key ][ $index ] ) ? (float) $hourly[ $key ][ $index ] : sanitize_text_field( $hourly[ $key ][ $index ] );
+		return new \WP_Error( 'apiary_press_weather_no_data', __( 'Weather lookup did not return any forecast data.', 'apiary-press' ) );
 	}
 }

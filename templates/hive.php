@@ -391,7 +391,7 @@ if ( ! $not_found && ! $forbidden ) {
 							<?php
 							$active_flags    = array();
 							$weather_error   = get_post_meta( $visit->ID, 'weather_error', true );
-							$weather_summary = Weather::get_visit_weather_summary( $visit->ID );
+							$weather_icon    = get_post_meta( $visit->ID, 'symbol_code', true );
 
 							foreach ( $meta_labels as $meta_key => $label ) {
 								if ( rest_sanitize_boolean( get_post_meta( $visit->ID, $meta_key, true ) ) ) {
@@ -419,9 +419,7 @@ if ( ! $not_found && ! $forbidden ) {
 											<div class="muted"><?php echo esc_html( $weather_error ); ?></div>
 										<?php else : ?>
 											<div class="weather-chips">
-												<?php foreach ( $weather_summary as $weather_item ) : ?>
-													<span class="weather-chip"><?php echo esc_html( $weather_item ); ?></span>
-												<?php endforeach; ?>
+												<span class="weather-chip"><?php echo esc_html( $weather_icon ); ?></span>
 											</div>
 										<?php endif; ?>
 									</div>
