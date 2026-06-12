@@ -379,13 +379,55 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 				}).addTo(map);
 
+				const rings = [
+					{ radius: 5000, fillOpacity: 0.08 },
+					{ radius: 3500, fillOpacity: 0.16 },
+					{ radius: 2000, fillOpacity: 0.28 }
+				];
+				const circleLayer = L.layerGroup().addTo(map);
+
 				const latLngs = markers.map(function(marker) {
 					const latLng = [marker.latitude, marker.longitude];
 					const popup = '<a href="' + marker.url + '">' + marker.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</a>';
 
-					L.marker(latLng).addTo(map).bindPopup(popup);
+					const leafletMarker = L.circleMarker(latLng, {
+						radius: 8,
+						color: '#fff',
+						weight: 2,
+						opacity: 1,
+						fillColor: '#E7AE43',
+						fillOpacity: 1
+					}).addTo(map).bindPopup(popup);
+
+					leafletMarker.on('click', function() {
+						circleLayer.clearLayers();
+						let smallestCircle = null;
+						rings.forEach(function(ring) {
+							const circle = L.circle(latLng, {
+								radius: ring.radius,
+								color: '#E7AE43',
+								weight: 1,
+								opacity: 0.7,
+								fillColor: '#E7AE43',
+								fillOpacity: ring.fillOpacity,
+								interactive: false
+							}).addTo(circleLayer);
+
+							if (!smallestCircle || ring.radius < smallestCircle.getRadius()) {
+								smallestCircle = circle;
+							}
+						});
+
+						if (smallestCircle) {
+							map.fitBounds(smallestCircle.getBounds(), { padding: [16, 16] });
+						}
+					});
 
 					return latLng;
+				});
+
+				map.on('click', function() {
+					circleLayer.clearLayers();
 				});
 
 				if (latLngs.length === 1) {

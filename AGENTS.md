@@ -13,3 +13,7 @@ record visits they make to those hives.
 - A visit represents an inspection or activity performed on a hive.
 - Changes should preserve the plugin's WordPress integration and WpApp-based
   structure.
+
+## Style
+
+- `#E7AE43` is the app's main color.
