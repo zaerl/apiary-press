@@ -385,6 +385,8 @@ if ( ! $not_found && ! $forbidden ) {
 							$weather_error   = get_post_meta( $visit->ID, 'weather_error', true );
 							$weather_icon    = get_post_meta( $visit->ID, 'symbol_code', true );
 							$author_name     = get_the_author_meta( 'display_name', (int) $visit->post_author );
+							$visit_reason    = (string) get_post_meta( $visit->ID, Visit::REASON_META_KEY, true );
+							$reason_label    = Visit::get_visit_meta_labels()[ $visit_reason ] ?? '';
 
 							foreach ( $meta_labels as $meta_key => $label ) {
 								if ( rest_sanitize_boolean( get_post_meta( $visit->ID, $meta_key, true ) ) ) {
@@ -413,6 +415,13 @@ if ( ! $not_found && ! $forbidden ) {
 
 								<?php if ( trim( $visit->post_content ) ) : ?>
 									<p class="visit-notes"><?php echo esc_html( wp_strip_all_tags( $visit->post_content ) ); ?></p>
+								<?php endif; ?>
+
+								<?php if ( $reason_label ) : ?>
+									<p class="visit-reason">
+										<strong><?php echo esc_html__( 'Reason:', 'apiary-press' ); ?></strong>
+										<?php echo esc_html( $reason_label ); ?>
+									</p>
 								<?php endif; ?>
 
 								<?php

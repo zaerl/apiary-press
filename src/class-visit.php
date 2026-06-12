@@ -24,6 +24,55 @@ class Visit {
 		'saw_queen',
 	);
 
+	public const REASON_META_KEY = 'reason';
+
+	public const REASON_DEFAULT = 'routine_inspection';
+
+	public const REASON_VALUES = array(
+		'add_remove_super',
+		'brood_inspection',
+		'deadout_inspection',
+		'disease_check_treatment',
+		'equipment_maintenance',
+		'feeding',
+		'food_stores_check',
+		'honey_harvest',
+		'pest_check',
+		'queen_check',
+		'requeening',
+		'routine_inspection',
+		'seasonal_preparation',
+		'split_or_combine_colony',
+		'swarm_check',
+		'varroa_monitoring_treatment',
+		'weather_damage_check',
+	);
+
+	/**
+	 * Get the translated labels for the visit reason meta keys.
+	 */
+	public static function get_visit_meta_labels(): array {
+		return array(
+			'add_remove_super'            => __( 'Add / remove super', 'apiary-press' ),
+			'brood_inspection'            => __( 'Brood inspection', 'apiary-press' ),
+			'deadout_inspection'          => __( 'Deadout inspection', 'apiary-press' ),
+			'disease_check_treatment'     => __( 'Disease check / treatment', 'apiary-press' ),
+			'equipment_maintenance'       => __( 'Equipment maintenance', 'apiary-press' ),
+			'feeding'                     => __( 'Feeding', 'apiary-press' ),
+			'food_stores_check'           => __( 'Food stores check', 'apiary-press' ),
+			'honey_harvest'               => __( 'Honey harvest', 'apiary-press' ),
+			'pest_check'                  => __( 'Pest check', 'apiary-press' ),
+			'queen_check'                 => __( 'Queen check', 'apiary-press' ),
+			'requeening'                  => __( 'Requeening', 'apiary-press' ),
+			'routine_inspection'          => __( 'Routine inspection', 'apiary-press' ),
+			'seasonal_preparation'        => __( 'Seasonal preparation', 'apiary-press' ),
+			'split_or_combine_colony'     => __( 'Split or combine colony', 'apiary-press' ),
+			'swarm_check'                 => __( 'Swarm check', 'apiary-press' ),
+			'varroa_monitoring_treatment' => __( 'Varroa monitoring / treatment', 'apiary-press' ),
+			'weather_damage_check'        => __( 'Weather damage check', 'apiary-press' ),
+		);
+	}
+
 	/**
 	 * Get the translated labels for the visit boolean meta keys.
 	 */
@@ -66,6 +115,28 @@ class Visit {
 				)
 			);
 		}
+
+		register_post_meta(
+			self::HIVE_VISIT_POST_TYPE,
+			self::REASON_META_KEY,
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'default'           => self::REASON_DEFAULT,
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( __CLASS__, 'sanitize_reason_meta' ),
+				'auth_callback'     => function ( ...$args ) {
+					$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
+					$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
+
+					if ( $post_id ) {
+						return user_can( $user_id, 'edit_post', $post_id );
+					}
+
+					return user_can( $user_id, 'edit_posts' );
+				},
+			)
+		);
 
 		foreach ( Weather::FORECAST_UNITS as $meta_key => $type ) {
 			$sanitize_callback = 'string' === $type
@@ -129,5 +200,16 @@ class Visit {
 	 */
 	public static function sanitize_text_meta( $value ): string {
 		return sanitize_text_field( (string) $value );
+	}
+
+	/**
+	 * Sanitize a visit reason value: returns the slug if it is one of REASON_VALUES, REASON_DEFAULT otherwise.
+	 *
+	 * @param mixed $value The value to sanitize.
+	 */
+	public static function sanitize_reason_meta( $value ): string {
+		$value = sanitize_key( (string) $value );
+
+		return in_array( $value, self::REASON_VALUES, true ) ? $value : self::REASON_DEFAULT;
 	}
 }

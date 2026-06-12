@@ -49,6 +49,9 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
 	$selected_meta  = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
 		: array();
+	$reason_value   = isset( $_POST['ap_visit_reason'] )
+		? Visit::sanitize_reason_meta( wp_unslash( $_POST['ap_visit_reason'] ) )
+		: '';
 
 	if ( ! wp_verify_nonce( $nonce, 'ap_create_visit_' . $hive_id ) ) {
 		$form_error = __( 'The visit could not be saved. Reload and try again.', 'apiary-press' );
@@ -89,6 +92,8 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
 					update_post_meta( $visit_id, $meta_key, in_array( $meta_key, $selected_meta, true ) ? '1' : '0' );
 				}
 
+				update_post_meta( $visit_id, Visit::REASON_META_KEY, $reason_value );
+
 				Weather::store_visit_weather_snapshot( $visit_id, $hive_id, $visit_date_raw, $visit_time_raw );
 
 				wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'hive/' . $hive_id . '/visit/' . absint( $visit_id ) ) ) );
@@ -125,6 +130,9 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
 	$selected_meta  = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
 		: array();
+	$reason_value   = isset( $_POST['ap_visit_reason'] )
+		? Visit::sanitize_reason_meta( wp_unslash( $_POST['ap_visit_reason'] ) )
+		: '';
 
 	if ( ! wp_verify_nonce( $nonce, 'ap_update_visit_' . $hive_visit_id ) ) {
 		$form_error = __( 'The visit could not be saved. Reload and try again.', 'apiary-press' );
@@ -163,6 +171,8 @@ if ( ! $not_found && ! $forbidden && ! $is_new_visit && 'update_visit' === $acti
 					update_post_meta( $hive_visit_id, $meta_key, in_array( $meta_key, $selected_meta, true ) ? '1' : '0' );
 				}
 
+				update_post_meta( $hive_visit_id, Visit::REASON_META_KEY, $reason_value );
+
 				wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'hive/' . $hive_id . '/visit/' . $hive_visit_id ) ) );
 				exit;
 			}
@@ -177,6 +187,12 @@ if ( ! $not_found && ! $is_new_visit ) {
 $visit_date        = ! $not_found && ! $is_new_visit ? mysql2date( 'Y-m-d', $visit->post_date, false ) : current_time( 'Y-m-d' );
 $visit_time        = ! $not_found && ! $is_new_visit ? mysql2date( 'H:i', $visit->post_date, false ) : current_time( 'H:i' );
 $visit_notes       = ! $not_found && ! $is_new_visit ? $visit->post_content : '';
+$visit_reason      = ! $not_found && ! $is_new_visit ? (string) get_post_meta( $hive_visit_id, Visit::REASON_META_KEY, true ) : Visit::REASON_DEFAULT;
+$reason_labels     = Visit::get_visit_meta_labels();
+
+if ( ! isset( $reason_labels[ $visit_reason ] ) ) {
+	$visit_reason = Visit::REASON_DEFAULT;
+}
 $active_flags      = array();
 $form_checked_meta = array();
 $weather_values    = array();
@@ -222,6 +238,7 @@ if ( $form_error ) {
 	$visit_date        = isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : $visit_date;
 	$visit_time        = isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : $visit_time;
 	$visit_notes       = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : $visit_notes;
+	$visit_reason      = isset( $_POST['ap_visit_reason'] ) ? Visit::sanitize_reason_meta( wp_unslash( $_POST['ap_visit_reason'] ) ) : $visit_reason;
 	$form_checked_meta = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
 		: array();
@@ -331,6 +348,7 @@ if ( $form_error ) {
 		}
 		input[type="date"],
 		input[type="time"],
+		select,
 		textarea {
 			width: 100%;
 			border: 1px solid var(--wp-app-color-border);
@@ -550,6 +568,17 @@ if ( $form_error ) {
 							</div>
 						</div>
 
+						<div class="field">
+							<label for="ap_visit_reason"><?php echo esc_html__( 'Reason', 'apiary-press' ); ?></label>
+							<select id="ap_visit_reason" name="ap_visit_reason">
+								<?php foreach ( $reason_labels as $reason_slug => $reason_label ) : ?>
+									<option value="<?php echo esc_attr( $reason_slug ); ?>" <?php selected( $visit_reason, $reason_slug ); ?>>
+										<?php echo esc_html( $reason_label ); ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+
 						<div class="check-grid">
 							<?php foreach ( $meta_labels as $meta_key => $label ) : ?>
 								<div class="check-option">
@@ -582,6 +611,13 @@ if ( $form_error ) {
 							<p class="visit-notes"><?php echo esc_html( wp_strip_all_tags( $visit->post_content ) ); ?></p>
 						<?php else : ?>
 							<p class="visit-notes"><?php echo esc_html__( 'No notes recorded.', 'apiary-press' ); ?></p>
+						<?php endif; ?>
+
+						<?php if ( isset( $reason_labels[ $visit_reason ] ) ) : ?>
+							<p class="visit-reason">
+								<strong><?php echo esc_html__( 'Reason:', 'apiary-press' ); ?></strong>
+								<?php echo esc_html( $reason_labels[ $visit_reason ] ); ?>
+							</p>
 						<?php endif; ?>
 
 						<?php if ( empty( $active_flags ) ) : ?>
