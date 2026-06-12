@@ -68,134 +68,134 @@ if ( ! function_exists( 'appr_read_coordinate_input' ) ) {
 }
 
 if ( ! function_exists( 'appr_update_coordinate_meta' ) ) {
-	function appr_update_coordinate_meta( int $hive_id, string $meta_key, string $value ): void {
-		if ( '' === $value ) {
-			delete_post_meta( $hive_id, $meta_key );
+	function appr_update_coordinate_meta( int $appr_hive_id, string $appr_meta_key, string $appr_value ): void {
+		if ( '' === $appr_value ) {
+			delete_post_meta( $appr_hive_id, $appr_meta_key );
 			return;
 		}
 
-		update_post_meta( $hive_id, $meta_key, (float) $value );
+		update_post_meta( $appr_hive_id, $appr_meta_key, (float) $appr_value );
 	}
 }
 
 global $wp_app_route;
 
-$route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
-$hive_id      = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
-$is_new_hive  = 0 === $hive_id;
-$hive         = $hive_id ? get_post( $hive_id ) : null;
-$form_error   = '';
+$appr_route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$appr_hive_id      = isset( $appr_route_params['id'] ) ? absint( $appr_route_params['id'] ) : absint( get_query_var( 'id' ) );
+$appr_is_new_hive  = 0 === $appr_hive_id;
+$appr_hive         = $appr_hive_id ? get_post( $appr_hive_id ) : null;
+$appr_form_error   = '';
 
-$not_found = ! $is_new_hive && ( ! $hive || Hive::HIVE_POST_TYPE !== $hive->post_type );
-$forbidden = ! $not_found && ( $is_new_hive ? ! current_user_can( 'edit_posts' ) : ! current_user_can( 'edit_post', $hive_id ) );
+$appr_not_found = ! $appr_is_new_hive && ( ! $appr_hive || Hive::HIVE_POST_TYPE !== $appr_hive->post_type );
+$appr_forbidden = ! $appr_not_found && ( $appr_is_new_hive ? ! current_user_can( 'edit_posts' ) : ! current_user_can( 'edit_post', $appr_hive_id ) );
 
-if ( $not_found ) {
+if ( $appr_not_found ) {
 	status_header( 404 );
-} elseif ( $forbidden ) {
+} elseif ( $appr_forbidden ) {
 	status_header( 403 );
 }
 
-$action = isset( $_POST['ap_action'] ) ? sanitize_key( wp_unslash( $_POST['ap_action'] ) ) : '';
+$appr_action = isset( $_POST['ap_action'] ) ? sanitize_key( wp_unslash( $_POST['ap_action'] ) ) : '';
 
-if ( ! $not_found && ! $forbidden && $is_new_hive && 'create_hive' === $action ) {
-	$nonce           = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
-	$title           = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : '';
-	$notes           = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
-	$latitude_input  = appr_read_coordinate_input( 'ap_hive_latitude', __( 'Latitude', 'apiary-press' ), -90, 90 );
-	$longitude_input = appr_read_coordinate_input( 'ap_hive_longitude', __( 'Longitude', 'apiary-press' ), -180, 180 );
+if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_hive && 'create_hive' === $appr_action ) {
+	$appr_nonce           = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
+	$appr_title           = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : '';
+	$appr_notes           = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
+	$appr_latitude_input  = appr_read_coordinate_input( 'ap_hive_latitude', __( 'Latitude', 'apiary-press' ), -90, 90 );
+	$appr_longitude_input = appr_read_coordinate_input( 'ap_hive_longitude', __( 'Longitude', 'apiary-press' ), -180, 180 );
 
-	if ( ! wp_verify_nonce( $nonce, 'ap_create_hive' ) ) {
-		$form_error = __( 'The hive could not be saved. Reload and try again.', 'apiary-press' );
-	} elseif ( '' === $title ) {
-		$form_error = __( 'Hive name is required.', 'apiary-press' );
-	} elseif ( $latitude_input['error'] ) {
-		$form_error = $latitude_input['error'];
-	} elseif ( $longitude_input['error'] ) {
-		$form_error = $longitude_input['error'];
-	} elseif ( ( '' === $latitude_input['value'] ) !== ( '' === $longitude_input['value'] ) ) {
-		$form_error = __( 'Add both latitude and longitude, or leave both blank.', 'apiary-press' );
+	if ( ! wp_verify_nonce( $appr_nonce, 'ap_create_hive' ) ) {
+		$appr_form_error = __( 'The hive could not be saved. Reload and try again.', 'apiary-press' );
+	} elseif ( '' === $appr_title ) {
+		$appr_form_error = __( 'Hive name is required.', 'apiary-press' );
+	} elseif ( $appr_latitude_input['error'] ) {
+		$appr_form_error = $appr_latitude_input['error'];
+	} elseif ( $appr_longitude_input['error'] ) {
+		$appr_form_error = $appr_longitude_input['error'];
+	} elseif ( ( '' === $appr_latitude_input['value'] ) !== ( '' === $appr_longitude_input['value'] ) ) {
+		$appr_form_error = __( 'Add both latitude and longitude, or leave both blank.', 'apiary-press' );
 	} else {
-		$new_hive_id = wp_insert_post(
+		$appr_new_hive_id = wp_insert_post(
 			array(
 				'post_type'    => Hive::HIVE_POST_TYPE,
 				'post_status'  => 'publish',
-				'post_title'   => $title,
-				'post_content' => $notes,
+				'post_title'   => $appr_title,
+				'post_content' => $appr_notes,
 				'post_author'  => get_current_user_id(),
 			),
 			true
 		);
 
-		if ( is_wp_error( $new_hive_id ) ) {
-			$form_error = $new_hive_id->get_error_message();
+		if ( is_wp_error( $appr_new_hive_id ) ) {
+			$appr_form_error = $appr_new_hive_id->get_error_message();
 		} else {
-			appr_update_coordinate_meta( $new_hive_id, 'latitude', $latitude_input['value'] );
-			appr_update_coordinate_meta( $new_hive_id, 'longitude', $longitude_input['value'] );
+			appr_update_coordinate_meta( $appr_new_hive_id, 'latitude', $appr_latitude_input['value'] );
+			appr_update_coordinate_meta( $appr_new_hive_id, 'longitude', $appr_longitude_input['value'] );
 
-			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'hive/' . absint( $new_hive_id ) ) ) );
+			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'hive/' . absint( $appr_new_hive_id ) ) ) );
 			exit;
 		}
 	}
 }
 
-if ( ! $not_found && ! $forbidden && ! $is_new_hive && 'update_hive' === $action ) {
-	$nonce           = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
-	$title           = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : '';
-	$notes           = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
-	$latitude_input  = appr_read_coordinate_input( 'ap_hive_latitude', __( 'Latitude', 'apiary-press' ), -90, 90 );
-	$longitude_input = appr_read_coordinate_input( 'ap_hive_longitude', __( 'Longitude', 'apiary-press' ), -180, 180 );
+if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'update_hive' === $appr_action ) {
+	$appr_nonce           = isset( $_POST['ap_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_nonce'] ) ) : '';
+	$appr_title           = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : '';
+	$appr_notes           = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
+	$appr_latitude_input  = appr_read_coordinate_input( 'ap_hive_latitude', __( 'Latitude', 'apiary-press' ), -90, 90 );
+	$appr_longitude_input = appr_read_coordinate_input( 'ap_hive_longitude', __( 'Longitude', 'apiary-press' ), -180, 180 );
 
-	if ( ! wp_verify_nonce( $nonce, 'ap_update_hive_' . $hive_id ) ) {
-		$form_error = __( 'The hive could not be saved. Reload and try again.', 'apiary-press' );
-	} elseif ( '' === $title ) {
-		$form_error = __( 'Hive name is required.', 'apiary-press' );
-	} elseif ( $latitude_input['error'] ) {
-		$form_error = $latitude_input['error'];
-	} elseif ( $longitude_input['error'] ) {
-		$form_error = $longitude_input['error'];
-	} elseif ( ( '' === $latitude_input['value'] ) !== ( '' === $longitude_input['value'] ) ) {
-		$form_error = __( 'Add both latitude and longitude, or leave both blank.', 'apiary-press' );
+	if ( ! wp_verify_nonce( $appr_nonce, 'ap_update_hive_' . $appr_hive_id ) ) {
+		$appr_form_error = __( 'The hive could not be saved. Reload and try again.', 'apiary-press' );
+	} elseif ( '' === $appr_title ) {
+		$appr_form_error = __( 'Hive name is required.', 'apiary-press' );
+	} elseif ( $appr_latitude_input['error'] ) {
+		$appr_form_error = $appr_latitude_input['error'];
+	} elseif ( $appr_longitude_input['error'] ) {
+		$appr_form_error = $appr_longitude_input['error'];
+	} elseif ( ( '' === $appr_latitude_input['value'] ) !== ( '' === $appr_longitude_input['value'] ) ) {
+		$appr_form_error = __( 'Add both latitude and longitude, or leave both blank.', 'apiary-press' );
 	} else {
-		$updated_id = wp_update_post(
+		$appr_updated_id = wp_update_post(
 			array(
-				'ID'           => $hive_id,
-				'post_title'   => $title,
-				'post_content' => $notes,
+				'ID'           => $appr_hive_id,
+				'post_title'   => $appr_title,
+				'post_content' => $appr_notes,
 			),
 			true
 		);
 
-		if ( is_wp_error( $updated_id ) ) {
-			$form_error = $updated_id->get_error_message();
+		if ( is_wp_error( $appr_updated_id ) ) {
+			$appr_form_error = $appr_updated_id->get_error_message();
 		} else {
-			appr_update_coordinate_meta( $hive_id, 'latitude', $latitude_input['value'] );
-			appr_update_coordinate_meta( $hive_id, 'longitude', $longitude_input['value'] );
+			appr_update_coordinate_meta( $appr_hive_id, 'latitude', $appr_latitude_input['value'] );
+			appr_update_coordinate_meta( $appr_hive_id, 'longitude', $appr_longitude_input['value'] );
 
-			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'hive/' . $hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'hive/' . $appr_hive_id ) ) );
 			exit;
 		}
 	}
 }
 
-if ( ! $not_found && ! $is_new_hive ) {
-	$hive = get_post( $hive_id );
+if ( ! $appr_not_found && ! $appr_is_new_hive ) {
+	$appr_hive = get_post( $appr_hive_id );
 }
 
-$hive_title     = ! $not_found && ! $is_new_hive ? get_the_title( $hive ) : '';
-$hive_notes     = ! $not_found && ! $is_new_hive ? $hive->post_content : '';
-$hive_latitude  = ! $not_found && ! $is_new_hive ? get_post_meta( $hive_id, 'latitude', true ) : '';
-$hive_longitude = ! $not_found && ! $is_new_hive ? get_post_meta( $hive_id, 'longitude', true ) : '';
-$page_title     = $is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
-$form_action    = $is_new_hive ? 'create_hive' : 'update_hive';
-$form_nonce     = $is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $hive_id;
-$form_url       = $is_new_hive ? App::get_url( 'hive/new' ) : App::get_url( 'hive/' . $hive_id . '/edit' );
-$button_text    = $is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
+$appr_hive_title     = ! $appr_not_found && ! $appr_is_new_hive ? get_the_title( $appr_hive ) : '';
+$appr_hive_notes     = ! $appr_not_found && ! $appr_is_new_hive ? $appr_hive->post_content : '';
+$appr_hive_latitude  = ! $appr_not_found && ! $appr_is_new_hive ? get_post_meta( $appr_hive_id, 'latitude', true ) : '';
+$appr_hive_longitude = ! $appr_not_found && ! $appr_is_new_hive ? get_post_meta( $appr_hive_id, 'longitude', true ) : '';
+$appr_page_title     = $appr_is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
+$appr_form_action    = $appr_is_new_hive ? 'create_hive' : 'update_hive';
+$appr_form_nonce     = $appr_is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $appr_hive_id;
+$appr_form_url       = $appr_is_new_hive ? App::get_url( 'hive/new' ) : App::get_url( 'hive/' . $appr_hive_id . '/edit' );
+$appr_button_text    = $appr_is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
 
-if ( $form_error ) {
-	$hive_title     = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : $hive_title;
-	$hive_notes     = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : $hive_notes;
-	$hive_latitude  = isset( $_POST['ap_hive_latitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_latitude'] ) ) : $hive_latitude;
-	$hive_longitude = isset( $_POST['ap_hive_longitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_longitude'] ) ) : $hive_longitude;
+if ( $appr_form_error ) {
+	$appr_hive_title     = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : $appr_hive_title;
+	$appr_hive_notes     = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : $appr_hive_notes;
+	$appr_hive_latitude  = isset( $_POST['ap_hive_latitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_latitude'] ) ) : $appr_hive_latitude;
+	$appr_hive_longitude = isset( $_POST['ap_hive_longitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_longitude'] ) ) : $appr_hive_longitude;
 }
 ?>
 <!DOCTYPE html>
@@ -203,7 +203,7 @@ if ( $form_error ) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_app_title( $page_title ); ?></title>
+	<title><?php wp_app_title( $appr_page_title ); ?></title>
 	<?php wp_app_head(); ?>
 	<style>
 		:root { color-scheme: light dark; }
@@ -351,19 +351,19 @@ if ( $form_error ) {
 	<?php wp_app_body_open(); ?>
 
 	<main class="shell">
-		<?php if ( $not_found ) : ?>
+		<?php if ( $appr_not_found ) : ?>
 			<section class="message">
 				<h1><?php echo esc_html__( 'Hive Not Found', 'apiary-press' ); ?></h1>
 				<p class="hive-notes"><?php echo esc_html__( 'The requested hive is not available.', 'apiary-press' ); ?></p>
 				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
-		<?php elseif ( $forbidden ) : ?>
+		<?php elseif ( $appr_forbidden ) : ?>
 			<section class="message">
 				<h1><?php echo esc_html__( 'Access Denied', 'apiary-press' ); ?></h1>
 				<p class="hive-notes">
 					<?php
 					echo esc_html(
-						$is_new_hive
+						$appr_is_new_hive
 							? __( 'You do not have permission to add hives.', 'apiary-press' )
 							: __( 'You do not have permission to edit this hive.', 'apiary-press' )
 					);
@@ -374,37 +374,37 @@ if ( $form_error ) {
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( $is_new_hive ? App::get_url() : App::get_url( 'hive/' . $hive_id ) ); ?>">
-						<?php echo esc_html( $is_new_hive ? __( 'Hives', 'apiary-press' ) : get_the_title( $hive ) ); ?>
+					<a class="crumb" href="<?php echo esc_url( $appr_is_new_hive ? App::get_url() : App::get_url( 'hive/' . $appr_hive_id ) ); ?>">
+						<?php echo esc_html( $appr_is_new_hive ? __( 'Hives', 'apiary-press' ) : get_the_title( $appr_hive ) ); ?>
 					</a>
-					<h1><?php echo esc_html( $page_title ); ?></h1>
+					<h1><?php echo esc_html( $appr_page_title ); ?></h1>
 				</div>
 			</header>
 
-			<?php if ( $form_error ) : ?>
-				<div class="error"><?php echo esc_html( $form_error ); ?></div>
+			<?php if ( $appr_form_error ) : ?>
+				<div class="error"><?php echo esc_html( $appr_form_error ); ?></div>
 			<?php endif; ?>
 
 			<section class="panel" aria-labelledby="hive-form-heading">
-				<h2 id="hive-form-heading"><?php echo esc_html( $page_title ); ?></h2>
-				<form method="post" action="<?php echo esc_url( $form_url ); ?>">
-					<input type="hidden" name="ap_action" value="<?php echo esc_attr( $form_action ); ?>">
-					<?php wp_nonce_field( $form_nonce, 'ap_nonce' ); ?>
+				<h2 id="hive-form-heading"><?php echo esc_html( $appr_page_title ); ?></h2>
+				<form method="post" action="<?php echo esc_url( $appr_form_url ); ?>">
+					<input type="hidden" name="ap_action" value="<?php echo esc_attr( $appr_form_action ); ?>">
+					<?php wp_nonce_field( $appr_form_nonce, 'ap_nonce' ); ?>
 
 					<div class="field">
 						<label for="ap_hive_name"><?php echo esc_html__( 'Name', 'apiary-press' ); ?></label>
-						<input id="ap_hive_name" name="ap_hive_name" type="text" value="<?php echo esc_attr( $hive_title ); ?>" required>
+						<input id="ap_hive_name" name="ap_hive_name" type="text" value="<?php echo esc_attr( $appr_hive_title ); ?>" required>
 					</div>
 
 					<div class="coordinate-grid">
 						<div class="field">
 							<label for="ap_hive_latitude"><?php echo esc_html__( 'Latitude', 'apiary-press' ); ?></label>
-							<input id="ap_hive_latitude" name="ap_hive_latitude" type="number" inputmode="decimal" min="-90" max="90" step="any" value="<?php echo esc_attr( $hive_latitude ); ?>">
+							<input id="ap_hive_latitude" name="ap_hive_latitude" type="number" inputmode="decimal" min="-90" max="90" step="any" value="<?php echo esc_attr( $appr_hive_latitude ); ?>">
 						</div>
 
 						<div class="field">
 							<label for="ap_hive_longitude"><?php echo esc_html__( 'Longitude', 'apiary-press' ); ?></label>
-							<input id="ap_hive_longitude" name="ap_hive_longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" value="<?php echo esc_attr( $hive_longitude ); ?>">
+							<input id="ap_hive_longitude" name="ap_hive_longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" value="<?php echo esc_attr( $appr_hive_longitude ); ?>">
 						</div>
 					</div>
 
@@ -417,10 +417,10 @@ if ( $form_error ) {
 
 					<div class="field">
 						<label for="ap_hive_notes"><?php echo esc_html__( 'Notes', 'apiary-press' ); ?></label>
-						<textarea id="ap_hive_notes" name="ap_hive_notes"><?php echo esc_textarea( $hive_notes ); ?></textarea>
+						<textarea id="ap_hive_notes" name="ap_hive_notes"><?php echo esc_textarea( $appr_hive_notes ); ?></textarea>
 					</div>
 
-					<button class="button" type="submit"><?php echo esc_html( $button_text ); ?></button>
+					<button class="button" type="submit"><?php echo esc_html( $appr_button_text ); ?></button>
 				</form>
 			</section>
 		<?php endif; ?>

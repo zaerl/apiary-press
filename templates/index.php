@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$hives = get_posts(
+$appr_hives = get_posts(
 	array(
 		'post_type'        => Hive::HIVE_POST_TYPE,
 		'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
@@ -202,28 +202,28 @@ $hives = get_posts(
 		<section aria-labelledby="hive-list-heading">
 			<h2 id="hive-list-heading"><?php echo esc_html__( 'Saved Hives', 'apiary-press' ); ?></h2>
 
-			<?php if ( empty( $hives ) ) : ?>
+			<?php if ( empty( $appr_hives ) ) : ?>
 				<div class="empty-state"><?php echo esc_html__( 'No hives yet.', 'apiary-press' ); ?></div>
 			<?php else : ?>
 				<div class="hive-list">
-					<?php foreach ( $hives as $hive ) : ?>
+					<?php foreach ( $appr_hives as $appr_hive ) : ?>
 						<?php
-						$visit_ids = get_posts(
+						$appr_visit_ids = get_posts(
 							array(
 								'post_type'        => Visit::HIVE_VISIT_POST_TYPE,
 								'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
-								'post_parent'      => $hive->ID,
+								'post_parent'      => $appr_hive->ID,
 								'numberposts'      => -1,
 								'fields'           => 'ids',
 								'suppress_filters' => false,
 							)
 						);
 
-						$latest_visit = get_posts(
+						$appr_latest_visit = get_posts(
 							array(
 								'post_type'        => Visit::HIVE_VISIT_POST_TYPE,
 								'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
-								'post_parent'      => $hive->ID,
+								'post_parent'      => $appr_hive->ID,
 								'numberposts'      => 1,
 								'orderby'          => 'date',
 								'order'            => 'DESC',
@@ -231,33 +231,33 @@ $hives = get_posts(
 							)
 						);
 
-						$latest_visit_id = ! empty( $latest_visit ) ? $latest_visit[0]->ID : 0;
-						$check_soon      = $latest_visit_id ? rest_sanitize_boolean( get_post_meta( $latest_visit_id, 'check_soon', true ) ) : false;
-						$summary         = wp_trim_words( wp_strip_all_tags( $hive->post_content ), 24 );
+						$appr_latest_visit_id = ! empty( $appr_latest_visit ) ? $appr_latest_visit[0]->ID : 0;
+						$appr_check_soon      = $appr_latest_visit_id ? rest_sanitize_boolean( get_post_meta( $appr_latest_visit_id, 'check_soon', true ) ) : false;
+						$appr_summary         = wp_trim_words( wp_strip_all_tags( $appr_hive->post_content ), 24 );
 						?>
 						<article class="hive-row">
 							<div>
 								<h3>
-									<a href="<?php echo esc_url( App::get_url( 'hive/' . absint( $hive->ID ) ) ); ?>">
-										<?php echo esc_html( get_the_title( $hive ) ); ?>
+									<a href="<?php echo esc_url( App::get_url( 'hive/' . absint( $appr_hive->ID ) ) ); ?>">
+										<?php echo esc_html( get_the_title( $appr_hive ) ); ?>
 									</a>
 								</h3>
 								<div class="meta">
-									<?php echo esc_html( sprintf( _n( '%d visit', '%d visits', count( $visit_ids ), 'apiary-press' ), count( $visit_ids ) ) ); ?>
-									<?php if ( $latest_visit_id ) : ?>
+									<?php echo esc_html( sprintf( _n( '%d visit', '%d visits', count( $appr_visit_ids ), 'apiary-press' ), count( $appr_visit_ids ) ) ); ?>
+									<?php if ( $appr_latest_visit_id ) : ?>
 										<?php echo esc_html( ' / ' ); ?>
-										<?php echo esc_html( sprintf( __( 'Last visit %s', 'apiary-press' ), mysql2date( get_option( 'date_format' ), $latest_visit[0]->post_date ) ) ); ?>
+										<?php echo esc_html( sprintf( __( 'Last visit %s', 'apiary-press' ), mysql2date( get_option( 'date_format' ), $appr_latest_visit[0]->post_date ) ) ); ?>
 									<?php endif; ?>
 								</div>
-								<?php if ( $summary ) : ?>
-									<p class="summary"><?php echo esc_html( $summary ); ?></p>
+								<?php if ( $appr_summary ) : ?>
+									<p class="summary"><?php echo esc_html( $appr_summary ); ?></p>
 								<?php endif; ?>
 							</div>
 							<div class="stats">
-								<?php if ( $check_soon ) : ?>
+								<?php if ( $appr_check_soon ) : ?>
 									<span class="badge badge-attention"><?php echo esc_html__( 'Check soon', 'apiary-press' ); ?></span>
 								<?php endif; ?>
-								<a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . absint( $hive->ID ) ) ); ?>">
+								<a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . absint( $appr_hive->ID ) ) ); ?>">
 									<?php echo esc_html__( 'Open', 'apiary-press' ); ?>
 								</a>
 							</div>

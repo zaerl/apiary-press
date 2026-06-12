@@ -17,21 +17,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wp_app_route;
 
-$route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
-$hive_id      = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
-$hive         = $hive_id ? get_post( $hive_id ) : null;
-$not_found    = ! $hive || Hive::HIVE_POST_TYPE !== $hive->post_type;
-$forbidden    = ! $not_found && ! current_user_can( 'edit_post', $hive_id );
-$hive_url     = '';
-$hive_qr      = '';
+$appr_route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$appr_hive_id      = isset( $appr_route_params['id'] ) ? absint( $appr_route_params['id'] ) : absint( get_query_var( 'id' ) );
+$appr_hive         = $appr_hive_id ? get_post( $appr_hive_id ) : null;
+$appr_not_found    = ! $appr_hive || Hive::HIVE_POST_TYPE !== $appr_hive->post_type;
+$appr_forbidden    = ! $appr_not_found && ! current_user_can( 'edit_post', $appr_hive_id );
+$appr_hive_url     = '';
+$appr_hive_qr      = '';
 
-if ( $not_found ) {
+if ( $appr_not_found ) {
 	status_header( 404 );
-} elseif ( $forbidden ) {
+} elseif ( $appr_forbidden ) {
 	status_header( 403 );
 } else {
-	$hive_url = App::get_url( 'hive/' . $hive_id );
-	$hive_qr  = ( new QRCode() )->render( $hive_url );
+	$appr_hive_url = App::get_url( 'hive/' . $appr_hive_id );
+	$appr_hive_qr  = ( new QRCode() )->render( $appr_hive_url );
 }
 ?>
 <!DOCTYPE html>
@@ -39,7 +39,7 @@ if ( $not_found ) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_app_title( $hive ? sprintf( __( '%s QR', 'apiary-press' ), get_the_title( $hive ) ) : __( 'Hive QR', 'apiary-press' ) ); ?></title>
+	<title><?php wp_app_title( $appr_hive ? sprintf( __( '%s QR', 'apiary-press' ), get_the_title( $appr_hive ) ) : __( 'Hive QR', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
 	<style>
 		:root { color-scheme: light dark; }
@@ -145,22 +145,22 @@ if ( $not_found ) {
 	<?php wp_app_body_open(); ?>
 
 	<main class="shell">
-		<?php if ( $not_found ) : ?>
+		<?php if ( $appr_not_found ) : ?>
 			<section class="message">
 				<h1><?php echo esc_html__( 'Hive Not Found', 'apiary-press' ); ?></h1>
 				<p><?php echo esc_html__( 'The requested hive is not available.', 'apiary-press' ); ?></p>
 				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
-		<?php elseif ( $forbidden ) : ?>
+		<?php elseif ( $appr_forbidden ) : ?>
 			<section class="message">
 				<h1><?php echo esc_html__( 'Access Denied', 'apiary-press' ); ?></h1>
 				<p><?php echo esc_html__( 'You do not have permission to view this hive QR.', 'apiary-press' ); ?></p>
 				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
-			<section class="print-sheet" aria-label="<?php echo esc_attr( sprintf( __( 'QR code for %s', 'apiary-press' ), get_the_title( $hive ) ) ); ?>">
+			<section class="print-sheet" aria-label="<?php echo esc_attr( sprintf( __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>">
 				<div class="qr-frame">
-					<img src="<?php echo esc_attr( $hive_qr ); ?>" alt="<?php echo esc_attr( sprintf( __( 'QR code for %s', 'apiary-press' ), get_the_title( $hive ) ) ); ?>">
+					<img src="<?php echo esc_attr( $appr_hive_qr ); ?>" alt="<?php echo esc_attr( sprintf( __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>">
 				</div>
 			</section>
 		<?php endif; ?>
