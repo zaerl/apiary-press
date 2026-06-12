@@ -83,50 +83,8 @@ class App extends BaseApp {
 	 * Register the hive and hive visit custom post types.
 	 */
 	public function register_post_types(): void {
-		register_post_type(
-			Hive::HIVE_POST_TYPE,
-			array(
-				'labels'       => array(
-					'name'          => __( 'Hives', 'apiary-press' ),
-					'singular_name' => __( 'Hive', 'apiary-press' ),
-					'add_new_item'  => __( 'Add New Hive', 'apiary-press' ),
-					'edit_item'     => __( 'Edit Hive', 'apiary-press' ),
-					'new_item'      => __( 'New Hive', 'apiary-press' ),
-					'view_item'     => __( 'View Hive', 'apiary-press' ),
-					'search_items'  => __( 'Search Hives', 'apiary-press' ),
-				),
-				'description'  => __( 'Bee hives managed in Apiary Press.', 'apiary-press' ),
-				'public'       => false,
-				'show_ui'      => true,
-				'show_in_menu' => true,
-				'show_in_rest' => true,
-				'menu_icon'    => 'dashicons-location-alt',
-				'supports'     => array( 'title', 'editor', 'author' ),
-				'map_meta_cap' => true,
-			)
-		);
-
-		register_post_type(
-			Visit::HIVE_VISIT_POST_TYPE,
-			array(
-				'labels'       => array(
-					'name'          => __( 'Hive Visits', 'apiary-press' ),
-					'singular_name' => __( 'Hive Visit', 'apiary-press' ),
-					'add_new_item'  => __( 'Add New Hive Visit', 'apiary-press' ),
-					'edit_item'     => __( 'Edit Hive Visit', 'apiary-press' ),
-					'new_item'      => __( 'New Hive Visit', 'apiary-press' ),
-					'view_item'     => __( 'View Hive Visit', 'apiary-press' ),
-					'search_items'  => __( 'Search Hive Visits', 'apiary-press' ),
-				),
-				'description'  => __( 'Inspection visits for Apiary Press hives.', 'apiary-press' ),
-				'public'       => false,
-				'show_ui'      => true,
-				'show_in_menu' => 'edit.php?post_type=' . Hive::HIVE_POST_TYPE,
-				'show_in_rest' => true,
-				'supports'     => array( 'title', 'editor', 'author', 'custom-fields' ),
-				'map_meta_cap' => true,
-			)
-		);
+		Hive::register_post_types();
+		Visit::register_post_types();
 	}
 
 	/**

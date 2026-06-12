@@ -88,6 +88,33 @@ class Visit {
 	}
 
 	/**
+	 * Register the hive and hive visit custom post types.
+	 */
+	public static function register_post_types(): void {
+		register_post_type(
+			self::HIVE_VISIT_POST_TYPE,
+			array(
+				'labels'       => array(
+					'name'          => __( 'Hive Visits', 'apiary-press' ),
+					'singular_name' => __( 'Hive Visit', 'apiary-press' ),
+					'add_new_item'  => __( 'Add New Hive Visit', 'apiary-press' ),
+					'edit_item'     => __( 'Edit Hive Visit', 'apiary-press' ),
+					'new_item'      => __( 'New Hive Visit', 'apiary-press' ),
+					'view_item'     => __( 'View Hive Visit', 'apiary-press' ),
+					'search_items'  => __( 'Search Hive Visits', 'apiary-press' ),
+				),
+				'description'  => __( 'Inspection visits for Apiary Press hives.', 'apiary-press' ),
+				'public'       => false,
+				'show_ui'      => true,
+				'show_in_menu' => 'edit.php?post_type=' . Hive::HIVE_POST_TYPE,
+				'show_in_rest' => true,
+				'supports'     => array( 'title', 'editor', 'author', 'custom-fields' ),
+				'map_meta_cap' => true,
+			)
+		);
+	}
+
+	/**
 	 * Register the boolean and weather post meta fields for the hive visit post type.
 	 */
 	public static function register_meta(): void {

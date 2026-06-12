@@ -19,6 +19,34 @@ class Hive {
 	);
 
 	/**
+	 * Register the hive and hive visit custom post types.
+	 */
+	public static function register_post_types(): void {
+		register_post_type(
+			self::HIVE_POST_TYPE,
+			array(
+				'labels'       => array(
+					'name'          => __( 'Hives', 'apiary-press' ),
+					'singular_name' => __( 'Hive', 'apiary-press' ),
+					'add_new_item'  => __( 'Add New Hive', 'apiary-press' ),
+					'edit_item'     => __( 'Edit Hive', 'apiary-press' ),
+					'new_item'      => __( 'New Hive', 'apiary-press' ),
+					'view_item'     => __( 'View Hive', 'apiary-press' ),
+					'search_items'  => __( 'Search Hives', 'apiary-press' ),
+				),
+				'description'  => __( 'Bee hives managed in Apiary Press.', 'apiary-press' ),
+				'public'       => false,
+				'show_ui'      => true,
+				'show_in_menu' => true,
+				'show_in_rest' => true,
+				'menu_icon'    => 'dashicons-location-alt',
+				'supports'     => array( 'title', 'editor', 'author' ),
+				'map_meta_cap' => true,
+			)
+		);
+	}
+
+	/**
 	 * Register the location post meta fields for the hive post type.
 	 */
 	public static function register_meta(): void {
