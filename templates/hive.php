@@ -383,6 +383,7 @@ if ( ! $not_found && ! $forbidden ) {
 							$active_flags    = array();
 							$weather_error   = get_post_meta( $visit->ID, 'weather_error', true );
 							$weather_icon    = get_post_meta( $visit->ID, 'symbol_code', true );
+							$author_name     = get_the_author_meta( 'display_name', (int) $visit->post_author );
 
 							foreach ( $meta_labels as $meta_key => $label ) {
 								if ( rest_sanitize_boolean( get_post_meta( $visit->ID, $meta_key, true ) ) ) {
@@ -392,7 +393,18 @@ if ( ! $not_found && ! $forbidden ) {
 							?>
 							<article class="visit-row">
 								<div class="visit-head">
-									<div class="visit-date"><?php echo esc_html( mysql2date( get_option( 'date_format' ), $visit->post_date ) ); ?></div>
+									<div>
+										<div class="visit-date"><?php echo esc_html( mysql2date( get_option( 'date_format' ), $visit->post_date ) ); ?></div>
+										<div class="muted">
+											<?php
+											printf(
+												/* translators: %s: the display name of the user who recorded the visit. */
+												esc_html__( 'by %s', 'apiary-press' ),
+												esc_html( $author_name ? $author_name : __( 'Unknown', 'apiary-press' ) )
+											);
+											?>
+										</div>
+									</div>
 									<a href="<?php echo esc_url( App::get_url( 'hive/' . $hive_id . '/visit/' . absint( $visit->ID ) ) ); ?>" class="muted">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>

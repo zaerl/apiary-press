@@ -498,6 +498,18 @@ if ( $form_error ) {
 						);
 						?>
 					</h1>
+					<?php if ( ! $is_new_visit ) : ?>
+						<?php $author_name = get_the_author_meta( 'display_name', (int) $visit->post_author ); ?>
+						<div class="muted">
+							<?php
+							printf(
+								/* translators: %s: the display name of the user who recorded the visit. */
+								esc_html__( 'by %s', 'apiary-press' ),
+								esc_html( $author_name ? $author_name : __( 'Unknown', 'apiary-press' ) )
+							);
+							?>
+						</div>
+					<?php endif; ?>
 				</div>
 				<?php if ( ! $is_new_visit ) : ?>
 					<a class="admin-link" href="<?php echo esc_url( get_edit_post_link( $hive_visit_id, '' ) ); ?>">
