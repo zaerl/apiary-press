@@ -48,109 +48,14 @@ if ( $appr_not_found ) {
 	<title><?php wp_app_title( $appr_hive ? sprintf( __( '%s QR', 'apiary-press' ), get_the_title( $appr_hive ) ) : __( 'Hive QR', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
 	<style>
-		:root { color-scheme: light dark; }
-		* { box-sizing: border-box; }
-		body {
-			margin: 0;
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-			background: var(--wp-app-color-background);
-			color: var(--wp-app-color-text);
-		}
 		#wpadminbar,
-		.wp-app-masterbar {
-			display: none !important;
-		}
-		a { color: var(--wp-app-color-link); }
-		.shell {
-			width: min(360px, calc(100% - 32px));
-			margin: 0 auto;
-			padding: 32px 0 56px;
-		}
-		h1 {
-			margin: 0;
-			font-size: 34px;
-			line-height: 1.15;
-			letter-spacing: 0;
-		}
-		.admin-link,
-		.button {
-			border: 1px solid var(--wp-app-color-border);
-			border-radius: 6px;
-			color: var(--wp-app-color-text);
-			display: inline-flex;
-			font: inherit;
-			font-weight: 700;
-			height: fit-content;
-			line-height: 1.2;
-			padding: 9px 12px;
-			text-decoration: none;
-			white-space: nowrap;
-		}
-		.message {
-			background: var(--wp-app-color-surface);
-			border: 1px solid var(--wp-app-color-border);
-			border-radius: 8px;
-		}
-		.message {
-			padding: 20px;
-		}
-		.print-sheet {
-			align-items: center;
-			display: flex;
-			justify-content: center;
-		}
-		.qr-frame {
-			background: #fff;
-			padding: 0;
-		}
-		.qr-frame img {
-			display: block;
-			height: 320px;
-			width: 320px;
-		}
-		@media (max-width: 760px) {
-			.shell { width: min(100% - 24px, 360px); padding-top: 24px; }
-			.qr-frame img {
-				height: min(320px, calc(100vw - 24px));
-				width: min(320px, calc(100vw - 24px));
-			}
-		}
-		@media print {
-			@page { margin: 12mm; }
-			:root { color-scheme: light; }
-			body {
-				background: #fff;
-				color: #111;
-			}
-			.no-print,
-			#wpadminbar,
-			.wp-app-masterbar {
-				display: none !important;
-			}
-			.shell {
-				margin: 0;
-				padding: 0;
-				width: auto;
-			}
-			.print-sheet {
-				break-inside: avoid;
-			}
-			.qr-frame {
-				border: 0;
-				border-radius: 0;
-				padding: 0;
-			}
-			.qr-frame img {
-				height: 58mm;
-				width: 58mm;
-			}
-		}
+		.wp-app-masterbar { display: none !important; }
 	</style>
 </head>
 <body>
 	<?php wp_app_body_open(); ?>
 
-	<main class="shell">
+	<main class="shell shell-print">
 		<?php if ( $appr_not_found ) : ?>
 			<section class="message">
 				<h1><?php echo esc_html__( 'Hive Not Found', 'apiary-press' ); ?></h1>
