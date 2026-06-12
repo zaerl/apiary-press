@@ -30,6 +30,7 @@ class App extends BaseApp {
 		);
 
 		add_action( 'init', array( $this, 'register_post_types' ) );
+		add_action( 'init', array( $this, 'register_apiary_meta' ) );
 		add_action( 'init', array( $this, 'register_hive_meta' ) );
 		add_action( 'init', array( $this, 'register_visit_meta' ) );
 	}
@@ -129,6 +130,13 @@ class App extends BaseApp {
 	}
 
 	/**
+	 * Register the location post meta fields for the apiary post type.
+	 */
+	public function register_apiary_meta(): void {
+		Apiary::register_meta();
+	}
+
+	/**
 	 * Register the location post meta fields for the hive post type.
 	 */
 	public function register_hive_meta(): void {
@@ -197,6 +205,7 @@ class App extends BaseApp {
 		 * $this->storage->create_tables();
 		 */
 		$this->register_post_types();
+		$this->register_apiary_meta();
 		$this->register_hive_meta();
 		$this->register_visit_meta();
 
