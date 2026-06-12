@@ -65,7 +65,6 @@ class App extends BaseApp {
 	 * Generate the storage.
 	 */
 	protected function setup_database(): void {
-
 	}
 
 	/**

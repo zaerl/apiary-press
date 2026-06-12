@@ -381,12 +381,12 @@ if ( ! $not_found && ! $forbidden ) {
 					<div class="visit-list">
 						<?php foreach ( $visits as $visit ) : ?>
 							<?php
-							$active_flags    = array();
-							$weather_error   = get_post_meta( $visit->ID, 'weather_error', true );
-							$weather_icon    = get_post_meta( $visit->ID, 'symbol_code', true );
-							$author_name     = get_the_author_meta( 'display_name', (int) $visit->post_author );
-							$visit_reason    = (string) get_post_meta( $visit->ID, Visit::REASON_META_KEY, true );
-							$reason_label    = Visit::get_visit_meta_labels()[ $visit_reason ] ?? '';
+							$active_flags  = array();
+							$weather_error = get_post_meta( $visit->ID, 'weather_error', true );
+							$weather_icon  = get_post_meta( $visit->ID, 'symbol_code', true );
+							$author_name   = get_the_author_meta( 'display_name', (int) $visit->post_author );
+							$visit_reason  = (string) get_post_meta( $visit->ID, Visit::REASON_META_KEY, true );
+							$reason_label  = Visit::get_visit_meta_labels()[ $visit_reason ] ?? '';
 
 							foreach ( $meta_labels as $meta_key => $label ) {
 								if ( rest_sanitize_boolean( get_post_meta( $visit->ID, $meta_key, true ) ) ) {

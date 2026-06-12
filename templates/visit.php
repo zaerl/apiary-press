@@ -184,11 +184,11 @@ if ( ! $not_found && ! $is_new_visit ) {
 	$visit = get_post( $hive_visit_id );
 }
 
-$visit_date        = ! $not_found && ! $is_new_visit ? mysql2date( 'Y-m-d', $visit->post_date, false ) : current_time( 'Y-m-d' );
-$visit_time        = ! $not_found && ! $is_new_visit ? mysql2date( 'H:i', $visit->post_date, false ) : current_time( 'H:i' );
-$visit_notes       = ! $not_found && ! $is_new_visit ? $visit->post_content : '';
-$visit_reason      = ! $not_found && ! $is_new_visit ? (string) get_post_meta( $hive_visit_id, Visit::REASON_META_KEY, true ) : Visit::REASON_DEFAULT;
-$reason_labels     = Visit::get_visit_meta_labels();
+$visit_date    = ! $not_found && ! $is_new_visit ? mysql2date( 'Y-m-d', $visit->post_date, false ) : current_time( 'Y-m-d' );
+$visit_time    = ! $not_found && ! $is_new_visit ? mysql2date( 'H:i', $visit->post_date, false ) : current_time( 'H:i' );
+$visit_notes   = ! $not_found && ! $is_new_visit ? $visit->post_content : '';
+$visit_reason  = ! $not_found && ! $is_new_visit ? (string) get_post_meta( $hive_visit_id, Visit::REASON_META_KEY, true ) : Visit::REASON_DEFAULT;
+$reason_labels = Visit::get_visit_meta_labels();
 
 if ( ! isset( $reason_labels[ $visit_reason ] ) ) {
 	$visit_reason = Visit::REASON_DEFAULT;
@@ -212,7 +212,7 @@ if ( ! $not_found && ! $is_new_visit ) {
 		}
 	}
 
-	$weather_error  = get_post_meta( $hive_visit_id, 'weather_error', true );
+	$weather_error = get_post_meta( $hive_visit_id, 'weather_error', true );
 
 	foreach ( Weather::FORECAST_UNITS as $meta_key => $label ) {
 		$value = get_post_meta( $hive_visit_id, $meta_key, true );
