@@ -154,7 +154,7 @@ class Weather {
 	public static function store_visit_weather_snapshot( int $visit_id, int $hive_id ): string {
 		self::clear_visit_weather_snapshot( $visit_id );
 
-		$coordinates = App::get_hive_coordinates( $hive_id );
+		$coordinates = Hive::get_coordinates( $hive_id );
 
 		if ( empty( $coordinates ) ) {
 			$message = __( 'Hive coordinates are missing.', 'apiary-press' );

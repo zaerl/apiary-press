@@ -82,4 +82,31 @@ class Hive {
 	public static function sanitize_number_meta( $value ): float {
 		return is_numeric( $value ) ? (float) $value : 0.0;
 	}
+
+	/**
+	 * Get a hive's validated latitude/longitude, or an empty array if missing or out of range.
+	 *
+	 * @param int $hive_id The ID of the hive post.
+	 * @return array The validated coordinates, or an empty array if invalid.
+	 */
+	public static function get_coordinates( int $hive_id ): array {
+		$latitude  = get_post_meta( $hive_id, 'latitude', true );
+		$longitude = get_post_meta( $hive_id, 'longitude', true );
+
+		if ( ! is_numeric( $latitude ) || ! is_numeric( $longitude ) ) {
+			return array();
+		}
+
+		$latitude  = (float) $latitude;
+		$longitude = (float) $longitude;
+
+		if ( $latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180 ) {
+			return array();
+		}
+
+		return array(
+			'latitude'  => $latitude,
+			'longitude' => $longitude,
+		);
+	}
 }

@@ -28,7 +28,8 @@ if ( $appr_not_found ) {
 	status_header( 403 );
 }
 
-$appr_hives = array();
+$appr_hives       = array();
+$appr_map_markers = array();
 
 if ( ! $appr_not_found && ! $appr_forbidden ) {
 	$appr_hives = get_posts(
@@ -42,6 +43,21 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 			'suppress_filters' => false,
 		)
 	);
+
+	foreach ( $appr_hives as $appr_hive ) {
+		$appr_coords = Hive::get_coordinates( $appr_hive->ID );
+
+		if ( empty( $appr_coords ) ) {
+			continue;
+		}
+
+		$appr_map_markers[] = array(
+			'latitude'  => $appr_coords['latitude'],
+			'longitude' => $appr_coords['longitude'],
+			'title'     => get_the_title( $appr_hive ),
+			'url'       => App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . absint( $appr_hive->ID ) ),
+		);
+	}
 }
 ?>
 <!DOCTYPE html>
@@ -51,6 +67,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?php wp_app_title( $appr_apiary ? get_the_title( $appr_apiary ) : __( 'Apiary', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 	<style>
 		:root { color-scheme: light dark; }
 		* { box-sizing: border-box; }
@@ -145,6 +162,15 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 		.hive-list {
 			display: grid;
 			gap: 12px;
+		}
+		.hive-map {
+			background: var(--wp-app-color-surface);
+			border: 1px solid var(--wp-app-color-border);
+			border-radius: 8px;
+			height: 360px;
+			margin-bottom: 24px;
+			overflow: hidden;
+			width: 100%;
 		}
 		.hive-row {
 			display: grid;
@@ -258,6 +284,10 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				<div class="notice"><?php echo esc_html__( 'Hive removed.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
+			<?php if ( ! empty( $appr_map_markers ) ) : ?>
+				<div id="ap_hive_map" class="hive-map" role="region" aria-label="<?php echo esc_attr__( 'Hive locations', 'apiary-press' ); ?>"></div>
+			<?php endif; ?>
+
 			<section aria-labelledby="hive-list-heading">
 				<h2 id="hive-list-heading"><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></h2>
 
@@ -330,5 +360,41 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	</main>
 
 	<?php wp_app_body_close(); ?>
+
+	<?php if ( ! $appr_not_found && ! $appr_forbidden && ! empty( $appr_map_markers ) ) : ?>
+		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+		<script>
+			(function() {
+				const markers = <?php echo wp_json_encode( $appr_map_markers ); ?>;
+				const container = document.getElementById('ap_hive_map');
+
+				if (!container || !window.L || !markers.length) {
+					return;
+				}
+
+				const map = L.map(container);
+
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+					maxZoom: 19,
+					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+				}).addTo(map);
+
+				const latLngs = markers.map(function(marker) {
+					const latLng = [marker.latitude, marker.longitude];
+					const popup = '<a href="' + marker.url + '">' + marker.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</a>';
+
+					L.marker(latLng).addTo(map).bindPopup(popup);
+
+					return latLng;
+				});
+
+				if (latLngs.length === 1) {
+					map.setView(latLngs[0], 15);
+				} else {
+					map.fitBounds(L.latLngBounds(latLngs), { padding: [24, 24] });
+				}
+			})();
+		</script>
+	<?php endif; ?>
 </body>
 </html>
