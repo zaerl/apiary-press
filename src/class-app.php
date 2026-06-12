@@ -14,9 +14,6 @@ use WpApp\BaseApp;
  * Main plugin class. Initializes the app, registers routes, and sets up storage.
  */
 class App extends BaseApp {
-	public const HIVE_POST_TYPE       = 'ap_hive';
-	public const HIVE_VISIT_POST_TYPE = 'ap_hive_visit';
-
 	public const VISIT_BOOLEAN_META_KEYS = array(
 		'eggs',
 		'larvae',
@@ -101,7 +98,7 @@ class App extends BaseApp {
 	 */
 	public function register_post_types(): void {
 		register_post_type(
-			self::HIVE_POST_TYPE,
+			Visit::HIVE_POST_TYPE,
 			array(
 				'labels'       => array(
 					'name'          => __( 'Hives', 'apiary-press' ),
@@ -124,7 +121,7 @@ class App extends BaseApp {
 		);
 
 		register_post_type(
-			self::HIVE_VISIT_POST_TYPE,
+			Visit::HIVE_VISIT_POST_TYPE,
 			array(
 				'labels'       => array(
 					'name'          => __( 'Hive Visits', 'apiary-press' ),
@@ -138,7 +135,7 @@ class App extends BaseApp {
 				'description'  => __( 'Inspection visits for Apiary Press hives.', 'apiary-press' ),
 				'public'       => false,
 				'show_ui'      => true,
-				'show_in_menu' => 'edit.php?post_type=' . self::HIVE_POST_TYPE,
+				'show_in_menu' => 'edit.php?post_type=' . Visit::HIVE_POST_TYPE,
 				'show_in_rest' => true,
 				'supports'     => array( 'title', 'editor', 'author', 'custom-fields' ),
 				'map_meta_cap' => true,
@@ -152,7 +149,7 @@ class App extends BaseApp {
 	public function register_hive_meta(): void {
 		foreach ( self::HIVE_LOCATION_META_KEYS as $meta_key ) {
 			register_post_meta(
-				self::HIVE_POST_TYPE,
+				Visit::HIVE_POST_TYPE,
 				$meta_key,
 				array(
 					'type'              => 'number',
@@ -180,7 +177,7 @@ class App extends BaseApp {
 	public function register_visit_meta(): void {
 		foreach ( self::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
 			register_post_meta(
-				self::HIVE_VISIT_POST_TYPE,
+				Visit::HIVE_VISIT_POST_TYPE,
 				$meta_key,
 				array(
 					'type'              => 'boolean',
@@ -208,7 +205,7 @@ class App extends BaseApp {
 				: ( 'integer' === $type ? array( $this, 'sanitize_integer_meta' ) : array( $this, 'sanitize_number_meta' ) );
 
 			register_post_meta(
-				self::HIVE_VISIT_POST_TYPE,
+				Visit::HIVE_VISIT_POST_TYPE,
 				$meta_key,
 				array(
 					'type'              => $type,

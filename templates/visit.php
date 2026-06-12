@@ -8,6 +8,7 @@
 namespace ApiaryPress;
 
 use ApiaryPress\App;
+use ApiaryPress\Visit;
 use ApiaryPress\Weather;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,8 +28,8 @@ $meta_labels     = App::get_visit_boolean_meta_labels();
 $form_error      = '';
 
 $not_found = ! $hive
-	|| App::HIVE_POST_TYPE !== $hive->post_type
-	|| ( ! $is_new_visit && ( ! $visit || App::HIVE_VISIT_POST_TYPE !== $visit->post_type || absint( $visit->post_parent ) !== $hive_id ) );
+	|| Visit::HIVE_POST_TYPE !== $hive->post_type
+	|| ( ! $is_new_visit && ( ! $visit || Visit::HIVE_VISIT_POST_TYPE !== $visit->post_type || absint( $visit->post_parent ) !== $hive_id ) );
 
 $forbidden = ! $not_found && ( $is_new_visit ? ! current_user_can( 'edit_post', $hive_id ) : ! current_user_can( 'edit_post', $hive_visit_id ) );
 
@@ -70,7 +71,7 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
 
 			$visit_id = wp_insert_post(
 				array(
-					'post_type'    => App::HIVE_VISIT_POST_TYPE,
+					'post_type'    => Visit::HIVE_VISIT_POST_TYPE,
 					'post_status'  => 'publish',
 					'post_title'   => $visit_title,
 					'post_content' => $notes,
