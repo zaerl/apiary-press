@@ -23,7 +23,7 @@ $hive_id      = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : a
 $hive         = $hive_id ? get_post( $hive_id ) : null;
 $not_found    = ! $hive || Visit::HIVE_POST_TYPE !== $hive->post_type;
 $forbidden    = ! $not_found && ! current_user_can( 'edit_post', $hive_id );
-$meta_labels  = App::get_visit_boolean_meta_labels();
+$meta_labels  = Visit::get_boolean_meta_labels();
 $hive_url     = '';
 $hive_qr      = '';
 

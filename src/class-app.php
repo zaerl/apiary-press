@@ -175,56 +175,7 @@ class App extends BaseApp {
 	 * Register the boolean and weather post meta fields for the hive visit post type.
 	 */
 	public function register_visit_meta(): void {
-		foreach ( self::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
-			register_post_meta(
-				Visit::HIVE_VISIT_POST_TYPE,
-				$meta_key,
-				array(
-					'type'              => 'boolean',
-					'single'            => true,
-					'default'           => false,
-					'show_in_rest'      => true,
-					'sanitize_callback' => array( $this, 'sanitize_boolean_meta' ),
-					'auth_callback'     => function ( ...$args ) {
-						$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
-						$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
-
-						if ( $post_id ) {
-							return user_can( $user_id, 'edit_post', $post_id );
-						}
-
-						return user_can( $user_id, 'edit_posts' );
-					},
-				)
-			);
-		}
-
-		foreach ( Weather::FORECAST_UNITS as $meta_key => $type ) {
-			$sanitize_callback = 'string' === $type
-				? array( $this, 'sanitize_text_meta' )
-				: ( 'integer' === $type ? array( $this, 'sanitize_integer_meta' ) : array( $this, 'sanitize_number_meta' ) );
-
-			register_post_meta(
-				Visit::HIVE_VISIT_POST_TYPE,
-				$meta_key,
-				array(
-					'type'              => $type,
-					'single'            => true,
-					'show_in_rest'      => true,
-					'sanitize_callback' => $sanitize_callback,
-					'auth_callback'     => function ( ...$args ) {
-						$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
-						$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
-
-						if ( $post_id ) {
-							return user_can( $user_id, 'edit_post', $post_id );
-						}
-
-						return user_can( $user_id, 'edit_posts' );
-					},
-				)
-			);
-		}
+		Visit::register_visit_meta();
 	}
 
 	/**
@@ -243,39 +194,6 @@ class App extends BaseApp {
 	 */
 	public function sanitize_number_meta( $value ): float {
 		return is_numeric( $value ) ? (float) $value : 0.0;
-	}
-
-	/**
-	 * Sanitize a meta value into an integer, defaulting to 0.
-	 *
-	 * @param mixed $value The value to sanitize.
-	 */
-	public function sanitize_integer_meta( $value ): int {
-		return is_numeric( $value ) ? (int) $value : 0;
-	}
-
-	/**
-	 * Sanitize a meta value into a plain text string.
-	 *
-	 * @param mixed $value The value to sanitize.
-	 */
-	public function sanitize_text_meta( $value ): string {
-		return sanitize_text_field( (string) $value );
-	}
-
-	/**
-	 * Get the translated labels for the visit boolean meta keys.
-	 */
-	public static function get_visit_boolean_meta_labels(): array {
-		return array(
-			'eggs'         => __( 'Eggs', 'apiary-press' ),
-			'larvae'       => __( 'Larvae', 'apiary-press' ),
-			'capped_brood' => __( 'Capped brood', 'apiary-press' ),
-			'queen_cells'  => __( 'Queen cells', 'apiary-press' ),
-			'saw_queen'    => __( 'Saw queen', 'apiary-press' ),
-			'added_super'  => __( 'Added super', 'apiary-press' ),
-			'check_soon'   => __( 'Check soon', 'apiary-press' ),
-		);
 	}
 
 	/**
@@ -317,6 +235,7 @@ class App extends BaseApp {
 		$this->register_post_types();
 		$this->register_hive_meta();
 		$this->register_visit_meta();
+
 		flush_rewrite_rules();
 	}
 

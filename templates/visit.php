@@ -24,7 +24,7 @@ $is_new_visit    = 'new' === $hive_visit_slug;
 $hive_visit_id   = $is_new_visit ? 0 : absint( $hive_visit_slug );
 $hive            = $hive_id ? get_post( $hive_id ) : null;
 $visit           = $hive_visit_id ? get_post( $hive_visit_id ) : null;
-$meta_labels     = App::get_visit_boolean_meta_labels();
+$meta_labels     = Visit::get_boolean_meta_labels();
 $form_error      = '';
 
 $not_found = ! $hive
