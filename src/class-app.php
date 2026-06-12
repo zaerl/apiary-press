@@ -14,21 +14,6 @@ use WpApp\BaseApp;
  * Main plugin class. Initializes the app, registers routes, and sets up storage.
  */
 class App extends BaseApp {
-	public const VISIT_BOOLEAN_META_KEYS = array(
-		'eggs',
-		'larvae',
-		'capped_brood',
-		'queen_cells',
-		'saw_queen',
-		'added_super',
-		'check_soon',
-	);
-
-	public const HIVE_LOCATION_META_KEYS = array(
-		'latitude',
-		'longitude',
-	);
-
 	/**
 	 * Initialize the app, register routes, and set up storage.
 	 */
@@ -98,7 +83,7 @@ class App extends BaseApp {
 	 */
 	public function register_post_types(): void {
 		register_post_type(
-			Visit::HIVE_POST_TYPE,
+			Hive::HIVE_POST_TYPE,
 			array(
 				'labels'       => array(
 					'name'          => __( 'Hives', 'apiary-press' ),
@@ -135,7 +120,7 @@ class App extends BaseApp {
 				'description'  => __( 'Inspection visits for Apiary Press hives.', 'apiary-press' ),
 				'public'       => false,
 				'show_ui'      => true,
-				'show_in_menu' => 'edit.php?post_type=' . Visit::HIVE_POST_TYPE,
+				'show_in_menu' => 'edit.php?post_type=' . Hive::HIVE_POST_TYPE,
 				'show_in_rest' => true,
 				'supports'     => array( 'title', 'editor', 'author', 'custom-fields' ),
 				'map_meta_cap' => true,
@@ -147,28 +132,7 @@ class App extends BaseApp {
 	 * Register the location post meta fields for the hive post type.
 	 */
 	public function register_hive_meta(): void {
-		foreach ( self::HIVE_LOCATION_META_KEYS as $meta_key ) {
-			register_post_meta(
-				Visit::HIVE_POST_TYPE,
-				$meta_key,
-				array(
-					'type'              => 'number',
-					'single'            => true,
-					'show_in_rest'      => true,
-					'sanitize_callback' => array( $this, 'sanitize_number_meta' ),
-					'auth_callback'     => function ( ...$args ) {
-						$post_id = isset( $args[2] ) ? absint( $args[2] ) : 0;
-						$user_id = isset( $args[3] ) ? absint( $args[3] ) : get_current_user_id();
-
-						if ( $post_id ) {
-							return user_can( $user_id, 'edit_post', $post_id );
-						}
-
-						return user_can( $user_id, 'edit_posts' );
-					},
-				)
-			);
-		}
+		Hive::register_hive_meta();
 	}
 
 	/**

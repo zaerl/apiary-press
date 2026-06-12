@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $hives = get_posts(
 	array(
-		'post_type'        => Visit::HIVE_POST_TYPE,
+		'post_type'        => Hive::HIVE_POST_TYPE,
 		'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
 		'author'           => get_current_user_id(),
 		'numberposts'      => -1,
@@ -189,7 +189,7 @@ $hives = get_posts(
 				<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'hive/new' ) ); ?>">
 					<?php echo esc_html__( 'New Hive', 'apiary-press' ); ?>
 				</a>
-				<a class="admin-link" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . Visit::HIVE_POST_TYPE ) ); ?>">
+				<a class="admin-link" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . Hive::HIVE_POST_TYPE ) ); ?>">
 					<?php echo esc_html__( 'WordPress Admin', 'apiary-press' ); ?>
 				</a>
 			</div>

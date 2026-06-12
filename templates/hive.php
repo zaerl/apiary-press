@@ -21,7 +21,7 @@ global $wp_app_route;
 $route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
 $hive_id      = isset( $route_params['id'] ) ? absint( $route_params['id'] ) : absint( get_query_var( 'id' ) );
 $hive         = $hive_id ? get_post( $hive_id ) : null;
-$not_found    = ! $hive || Visit::HIVE_POST_TYPE !== $hive->post_type;
+$not_found    = ! $hive || Hive::HIVE_POST_TYPE !== $hive->post_type;
 $forbidden    = ! $not_found && ! current_user_can( 'edit_post', $hive_id );
 $meta_labels  = Visit::get_boolean_meta_labels();
 $hive_url     = '';

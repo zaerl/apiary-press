@@ -86,7 +86,7 @@ $is_new_hive  = 0 === $hive_id;
 $hive         = $hive_id ? get_post( $hive_id ) : null;
 $form_error   = '';
 
-$not_found = ! $is_new_hive && ( ! $hive || Visit::HIVE_POST_TYPE !== $hive->post_type );
+$not_found = ! $is_new_hive && ( ! $hive || Hive::HIVE_POST_TYPE !== $hive->post_type );
 $forbidden = ! $not_found && ( $is_new_hive ? ! current_user_can( 'edit_posts' ) : ! current_user_can( 'edit_post', $hive_id ) );
 
 if ( $not_found ) {
@@ -117,7 +117,7 @@ if ( ! $not_found && ! $forbidden && $is_new_hive && 'create_hive' === $action )
 	} else {
 		$new_hive_id = wp_insert_post(
 			array(
-				'post_type'    => Visit::HIVE_POST_TYPE,
+				'post_type'    => Hive::HIVE_POST_TYPE,
 				'post_status'  => 'publish',
 				'post_title'   => $title,
 				'post_content' => $notes,

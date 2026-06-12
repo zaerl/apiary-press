@@ -28,7 +28,7 @@ $meta_labels     = Visit::get_boolean_meta_labels();
 $form_error      = '';
 
 $not_found = ! $hive
-	|| Visit::HIVE_POST_TYPE !== $hive->post_type
+	|| Hive::HIVE_POST_TYPE !== $hive->post_type
 	|| ( ! $is_new_visit && ( ! $visit || Visit::HIVE_VISIT_POST_TYPE !== $visit->post_type || absint( $visit->post_parent ) !== $hive_id ) );
 
 $forbidden = ! $not_found && ( $is_new_visit ? ! current_user_can( 'edit_post', $hive_id ) : ! current_user_can( 'edit_post', $hive_visit_id ) );
@@ -88,7 +88,7 @@ if ( ! $not_found && ! $forbidden && $is_new_visit && 'create_visit' === $action
 			if ( is_wp_error( $visit_id ) ) {
 				$form_error = $visit_id->get_error_message();
 			} else {
-				foreach ( App::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
+				foreach ( Visit::VISIT_BOOLEAN_META_KEYS as $meta_key ) {
 					update_post_meta( $visit_id, $meta_key, in_array( $meta_key, $selected_meta, true ) ? '1' : '0' );
 				}
 
