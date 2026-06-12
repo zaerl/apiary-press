@@ -284,19 +284,10 @@ if ( ! $not_found && ! $forbidden ) {
 			font-weight: 800;
 			line-height: 1.2;
 		}
-		.weather-chips {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 7px;
-		}
-		.weather-chip {
-			background: rgba(42, 116, 161, 0.12);
-			border: 1px solid rgba(42, 116, 161, 0.35);
-			border-radius: 999px;
-			display: inline-flex;
-			font-size: 13px;
-			font-weight: 700;
-			padding: 5px 9px;
+		.weather-icon {
+			display: block;
+			height: 48px;
+			width: 48px;
 		}
 		.muted {
 			color: var(--wp-app-color-muted);
@@ -411,16 +402,17 @@ if ( ! $not_found && ! $forbidden ) {
 									<p class="visit-notes"><?php echo esc_html( wp_strip_all_tags( $visit->post_content ) ); ?></p>
 								<?php endif; ?>
 
-								<?php if ( $weather_error || ! empty( $weather_summary ) ) : ?>
+								<?php
+								$weather_icon_html = $weather_icon ? Weather::render_symbol_icon_html( $weather_icon, 48 ) : '';
+								?>
+								<?php if ( $weather_error || $weather_icon_html ) : ?>
 									<div class="weather-summary" aria-label="<?php echo esc_attr__( 'Registered weather', 'apiary-press' ); ?>">
 										<div class="weather-title"><?php echo esc_html__( 'Registered Weather', 'apiary-press' ); ?></div>
 
 										<?php if ( $weather_error ) : ?>
 											<div class="muted"><?php echo esc_html( $weather_error ); ?></div>
 										<?php else : ?>
-											<div class="weather-chips">
-												<span class="weather-chip"><?php echo esc_html( $weather_icon ); ?></span>
-											</div>
+											<?php echo $weather_icon_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 										<?php endif; ?>
 									</div>
 								<?php endif; ?>

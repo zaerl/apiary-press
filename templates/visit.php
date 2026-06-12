@@ -200,12 +200,19 @@ if ( ! $not_found && ! $is_new_visit ) {
 	foreach ( Weather::FORECAST_UNITS as $meta_key => $label ) {
 		$value = get_post_meta( $hive_visit_id, $meta_key, true );
 
-		if ( '' !== $value && null !== $value ) {
-			$value = Weather::get_forecast_display_value( $meta_key, $value );
+		if ( '' === $value || null === $value ) {
+			continue;
+		}
 
-			if ( $value ) {
-				$weather_values[ $meta_key ] = $value;
-			}
+		if ( 'symbol_code' === $meta_key ) {
+			$weather_values[ $meta_key ] = $value;
+			continue;
+		}
+
+		$value = Weather::get_forecast_display_value( $meta_key, $value );
+
+		if ( $value ) {
+			$weather_values[ $meta_key ] = $value;
 		}
 	}
 }
@@ -409,6 +416,12 @@ if ( $form_error ) {
 			line-height: 1.3;
 			margin: 0 0 10px;
 		}
+		.weather-icon {
+			display: block;
+			height: 64px;
+			margin: 0 0 12px;
+			width: 64px;
+		}
 		.weather-list {
 			display: grid;
 			gap: 9px;
@@ -578,8 +591,14 @@ if ( $form_error ) {
 							<?php elseif ( empty( $weather_values ) ) : ?>
 								<div class="muted"><?php echo esc_html__( 'No weather snapshot recorded.', 'apiary-press' ); ?></div>
 							<?php else : ?>
+								<?php
+								echo Weather::render_symbol_icon_html( $weather_values['symbol_code'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								?>
 								<dl class="weather-list">
 									<?php foreach ( $weather_values as $name => $weather_value ) : ?>
+										<?php if ( 'symbol_code' === $name ) : ?>
+											<?php continue; ?>
+										<?php endif; ?>
 										<div>
 											<dt><?php echo esc_html( $name ); ?></dt>
 											<dd><?php echo esc_html( $weather_value ); ?></dd>

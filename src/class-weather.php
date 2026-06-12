@@ -107,6 +107,33 @@ class Weather {
 	}
 
 	/**
+	 * Render an <img> tag for a MET Weather symbol code, or '' if the code is invalid or the SVG is missing.
+	 *
+	 * @param string $symbol_code The MET Weather symbol code, e.g. 'clearsky_day'.
+	 * @param int    $size        Pixel size for the rendered icon (width and height).
+	 */
+	public static function render_symbol_icon_html( string $symbol_code, int $size = 64 ): string {
+		if ( ! preg_match( '/^[a-z_]+$/', $symbol_code ) ) {
+			return '';
+		}
+
+		$plugin_root = dirname( __DIR__ );
+
+		if ( ! file_exists( $plugin_root . '/assets/' . $symbol_code . '.svg' ) ) {
+			return '';
+		}
+
+		$icon_url = plugins_url( 'assets/' . $symbol_code . '.svg', $plugin_root . '/apiary-press.php' );
+
+		return sprintf(
+			'<img class="weather-icon" src="%1$s" alt="%2$s" width="%3$d" height="%3$d">',
+			esc_url( $icon_url ),
+			esc_attr( str_replace( '_', ' ', $symbol_code ) ),
+			(int) $size
+		);
+	}
+
+	/**
 	 * Format a numeric weather value to one decimal place, trimming trailing zeros.
 	 *
 	 * @param mixed $value The value to format.
