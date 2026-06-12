@@ -19,7 +19,7 @@ class Hive {
 	);
 
 	/**
-	 * Register the hive and hive visit custom post types.
+	 * Register the hive custom post types.
 	 */
 	public static function register_post_types(): void {
 		register_post_type(
