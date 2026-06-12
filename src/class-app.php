@@ -54,11 +54,14 @@ class App extends BaseApp {
 	 */
 	protected function setup_routes(): void {
 		$this->app->route( '' );
-		$this->app->route( 'hive/new', 'hive-form.php' );
-		$this->app->route( 'hive/{id}', 'hive.php' );
-		$this->app->route( 'hive/{id}/edit', 'hive-form.php' );
-		$this->app->route( 'hive/{id}/qr', 'hive-qr.php' );
-		$this->app->route( 'hive/{id}/visit/{hive_visit}', 'visit.php' );
+		$this->app->route( 'apiary/new', 'apiary-form.php' );
+		$this->app->route( 'apiary/{id}', 'apiary.php' );
+		$this->app->route( 'apiary/{id}/edit', 'apiary-form.php' );
+		$this->app->route( 'apiary/{apiary_id}/hive/new', 'hive-form.php' );
+		$this->app->route( 'apiary/{apiary_id}/hive/{id}', 'hive.php' );
+		$this->app->route( 'apiary/{apiary_id}/hive/{id}/edit', 'hive-form.php' );
+		$this->app->route( 'apiary/{apiary_id}/hive/{id}/qr', 'hive-qr.php' );
+		$this->app->route( 'apiary/{apiary_id}/hive/{id}/visit/{hive_visit}', 'visit.php' );
 	}
 
 	/**
@@ -72,8 +75,8 @@ class App extends BaseApp {
 	 */
 	protected function setup_menu(): void {
 		$this->app->add_menu_item(
-			'hives',
-			__( 'Hives', 'apiary-press' ),
+			'apiaries',
+			__( 'Apiaries', 'apiary-press' ),
 			home_url( '/' . $this->get_url_path() . '/' )
 		);
 	}

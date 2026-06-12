@@ -18,17 +18,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $wp_app_route;
 
 $appr_route_params    = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$appr_apiary_id       = isset( $appr_route_params['apiary_id'] ) ? absint( $appr_route_params['apiary_id'] ) : absint( get_query_var( 'apiary_id' ) );
 $appr_hive_id         = isset( $appr_route_params['id'] ) ? absint( $appr_route_params['id'] ) : absint( get_query_var( 'id' ) );
 $appr_hive_visit_slug = isset( $appr_route_params['hive_visit'] ) ? sanitize_key( $appr_route_params['hive_visit'] ) : sanitize_key( get_query_var( 'hive_visit' ) );
 $appr_is_new_visit    = 'new' === $appr_hive_visit_slug;
 $appr_hive_visit_id   = $appr_is_new_visit ? 0 : absint( $appr_hive_visit_slug );
+$appr_apiary          = $appr_apiary_id ? get_post( $appr_apiary_id ) : null;
 $appr_hive            = $appr_hive_id ? get_post( $appr_hive_id ) : null;
 $appr_visit           = $appr_hive_visit_id ? get_post( $appr_hive_visit_id ) : null;
 $appr_meta_labels     = Visit::get_boolean_meta_labels();
 $appr_form_error      = '';
 
-$appr_not_found = ! $appr_hive
+$appr_not_found = ! $appr_apiary
+	|| Apiary::APIARY_POST_TYPE !== $appr_apiary->post_type
+	|| ! $appr_hive
 	|| Hive::HIVE_POST_TYPE !== $appr_hive->post_type
+	|| absint( $appr_hive->post_parent ) !== $appr_apiary_id
 	|| ( ! $appr_is_new_visit && ( ! $appr_visit || Visit::HIVE_VISIT_POST_TYPE !== $appr_visit->post_type || absint( $appr_visit->post_parent ) !== $appr_hive_id ) );
 
 $appr_forbidden = ! $appr_not_found && ( $appr_is_new_visit ? ! current_user_can( 'edit_post', $appr_hive_id ) : ! current_user_can( 'edit_post', $appr_hive_visit_id ) );
@@ -96,7 +101,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_visit && 'create_vis
 
 				Weather::store_visit_weather_snapshot( $appr_visit_id, $appr_hive_id, $appr_visit_date_raw, $appr_visit_time_raw );
 
-				wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit_id ) ) ) );
+				wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit_id ) ) ) );
 				exit;
 			}
 		}
@@ -116,7 +121,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'delete_v
 		if ( ! $appr_deleted ) {
 			$appr_form_error = __( 'The visit could not be removed.', 'apiary-press' );
 		} else {
-			wp_safe_redirect( add_query_arg( 'visit_deleted', '1', App::get_url( 'hive/' . $appr_hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'visit_deleted', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ) );
 			exit;
 		}
 	}
@@ -167,13 +172,13 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'update_v
 			if ( is_wp_error( $appr_updated_id ) ) {
 				$appr_form_error = $appr_updated_id->get_error_message();
 			} else {
-				foreach ( App::VISIT_BOOLEAN_META_KEYS as $appr_meta_key ) {
+				foreach ( Visit::VISIT_BOOLEAN_META_KEYS as $appr_meta_key ) {
 					update_post_meta( $appr_hive_visit_id, $appr_meta_key, in_array( $appr_meta_key, $appr_selected_meta, true ) ? '1' : '0' );
 				}
 
 				update_post_meta( $appr_hive_visit_id, Visit::REASON_META_KEY, $appr_reason_value );
 
-				wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ) );
+				wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ) );
 				exit;
 			}
 		}
@@ -488,7 +493,7 @@ if ( $appr_form_error ) {
 			<section class="message">
 				<h1><?php echo esc_html__( 'Visit Not Found', 'apiary-press' ); ?></h1>
 				<p class="visit-notes"><?php echo esc_html__( 'The requested visit is not available for this hive.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Apiaries', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php elseif ( $appr_forbidden ) : ?>
 			<section class="message">
@@ -502,12 +507,12 @@ if ( $appr_form_error ) {
 					);
 					?>
 				</p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_hive ) ); ?></a>
+					<a class="crumb" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_hive ) ); ?></a>
 					<h1>
 						<?php
 						echo esc_html(
@@ -552,7 +557,7 @@ if ( $appr_form_error ) {
 			<div class="layout <?php echo $appr_is_new_visit ? 'layout-single' : ''; ?>">
 				<section class="panel" aria-labelledby="edit-visit-heading">
 					<h2 id="edit-visit-heading"><?php echo esc_html( $appr_form_heading ); ?></h2>
-					<form method="post" action="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id . '/visit/' . $appr_form_url_visit ) ); ?>">
+					<form method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_form_url_visit ) ); ?>">
 						<input type="hidden" name="ap_action" value="<?php echo esc_attr( $appr_form_action ); ?>">
 						<?php wp_nonce_field( $appr_form_nonce, 'ap_nonce' ); ?>
 
@@ -657,7 +662,7 @@ if ( $appr_form_error ) {
 							<?php endif; ?>
 						</div>
 
-						<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ); ?>">
+						<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ); ?>">
 							<input type="hidden" name="ap_action" value="delete_visit">
 							<?php wp_nonce_field( 'ap_delete_visit_' . $appr_hive_visit_id, 'ap_delete_nonce' ); ?>
 							<p class="danger-text"><?php echo esc_html__( 'Remove this visit from the hive record.', 'apiary-press' ); ?></p>

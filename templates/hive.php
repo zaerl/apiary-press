@@ -19,9 +19,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $wp_app_route;
 
 $appr_route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$appr_apiary_id    = isset( $appr_route_params['apiary_id'] ) ? absint( $appr_route_params['apiary_id'] ) : absint( get_query_var( 'apiary_id' ) );
 $appr_hive_id      = isset( $appr_route_params['id'] ) ? absint( $appr_route_params['id'] ) : absint( get_query_var( 'id' ) );
+$appr_apiary       = $appr_apiary_id ? get_post( $appr_apiary_id ) : null;
 $appr_hive         = $appr_hive_id ? get_post( $appr_hive_id ) : null;
-$appr_not_found    = ! $appr_hive || Hive::HIVE_POST_TYPE !== $appr_hive->post_type;
+$appr_not_found    = ! $appr_apiary
+	|| Apiary::APIARY_POST_TYPE !== $appr_apiary->post_type
+	|| ! $appr_hive
+	|| Hive::HIVE_POST_TYPE !== $appr_hive->post_type
+	|| absint( $appr_hive->post_parent ) !== $appr_apiary_id;
 $appr_forbidden    = ! $appr_not_found && ! current_user_can( 'edit_post', $appr_hive_id );
 $appr_meta_labels  = Visit::get_boolean_meta_labels();
 $appr_hive_url     = '';
@@ -36,7 +42,7 @@ if ( $appr_not_found ) {
 $appr_visits = array();
 
 if ( ! $appr_not_found && ! $appr_forbidden ) {
-	$appr_hive_url = App::get_url( 'hive/' . $appr_hive_id );
+	$appr_hive_url = App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id );
 	$appr_hive_qr  = ( new QRCode() )->render( $appr_hive_url );
 
 	$appr_visits = get_posts(
@@ -315,31 +321,31 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 			<section class="message">
 				<h1><?php echo esc_html__( 'Hive Not Found', 'apiary-press' ); ?></h1>
 				<p class="hive-notes"><?php echo esc_html__( 'The requested hive is not available.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Apiaries', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php elseif ( $appr_forbidden ) : ?>
 			<section class="message">
 				<h1><?php echo esc_html__( 'Access Denied', 'apiary-press' ); ?></h1>
 				<p class="hive-notes"><?php echo esc_html__( 'You do not have permission to edit this hive.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Apiaries', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></a>
+					<a class="crumb" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_apiary ) ); ?></a>
 					<h1><?php echo esc_html( get_the_title( $appr_hive ) ); ?></h1>
 					<?php if ( trim( $appr_hive->post_content ) ) : ?>
 						<p class="hive-notes"><?php echo esc_html( wp_strip_all_tags( $appr_hive->post_content ) ); ?></p>
 					<?php endif; ?>
 				</div>
 				<div class="actions">
-					<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id . '/visit/new' ) ); ?>">
+					<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/new' ) ); ?>">
 						<?php echo esc_html__( 'New Visit', 'apiary-press' ); ?>
 					</a>
-					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id . '/qr' ) ); ?>">
+					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/qr' ) ); ?>">
 						<?php echo esc_html__( 'Print QR', 'apiary-press' ); ?>
 					</a>
-					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id . '/edit' ) ); ?>">
+					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/edit' ) ); ?>">
 						<?php echo esc_html__( 'Edit Hive', 'apiary-press' ); ?>
 					</a>
 				</div>
@@ -370,7 +376,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 					<div>
 						<h2 id="hive-qr-heading"><?php echo esc_html__( 'Hive QR', 'apiary-press' ); ?></h2>
 						<a class="qr-link" href="<?php echo esc_url( $appr_hive_url ); ?>"><?php echo esc_html( $appr_hive_url ); ?></a>
-						<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id . '/qr' ) ); ?>"><?php echo esc_html__( 'Print QR', 'apiary-press' ); ?></a></p>
+						<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/qr' ) ); ?>"><?php echo esc_html__( 'Print QR', 'apiary-press' ); ?></a></p>
 					</div>
 				</section>
 			<?php endif; ?>
@@ -411,7 +417,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 											?>
 										</div>
 									</div>
-									<a href="<?php echo esc_url( App::get_url( 'hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit->ID ) ) ); ?>" class="muted">
+									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit->ID ) ) ); ?>" class="muted">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>
 								</div>

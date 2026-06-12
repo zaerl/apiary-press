@@ -81,13 +81,17 @@ if ( ! function_exists( 'appr_update_coordinate_meta' ) ) {
 global $wp_app_route;
 
 $appr_route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
+$appr_apiary_id    = isset( $appr_route_params['apiary_id'] ) ? absint( $appr_route_params['apiary_id'] ) : absint( get_query_var( 'apiary_id' ) );
 $appr_hive_id      = isset( $appr_route_params['id'] ) ? absint( $appr_route_params['id'] ) : absint( get_query_var( 'id' ) );
 $appr_is_new_hive  = 0 === $appr_hive_id;
+$appr_apiary       = $appr_apiary_id ? get_post( $appr_apiary_id ) : null;
 $appr_hive         = $appr_hive_id ? get_post( $appr_hive_id ) : null;
 $appr_form_error   = '';
 
-$appr_not_found = ! $appr_is_new_hive && ( ! $appr_hive || Hive::HIVE_POST_TYPE !== $appr_hive->post_type );
-$appr_forbidden = ! $appr_not_found && ( $appr_is_new_hive ? ! current_user_can( 'edit_posts' ) : ! current_user_can( 'edit_post', $appr_hive_id ) );
+$appr_not_found = ! $appr_apiary
+	|| Apiary::APIARY_POST_TYPE !== $appr_apiary->post_type
+	|| ( ! $appr_is_new_hive && ( ! $appr_hive || Hive::HIVE_POST_TYPE !== $appr_hive->post_type || absint( $appr_hive->post_parent ) !== $appr_apiary_id ) );
+$appr_forbidden = ! $appr_not_found && ( $appr_is_new_hive ? ! current_user_can( 'edit_post', $appr_apiary_id ) : ! current_user_can( 'edit_post', $appr_hive_id ) );
 
 if ( $appr_not_found ) {
 	status_header( 404 );
@@ -121,6 +125,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_hive && 'create_hive
 				'post_status'  => 'publish',
 				'post_title'   => $appr_title,
 				'post_content' => $appr_notes,
+				'post_parent'  => $appr_apiary_id,
 				'post_author'  => get_current_user_id(),
 			),
 			true
@@ -132,7 +137,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_hive && 'create_hive
 			appr_update_coordinate_meta( $appr_new_hive_id, 'latitude', $appr_latitude_input['value'] );
 			appr_update_coordinate_meta( $appr_new_hive_id, 'longitude', $appr_longitude_input['value'] );
 
-			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'hive/' . absint( $appr_new_hive_id ) ) ) );
+			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . absint( $appr_new_hive_id ) ) ) );
 			exit;
 		}
 	}
@@ -161,6 +166,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'update_hi
 				'ID'           => $appr_hive_id,
 				'post_title'   => $appr_title,
 				'post_content' => $appr_notes,
+				'post_parent'  => $appr_apiary_id,
 			),
 			true
 		);
@@ -171,7 +177,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'update_hi
 			appr_update_coordinate_meta( $appr_hive_id, 'latitude', $appr_latitude_input['value'] );
 			appr_update_coordinate_meta( $appr_hive_id, 'longitude', $appr_longitude_input['value'] );
 
-			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'hive/' . $appr_hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ) );
 			exit;
 		}
 	}
@@ -188,7 +194,7 @@ $appr_hive_longitude = ! $appr_not_found && ! $appr_is_new_hive ? get_post_meta(
 $appr_page_title     = $appr_is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
 $appr_form_action    = $appr_is_new_hive ? 'create_hive' : 'update_hive';
 $appr_form_nonce     = $appr_is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $appr_hive_id;
-$appr_form_url       = $appr_is_new_hive ? App::get_url( 'hive/new' ) : App::get_url( 'hive/' . $appr_hive_id . '/edit' );
+$appr_form_url       = $appr_is_new_hive ? App::get_url( 'apiary/' . $appr_apiary_id . '/hive/new' ) : App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/edit' );
 $appr_button_text    = $appr_is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
 
 if ( $appr_form_error ) {
@@ -355,7 +361,7 @@ if ( $appr_form_error ) {
 			<section class="message">
 				<h1><?php echo esc_html__( 'Hive Not Found', 'apiary-press' ); ?></h1>
 				<p class="hive-notes"><?php echo esc_html__( 'The requested hive is not available.', 'apiary-press' ); ?></p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Apiaries', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php elseif ( $appr_forbidden ) : ?>
 			<section class="message">
@@ -369,13 +375,13 @@ if ( $appr_form_error ) {
 					);
 					?>
 				</p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Hives', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Apiaries', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( $appr_is_new_hive ? App::get_url() : App::get_url( 'hive/' . $appr_hive_id ) ); ?>">
-						<?php echo esc_html( $appr_is_new_hive ? __( 'Hives', 'apiary-press' ) : get_the_title( $appr_hive ) ); ?>
+					<a class="crumb" href="<?php echo esc_url( $appr_is_new_hive ? App::get_url( 'apiary/' . $appr_apiary_id ) : App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>">
+						<?php echo esc_html( $appr_is_new_hive ? get_the_title( $appr_apiary ) : get_the_title( $appr_hive ) ); ?>
 					</a>
 					<h1><?php echo esc_html( $appr_page_title ); ?></h1>
 				</div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Index template for listing all hives in the Apiary Press app.
+ * Index template for listing all apiaries in the Apiary Press app.
  *
  * @package ApiaryPress
  */
@@ -8,15 +8,14 @@
 namespace ApiaryPress;
 
 use ApiaryPress\App;
-use ApiaryPress\Visit;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$appr_hives = get_posts(
+$appr_apiaries = get_posts(
 	array(
-		'post_type'        => Hive::HIVE_POST_TYPE,
+		'post_type'        => Apiary::APIARY_POST_TYPE,
 		'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
 		'author'           => get_current_user_id(),
 		'numberposts'      => -1,
@@ -31,7 +30,7 @@ $appr_hives = get_posts(
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_app_title( __( 'Hives', 'apiary-press' ) ); ?></title>
+	<title><?php wp_app_title( __( 'Apiaries', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
 	<style>
 		:root { color-scheme: light dark; }
@@ -105,32 +104,32 @@ $appr_hives = get_posts(
 			background: rgba(30, 130, 76, 0.12);
 			border: 1px solid rgba(30, 130, 76, 0.35);
 		}
-		.hive-row,
+		.apiary-row,
 		.empty-state {
 			background: var(--wp-app-color-surface);
 			border: 1px solid var(--wp-app-color-border);
 			border-radius: 8px;
 		}
-		.hive-list {
+		.apiary-list {
 			display: grid;
 			gap: 12px;
 		}
-		.hive-row {
+		.apiary-row {
 			display: grid;
 			gap: 16px;
 			grid-template-columns: 1fr auto;
 			padding: 18px;
 		}
-		.hive-row h3 {
+		.apiary-row h3 {
 			margin: 0 0 6px;
 			font-size: 20px;
 			letter-spacing: 0;
 		}
-		.hive-row h3 a {
+		.apiary-row h3 a {
 			color: var(--wp-app-color-text);
 			text-decoration: none;
 		}
-		.hive-row h3 a:hover { color: var(--wp-app-color-link); }
+		.apiary-row h3 a:hover { color: var(--wp-app-color-link); }
 		.meta {
 			color: var(--wp-app-color-muted);
 			font-size: 13px;
@@ -149,20 +148,6 @@ $appr_hives = get_posts(
 			min-width: 128px;
 			text-align: right;
 		}
-		.badge {
-			background: var(--wp-app-color-surface-alt);
-			border: 1px solid var(--wp-app-color-border);
-			border-radius: 999px;
-			display: inline-flex;
-			font-size: 13px;
-			font-weight: 700;
-			padding: 5px 9px;
-		}
-		.badge-attention {
-			background: rgba(214, 126, 0, 0.14);
-			border-color: rgba(214, 126, 0, 0.4);
-			color: inherit;
-		}
 		.empty-state {
 			padding: 24px;
 			color: var(--wp-app-color-muted);
@@ -171,7 +156,7 @@ $appr_hives = get_posts(
 			.shell { width: min(100% - 24px, 1120px); padding-top: 24px; }
 			.topbar { align-items: flex-start; flex-direction: column; }
 			.actions { justify-content: flex-start; }
-			.hive-row { grid-template-columns: 1fr; }
+			.apiary-row { grid-template-columns: 1fr; }
 			.stats { align-items: flex-start; text-align: left; }
 		}
 	</style>
@@ -183,81 +168,60 @@ $appr_hives = get_posts(
 		<header class="topbar">
 			<div>
 				<p class="eyebrow"><?php echo esc_html__( 'Apiary Press', 'apiary-press' ); ?></p>
-				<h1><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></h1>
+				<h1><?php echo esc_html__( 'Apiaries', 'apiary-press' ); ?></h1>
 			</div>
 			<div class="actions">
-				<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'hive/new' ) ); ?>">
-					<?php echo esc_html__( 'New Hive', 'apiary-press' ); ?>
+				<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/new' ) ); ?>">
+					<?php echo esc_html__( 'New Apiary', 'apiary-press' ); ?>
 				</a>
-				<a class="admin-link" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . Hive::HIVE_POST_TYPE ) ); ?>">
+				<a class="admin-link" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . Apiary::APIARY_POST_TYPE ) ); ?>">
 					<?php echo esc_html__( 'WordPress Admin', 'apiary-press' ); ?>
 				</a>
 			</div>
 		</header>
 
 		<?php if ( isset( $_GET['deleted'] ) ) : ?>
-			<div class="notice"><?php echo esc_html__( 'Hive removed.', 'apiary-press' ); ?></div>
+			<div class="notice"><?php echo esc_html__( 'Apiary removed.', 'apiary-press' ); ?></div>
 		<?php endif; ?>
 
-		<section aria-labelledby="hive-list-heading">
-			<h2 id="hive-list-heading"><?php echo esc_html__( 'Saved Hives', 'apiary-press' ); ?></h2>
+		<section aria-labelledby="apiary-list-heading">
+			<h2 id="apiary-list-heading"><?php echo esc_html__( 'Saved Apiaries', 'apiary-press' ); ?></h2>
 
-			<?php if ( empty( $appr_hives ) ) : ?>
-				<div class="empty-state"><?php echo esc_html__( 'No hives yet.', 'apiary-press' ); ?></div>
+			<?php if ( empty( $appr_apiaries ) ) : ?>
+				<div class="empty-state"><?php echo esc_html__( 'No apiaries yet.', 'apiary-press' ); ?></div>
 			<?php else : ?>
-				<div class="hive-list">
-					<?php foreach ( $appr_hives as $appr_hive ) : ?>
+				<div class="apiary-list">
+					<?php foreach ( $appr_apiaries as $appr_apiary ) : ?>
 						<?php
-						$appr_visit_ids = get_posts(
+						$appr_hive_ids = get_posts(
 							array(
-								'post_type'        => Visit::HIVE_VISIT_POST_TYPE,
+								'post_type'        => Hive::HIVE_POST_TYPE,
 								'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
-								'post_parent'      => $appr_hive->ID,
+								'post_parent'      => $appr_apiary->ID,
 								'numberposts'      => -1,
 								'fields'           => 'ids',
 								'suppress_filters' => false,
 							)
 						);
 
-						$appr_latest_visit = get_posts(
-							array(
-								'post_type'        => Visit::HIVE_VISIT_POST_TYPE,
-								'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
-								'post_parent'      => $appr_hive->ID,
-								'numberposts'      => 1,
-								'orderby'          => 'date',
-								'order'            => 'DESC',
-								'suppress_filters' => false,
-							)
-						);
-
-						$appr_latest_visit_id = ! empty( $appr_latest_visit ) ? $appr_latest_visit[0]->ID : 0;
-						$appr_check_soon      = $appr_latest_visit_id ? rest_sanitize_boolean( get_post_meta( $appr_latest_visit_id, 'check_soon', true ) ) : false;
-						$appr_summary         = wp_trim_words( wp_strip_all_tags( $appr_hive->post_content ), 24 );
+						$appr_summary = wp_trim_words( wp_strip_all_tags( $appr_apiary->post_content ), 24 );
 						?>
-						<article class="hive-row">
+						<article class="apiary-row">
 							<div>
 								<h3>
-									<a href="<?php echo esc_url( App::get_url( 'hive/' . absint( $appr_hive->ID ) ) ); ?>">
-										<?php echo esc_html( get_the_title( $appr_hive ) ); ?>
+									<a href="<?php echo esc_url( App::get_url( 'apiary/' . absint( $appr_apiary->ID ) ) ); ?>">
+										<?php echo esc_html( get_the_title( $appr_apiary ) ); ?>
 									</a>
 								</h3>
 								<div class="meta">
-									<?php echo esc_html( sprintf( _n( '%d visit', '%d visits', count( $appr_visit_ids ), 'apiary-press' ), count( $appr_visit_ids ) ) ); ?>
-									<?php if ( $appr_latest_visit_id ) : ?>
-										<?php echo esc_html( ' / ' ); ?>
-										<?php echo esc_html( sprintf( __( 'Last visit %s', 'apiary-press' ), mysql2date( get_option( 'date_format' ), $appr_latest_visit[0]->post_date ) ) ); ?>
-									<?php endif; ?>
+									<?php echo esc_html( sprintf( _n( '%d hive', '%d hives', count( $appr_hive_ids ), 'apiary-press' ), count( $appr_hive_ids ) ) ); ?>
 								</div>
 								<?php if ( $appr_summary ) : ?>
 									<p class="summary"><?php echo esc_html( $appr_summary ); ?></p>
 								<?php endif; ?>
 							</div>
 							<div class="stats">
-								<?php if ( $appr_check_soon ) : ?>
-									<span class="badge badge-attention"><?php echo esc_html__( 'Check soon', 'apiary-press' ); ?></span>
-								<?php endif; ?>
-								<a class="admin-link" href="<?php echo esc_url( App::get_url( 'hive/' . absint( $appr_hive->ID ) ) ); ?>">
+								<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . absint( $appr_apiary->ID ) ) ); ?>">
 									<?php echo esc_html__( 'Open', 'apiary-press' ); ?>
 								</a>
 							</div>
