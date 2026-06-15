@@ -119,11 +119,11 @@ class Weather {
 
 		$plugin_root = dirname( __DIR__ );
 
-		if ( ! file_exists( $plugin_root . '/assets/' . $symbol_code . '.svg' ) ) {
+		if ( ! file_exists( $plugin_root . '/assets/weather/' . $symbol_code . '.svg' ) ) {
 			return '';
 		}
 
-		$icon_url = plugins_url( 'assets/' . $symbol_code . '.svg', $plugin_root . '/apiary-press.php' );
+		$icon_url = plugins_url( 'assets/weather/' . $symbol_code . '.svg', $plugin_root . '/apiary-press.php' );
 
 		return sprintf(
 			'<img class="weather-icon" src="%1$s" alt="%2$s" width="%3$d" height="%3$d">',
