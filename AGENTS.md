@@ -9,6 +9,7 @@ record visits they make to those hives.
 
 ## Domain Notes
 
+- An apiary is a list of hives, usually positioned in the same geographic area.
 - A hive represents a beehive being tracked by the beekeeper.
 - A visit represents an inspection or activity performed on a hive.
 - Changes should preserve the plugin's WordPress integration and WpApp-based
