@@ -29,6 +29,7 @@ class App extends BaseApp {
 			)
 		);
 
+		load_plugin_textdomain( 'apiary-press', false, 'apiary-press/languages' );
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_action( 'init', array( $this, 'register_apiary_meta' ) );
 		add_action( 'init', array( $this, 'register_hive_meta' ) );
