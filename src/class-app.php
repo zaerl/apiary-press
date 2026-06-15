@@ -90,13 +90,19 @@ class App extends BaseApp {
 	 */
 	protected function setup_routes(): void {
 		$this->app->route( '' );
+
+		// Apiary routes:
 		$this->app->route( 'apiary/new', 'apiary-form.php' );
 		$this->app->route( 'apiary/{id}', 'apiary.php' );
 		$this->app->route( 'apiary/{id}/edit', 'apiary-form.php' );
+
+		// Hive routes:
 		$this->app->route( 'apiary/{apiary_id}/hive/new', 'hive-form.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}', 'hive.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/edit', 'hive-form.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/qr', 'hive-qr.php' );
+
+		// Hive visit, treatment, and harvest routes:
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/visit/{hive_visit}', 'visit.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/treatment/{hive_treatment}', 'treatment.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/harvest/{hive_harvest}', 'harvest.php' );

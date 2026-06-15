@@ -273,6 +273,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 			$appr_target_labels = Treatment::get_target_labels();
 			$appr_unit_labels   = Treatment::get_unit_labels();
 			$appr_ongoing_count = 0;
+
 			foreach ( $appr_treatments as $appr_treatment_post ) {
 				if ( Treatment::is_ongoing( $appr_treatment_post ) ) {
 					++$appr_ongoing_count;
