@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-15T08:28:59+00:00\n"
+"POT-Creation-Date: 2026-06-15T12:17:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: apiary-press\n"
@@ -31,7 +31,7 @@ msgid "Francesco Bigiarini"
 msgstr ""
 
 #: src/class-apiary.php:24
-#: src/class-app.php:92
+#: src/class-app.php:111
 #: templates/apiary-form.php:146
 #: templates/apiary.php:91
 #: templates/index.php:33
@@ -73,12 +73,12 @@ msgid "Apiaries managed in Apiary Press."
 msgstr ""
 
 #: src/class-hive.php:29
-#: templates/apiary.php:128
+#: templates/apiary.php:135
 msgid "Hives"
 msgstr ""
 
 #: src/class-hive.php:30
-#: templates/hive.php:66
+#: templates/hive.php:77
 msgid "Hive"
 msgstr ""
 
@@ -88,7 +88,7 @@ msgstr ""
 
 #: src/class-hive.php:32
 #: templates/hive-form.php:194
-#: templates/hive.php:102
+#: templates/hive.php:116
 msgid "Edit Hive"
 msgstr ""
 
@@ -187,7 +187,7 @@ msgid "Capped brood"
 msgstr ""
 
 #: src/class-visit.php:84
-#: templates/apiary.php:184
+#: templates/apiary.php:191
 msgid "Check soon"
 msgstr ""
 
@@ -338,8 +338,8 @@ msgstr ""
 #: templates/hive-form.php:237
 #: templates/hive-qr.php:63
 #: templates/hive-qr.php:69
-#: templates/hive.php:77
-#: templates/hive.php:83
+#: templates/hive.php:91
+#: templates/hive.php:97
 #: templates/visit.php:296
 msgid "Back to Apiaries"
 msgstr ""
@@ -348,7 +348,7 @@ msgstr ""
 #: templates/apiary.php:84
 #: templates/hive-form.php:227
 #: templates/hive-qr.php:67
-#: templates/hive.php:81
+#: templates/hive.php:95
 #: templates/visit.php:300
 msgid "Access Denied"
 msgstr ""
@@ -382,7 +382,7 @@ msgid "Apiary updated."
 msgstr ""
 
 #: templates/apiary.php:116
-#: templates/hive.php:108
+#: templates/hive.php:122
 msgid "Hive saved."
 msgstr ""
 
@@ -390,27 +390,27 @@ msgstr ""
 msgid "Hive removed."
 msgstr ""
 
-#: templates/apiary.php:124
+#: templates/apiary.php:128
 msgid "Hive locations"
 msgstr ""
 
-#: templates/apiary.php:131
+#: templates/apiary.php:138
 msgid "No hives yet."
 msgstr ""
 
-#: templates/apiary.php:172
+#: templates/apiary.php:179
 #, php-format
 msgid "%d visit"
 msgid_plural "%d visits"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/apiary.php:175
+#: templates/apiary.php:182
 #, php-format
 msgid "Last visit %s"
 msgstr ""
 
-#: templates/apiary.php:187
+#: templates/apiary.php:194
 #: templates/index.php:97
 msgid "Open"
 msgstr ""
@@ -464,13 +464,13 @@ msgstr ""
 
 #: templates/hive-form.php:221
 #: templates/hive-qr.php:61
-#: templates/hive.php:75
+#: templates/hive.php:89
 msgid "Hive Not Found"
 msgstr ""
 
 #: templates/hive-form.php:222
 #: templates/hive-qr.php:62
-#: templates/hive.php:76
+#: templates/hive.php:90
 msgid "The requested hive is not available."
 msgstr ""
 
@@ -479,7 +479,7 @@ msgid "You do not have permission to add hives."
 msgstr ""
 
 #: templates/hive-form.php:233
-#: templates/hive.php:82
+#: templates/hive.php:96
 msgid "You do not have permission to edit this hive."
 msgstr ""
 
@@ -517,7 +517,7 @@ msgid "%s QR"
 msgstr ""
 
 #: templates/hive-qr.php:48
-#: templates/hive.php:130
+#: templates/hive.php:144
 msgid "Hive QR"
 msgstr ""
 
@@ -528,81 +528,85 @@ msgstr ""
 #. translators: %s: the title of the hive.
 #: templates/hive-qr.php:72
 #: templates/hive-qr.php:74
-#: templates/hive.php:127
+#: templates/hive.php:141
 #, php-format
 msgid "QR code for %s"
 msgstr ""
 
-#: templates/hive.php:96
+#: templates/hive.php:110
 #: templates/visit.php:233
 #: templates/visit.php:236
 #: templates/visit.php:320
 msgid "New Visit"
 msgstr ""
 
-#: templates/hive.php:99
-#: templates/hive.php:132
+#: templates/hive.php:113
+#: templates/hive.php:146
 msgid "Print QR"
 msgstr ""
 
-#: templates/hive.php:112
+#: templates/hive.php:126
 msgid "Hive updated."
 msgstr ""
 
-#: templates/hive.php:116
+#: templates/hive.php:130
 #: templates/visit.php:346
 msgid "Visit saved."
 msgstr ""
 
-#: templates/hive.php:120
+#: templates/hive.php:134
 msgid "Visit removed."
 msgstr ""
 
-#: templates/hive.php:138
+#: templates/hive.php:152
+msgid "Hive location"
+msgstr ""
+
+#: templates/hive.php:162
 msgid "Visits"
 msgstr ""
 
-#: templates/hive.php:141
+#: templates/hive.php:165
 msgid "No visits yet."
 msgstr ""
 
 #. translators: %s: the display name of the user who recorded the visit.
-#: templates/hive.php:168
+#: templates/hive.php:192
 #: templates/visit.php:331
 #, php-format
 msgid "by %s"
 msgstr ""
 
-#: templates/hive.php:169
+#: templates/hive.php:193
 #: templates/visit.php:332
 msgid "Unknown"
 msgstr ""
 
-#: templates/hive.php:175
+#: templates/hive.php:199
 msgid "View / Edit"
 msgstr ""
 
-#: templates/hive.php:185
+#: templates/hive.php:209
 #: templates/visit.php:448
 msgid "Reason:"
 msgstr ""
 
-#: templates/hive.php:194
+#: templates/hive.php:218
 msgid "Registered weather"
 msgstr ""
 
-#: templates/hive.php:195
+#: templates/hive.php:219
 #: templates/visit.php:466
 msgid "Registered Weather"
 msgstr ""
 
-#: templates/hive.php:206
+#: templates/hive.php:230
 #: templates/visit.php:454
 msgid "No observations marked."
 msgstr ""
 
 #. translators: %d: number of media files attached to a visit.
-#: templates/hive.php:222
+#: templates/hive.php:246
 #, php-format
 msgid "%d media file"
 msgid_plural "%d media files"

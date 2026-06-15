@@ -1,723 +1,786 @@
+# Copyright (C) 2026 Francesco Bigiarini
+# This file is distributed under the same license as the Apiary Press plugin.
 msgid ""
 msgstr ""
 "Project-Id-Version: Apiary Press 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/apiary-press\n"
-"POT-Creation-Date: 2026-06-15T08:28:59+00:00\n"
-"PO-Revision-Date: 2026-06-15 14:20+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: it\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.9\n"
+"POT-Creation-Date: 2026-06-15T12:18:06+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: apiary-press\n"
 
 #. Plugin Name of the plugin
-#: apiary-press.php templates/index.php:42
+#: apiary-press.php
+#: templates/index.php:42
 msgid "Apiary Press"
-msgstr "Apiary Press"
+msgstr ""
 
 #. Description of the plugin
 #: apiary-press.php
 msgid "Take care of your 🐝"
-msgstr "Prenditi cura delle tue 🐝"
+msgstr ""
 
 #. Author of the plugin
 #: apiary-press.php
 msgid "Francesco Bigiarini"
-msgstr "Francesco Bigiarini"
+msgstr ""
 
-#: src/class-apiary.php:24 src/class-app.php:111 templates/apiary-form.php:146
-#: templates/apiary.php:91 templates/index.php:33 templates/index.php:43
+#: src/class-apiary.php:24
+#: src/class-app.php:111
+#: templates/apiary-form.php:146
+#: templates/apiary.php:91
+#: templates/index.php:33
+#: templates/index.php:43
 msgid "Apiaries"
-msgstr "Apiari"
+msgstr ""
 
-#: src/class-apiary.php:25 templates/apiary.php:68
+#: src/class-apiary.php:25
+#: templates/apiary.php:68
 msgid "Apiary"
-msgstr "Apiario"
+msgstr ""
 
 #: src/class-apiary.php:26
 msgid "Add New Apiary"
-msgstr "Aggiungi nuovo apiario"
+msgstr ""
 
-#: src/class-apiary.php:27 templates/apiary-form.php:99
+#: src/class-apiary.php:27
+#: templates/apiary-form.php:99
 #: templates/apiary.php:102
 msgid "Edit Apiary"
-msgstr "Modifica apiario"
+msgstr ""
 
-#: src/class-apiary.php:28 templates/apiary-form.php:99 templates/index.php:47
+#: src/class-apiary.php:28
+#: templates/apiary-form.php:99
+#: templates/index.php:47
 msgid "New Apiary"
-msgstr "Nuovo apiario"
+msgstr ""
 
 #: src/class-apiary.php:29
 msgid "View Apiary"
-msgstr "Visualizza apiario"
+msgstr ""
 
 #: src/class-apiary.php:30
 msgid "Search Apiaries"
-msgstr "Cerca apiari"
+msgstr ""
 
 #: src/class-apiary.php:32
 msgid "Apiaries managed in Apiary Press."
-msgstr "Apiari gestiti in Apiary Press."
+msgstr ""
 
-#: src/class-hive.php:29 templates/apiary.php:135
+#: src/class-hive.php:29
+#: templates/apiary.php:135
 msgid "Hives"
-msgstr "Alveari"
+msgstr ""
 
-#: src/class-hive.php:30 templates/hive.php:77
+#: src/class-hive.php:30
+#: templates/hive.php:77
 msgid "Hive"
-msgstr "Alveare"
+msgstr ""
 
 #: src/class-hive.php:31
 msgid "Add New Hive"
-msgstr "Aggiungi nuovo alveare"
+msgstr ""
 
-#: src/class-hive.php:32 templates/hive-form.php:194 templates/hive.php:116
+#: src/class-hive.php:32
+#: templates/hive-form.php:194
+#: templates/hive.php:116
 msgid "Edit Hive"
-msgstr "Modifica alveare"
+msgstr ""
 
-#: src/class-hive.php:33 templates/apiary.php:99 templates/hive-form.php:194
+#: src/class-hive.php:33
+#: templates/apiary.php:99
+#: templates/hive-form.php:194
 msgid "New Hive"
-msgstr "Nuovo alveare"
+msgstr ""
 
 #: src/class-hive.php:34
 msgid "View Hive"
-msgstr "Visualizza alveare"
+msgstr ""
 
 #: src/class-hive.php:35
 msgid "Search Hives"
-msgstr "Cerca alveari"
+msgstr ""
 
 #: src/class-hive.php:37
 msgid "Bee hives managed in Apiary Press."
-msgstr "Alveari gestiti in Apiary Press."
+msgstr ""
 
 #: src/class-visit.php:57
 msgid "Add / remove super"
-msgstr "Aggiungi / rimuovi super"
+msgstr ""
 
 #: src/class-visit.php:58
 msgid "Brood inspection"
-msgstr "Ispezione covata"
+msgstr ""
 
 #: src/class-visit.php:59
 msgid "Deadout inspection"
-msgstr "Ispezione famiglia morta"
+msgstr ""
 
 #: src/class-visit.php:60
 msgid "Disease check / treatment"
-msgstr "Controllo / trattamento malattie"
+msgstr ""
 
 #: src/class-visit.php:61
 msgid "Equipment maintenance"
-msgstr "Manutenzione attrezzatura"
+msgstr ""
 
 #: src/class-visit.php:62
 msgid "Feeding"
-msgstr "Nutrizione"
+msgstr ""
 
 #: src/class-visit.php:63
 msgid "Food stores check"
-msgstr "Controllo scorte"
+msgstr ""
 
 #: src/class-visit.php:64
 msgid "Honey harvest"
-msgstr "Smielatura"
+msgstr ""
 
 #: src/class-visit.php:65
 msgid "Pest check"
-msgstr "Controllo parassiti"
+msgstr ""
 
 #: src/class-visit.php:66
 msgid "Queen check"
-msgstr "Controllo regina"
+msgstr ""
 
 #: src/class-visit.php:67
 msgid "Requeening"
-msgstr "Sostituzione regina"
+msgstr ""
 
 #: src/class-visit.php:68
 msgid "Routine inspection"
-msgstr "Ispezione di routine"
+msgstr ""
 
 #: src/class-visit.php:69
 msgid "Seasonal preparation"
-msgstr "Preparazione stagionale"
+msgstr ""
 
 #: src/class-visit.php:70
 msgid "Split or combine colony"
-msgstr "Divisione o unione colonia"
+msgstr ""
 
 #: src/class-visit.php:71
 msgid "Swarm check"
-msgstr "Controllo sciamatura"
+msgstr ""
 
 #: src/class-visit.php:72
 msgid "Varroa monitoring / treatment"
-msgstr "Monitoraggio / trattamento varroa"
+msgstr ""
 
 #: src/class-visit.php:73
 msgid "Weather damage check"
-msgstr "Controllo danni meteo"
+msgstr ""
 
 #: src/class-visit.php:82
 msgid "Added super"
-msgstr "Melario aggiunto"
+msgstr ""
 
 #: src/class-visit.php:83
 msgid "Capped brood"
-msgstr "Covata opercolata"
+msgstr ""
 
-#: src/class-visit.php:84 templates/apiary.php:191
+#: src/class-visit.php:84
+#: templates/apiary.php:191
 msgid "Check soon"
-msgstr "Da controllare a breve"
+msgstr ""
 
 #: src/class-visit.php:85
 msgid "Eggs"
-msgstr "Uova"
+msgstr ""
 
 #: src/class-visit.php:86
 msgid "Larvae"
-msgstr "Larve"
+msgstr ""
 
 #: src/class-visit.php:87
 msgid "Queen cells"
-msgstr "Celle reali"
+msgstr ""
 
 #: src/class-visit.php:88
 msgid "Saw queen"
-msgstr "Vista regina"
+msgstr ""
 
 #: src/class-visit.php:100
 msgid "Hive Visits"
-msgstr "Visite all’alveare"
+msgstr ""
 
-#: src/class-visit.php:101 templates/visit.php:233
+#: src/class-visit.php:101
+#: templates/visit.php:233
 msgid "Hive Visit"
-msgstr "Visita all’alveare"
+msgstr ""
 
 #: src/class-visit.php:102
 msgid "Add New Hive Visit"
-msgstr "Aggiungi nuova visita all’alveare"
+msgstr ""
 
 #: src/class-visit.php:103
 msgid "Edit Hive Visit"
-msgstr "Modifica visita all’alveare"
+msgstr ""
 
 #: src/class-visit.php:104
 msgid "New Hive Visit"
-msgstr "Nuova visita all’alveare"
+msgstr ""
 
 #: src/class-visit.php:105
 msgid "View Hive Visit"
-msgstr "Visualizza visita all’alveare"
+msgstr ""
 
 #: src/class-visit.php:106
 msgid "Search Hive Visits"
-msgstr "Cerca visite all’alveare"
+msgstr ""
 
 #: src/class-visit.php:108
 msgid "Inspection visits for Apiary Press hives."
-msgstr "Visite di ispezione per gli alveari di Apiary Press."
+msgstr ""
 
 #: src/class-visit.php:286
 msgid "You do not have permission to upload files."
-msgstr "Non hai i permessi per caricare file."
+msgstr ""
 
 #. translators: 1: file name, 2: error message.
 #: src/class-visit.php:321
 #, php-format
 msgid "%1$s: %2$s"
-msgstr "%1$s: %2$s"
+msgstr ""
 
 #. translators: %s: the air pressure value with unit, e.g. "42 hPa".
 #: src/class-weather.php:58
 #, php-format
 msgid "Air pressure at sea level %s hPa"
-msgstr "Pressione aria a livello del mare %s hPa"
+msgstr ""
 
 #. translators: %s: the air temperature value with unit, e.g. "15 °C".
 #: src/class-weather.php:64
 #, php-format
 msgid "Air temperature %s °C"
-msgstr "Temperatura aria %s °C"
+msgstr ""
 
 #. translators: %s: the cloud area fraction value with unit, e.g. "15 %".
 #: src/class-weather.php:70
 #, php-format
 msgid "Cloud area fraction %s%%"
-msgstr "Nuvolosità %s%%"
+msgstr ""
 
 #. translators: %s: the precipitation amount value with unit, e.g. "15 mm".
 #: src/class-weather.php:76
 #, php-format
 msgid "Precipitation amount %s mm"
-msgstr "Precipitazioni %s mm"
+msgstr ""
 
 #. translators: %s: the relative humidity value with unit, e.g. "15 %".
 #: src/class-weather.php:82
 #, php-format
 msgid "Relative humidity %s%%"
-msgstr "Umidità relativa %s%%"
+msgstr ""
 
 #: src/class-weather.php:160
 msgid "Hive coordinates are missing."
-msgstr "Le coordinate dell’alveare sono mancanti."
+msgstr ""
 
 #: src/class-weather.php:227
 msgid "Weather system offline."
-msgstr "Il servizio meteo è offline."
+msgstr ""
 
 #. translators: %d: the HTTP status code returned by the Open-Meteo API.
 #: src/class-weather.php:237
 #, php-format
 msgid "Weather lookup failed with HTTP %d."
-msgstr "Il servizio meteo ha generato un errore HTTP %d."
+msgstr ""
 
 #: src/class-weather.php:243
 msgid "Weather lookup returned an invalid response."
-msgstr "Il servizio meteo ha restituito una risposta non valida."
+msgstr ""
 
 #: src/class-weather.php:268
 msgid "Weather lookup did not return any forecast data."
-msgstr "Il servizio meteo non ha restituito dati di previsione."
+msgstr ""
 
-#: templates/apiary-form.php:41 templates/apiary-form.php:71
+#: templates/apiary-form.php:41
+#: templates/apiary-form.php:71
 msgid "The apiary could not be saved. Reload and try again."
-msgstr "L’apiario non può essere salvato. Ricarica e riprova."
+msgstr ""
 
-#: templates/apiary-form.php:43 templates/apiary-form.php:73
+#: templates/apiary-form.php:43
+#: templates/apiary-form.php:73
 msgid "Apiary name is required."
-msgstr "Il nome dell’apiario è obbligatorio."
+msgstr ""
 
 #: templates/apiary-form.php:103
 msgid "Save Apiary"
-msgstr "Salva apiario"
+msgstr ""
 
 #: templates/apiary-form.php:103
 msgid "Update Apiary"
-msgstr "Modifica apiario"
+msgstr ""
 
-#: templates/apiary-form.php:124 templates/apiary.php:78
+#: templates/apiary-form.php:124
+#: templates/apiary.php:78
 msgid "Apiary Not Found"
-msgstr "Apiario non trovato"
+msgstr ""
 
-#: templates/apiary-form.php:125 templates/apiary.php:79
+#: templates/apiary-form.php:125
+#: templates/apiary.php:79
 msgid "The requested apiary is not available."
-msgstr "L’apiario richiesto non è disponibile."
+msgstr ""
 
-#: templates/apiary-form.php:126 templates/apiary-form.php:140
-#: templates/apiary.php:80 templates/apiary.php:86 templates/hive-form.php:223
-#: templates/hive-form.php:237 templates/hive-qr.php:63
-#: templates/hive-qr.php:69 templates/hive.php:91 templates/hive.php:97
+#: templates/apiary-form.php:126
+#: templates/apiary-form.php:140
+#: templates/apiary.php:80
+#: templates/apiary.php:86
+#: templates/hive-form.php:223
+#: templates/hive-form.php:237
+#: templates/hive-qr.php:63
+#: templates/hive-qr.php:69
+#: templates/hive.php:91
+#: templates/hive.php:97
 #: templates/visit.php:296
 msgid "Back to Apiaries"
-msgstr "Torna agli apiari"
+msgstr ""
 
-#: templates/apiary-form.php:130 templates/apiary.php:84
-#: templates/hive-form.php:227 templates/hive-qr.php:67 templates/hive.php:95
+#: templates/apiary-form.php:130
+#: templates/apiary.php:84
+#: templates/hive-form.php:227
+#: templates/hive-qr.php:67
+#: templates/hive.php:95
 #: templates/visit.php:300
 msgid "Access Denied"
-msgstr "Accesso vietato"
+msgstr ""
 
 #: templates/apiary-form.php:135
 msgid "You do not have permission to add apiaries."
-msgstr "Non hai i permessi per aggiungere apiari."
+msgstr ""
 
-#: templates/apiary-form.php:136 templates/apiary.php:85
+#: templates/apiary-form.php:136
+#: templates/apiary.php:85
 msgid "You do not have permission to edit this apiary."
-msgstr "Non hai i permessi per modificare questo apiario."
+msgstr ""
 
-#: templates/apiary-form.php:163 templates/hive-form.php:260
+#: templates/apiary-form.php:163
+#: templates/hive-form.php:260
 msgid "Name"
-msgstr "Nome"
+msgstr ""
 
-#: templates/apiary-form.php:168 templates/hive-form.php:284
+#: templates/apiary-form.php:168
+#: templates/hive-form.php:284
 #: templates/visit.php:420
 msgid "Notes"
-msgstr "Note"
+msgstr ""
 
 #: templates/apiary.php:108
 msgid "Apiary saved."
-msgstr "Apiario salvato."
+msgstr ""
 
 #: templates/apiary.php:112
 msgid "Apiary updated."
-msgstr "Apiario modificato."
+msgstr ""
 
-#: templates/apiary.php:116 templates/hive.php:122
+#: templates/apiary.php:116
+#: templates/hive.php:122
 msgid "Hive saved."
-msgstr "Alveare salvato."
+msgstr ""
 
 #: templates/apiary.php:120
 msgid "Hive removed."
-msgstr "Alveare rimosso."
+msgstr ""
 
 #: templates/apiary.php:128
 msgid "Hive locations"
-msgstr "Posizioni alveari"
+msgstr ""
 
 #: templates/apiary.php:138
 msgid "No hives yet."
-msgstr "Ancora nessun alveare."
+msgstr ""
 
 #: templates/apiary.php:179
 #, php-format
 msgid "%d visit"
 msgid_plural "%d visits"
-msgstr[0] "%d visita"
-msgstr[1] "%d visite"
+msgstr[0] ""
+msgstr[1] ""
 
 #: templates/apiary.php:182
 #, php-format
 msgid "Last visit %s"
-msgstr "Ultima visita %s"
+msgstr ""
 
-#: templates/apiary.php:194 templates/index.php:97
+#: templates/apiary.php:194
+#: templates/index.php:97
 msgid "Open"
-msgstr "Apri"
+msgstr ""
 
 #. translators: %s: coordinate field label
 #: templates/hive-form.php:42
 #, php-format
 msgid "%s must be a number."
-msgstr "%s deve essere un numero."
+msgstr ""
 
 #. translators: 1: coordinate field label, 2: minimum value, 3: maximum value
 #: templates/hive-form.php:55
 #, php-format
 msgid "%1$s must be between %2$s and %3$s."
-msgstr "%1$s deve essere compreso tra %2$s e %3$s."
+msgstr ""
 
-#: templates/hive-form.php:108 templates/hive-form.php:150
+#: templates/hive-form.php:108
+#: templates/hive-form.php:150
 #: templates/hive-form.php:266
 msgid "Latitude"
-msgstr "Latitudine"
+msgstr ""
 
-#: templates/hive-form.php:109 templates/hive-form.php:151
+#: templates/hive-form.php:109
+#: templates/hive-form.php:151
 #: templates/hive-form.php:271
 msgid "Longitude"
-msgstr "Longitudine"
+msgstr ""
 
-#: templates/hive-form.php:112 templates/hive-form.php:154
+#: templates/hive-form.php:112
+#: templates/hive-form.php:154
 msgid "The hive could not be saved. Reload and try again."
-msgstr "L’alveare non può essere salvato. Ricarica e riprova."
+msgstr ""
 
-#: templates/hive-form.php:114 templates/hive-form.php:156
+#: templates/hive-form.php:114
+#: templates/hive-form.php:156
 msgid "Hive name is required."
-msgstr "Il nome dell’alveare è obbligatorio."
+msgstr ""
 
-#: templates/hive-form.php:120 templates/hive-form.php:162
+#: templates/hive-form.php:120
+#: templates/hive-form.php:162
 msgid "Add both latitude and longitude, or leave both blank."
-msgstr "Inserisci sia latitudine che longitudine, oppure lascia entrambi i campi vuoti."
+msgstr ""
 
 #: templates/hive-form.php:198
 msgid "Save Hive"
-msgstr "Salva alveare"
+msgstr ""
 
 #: templates/hive-form.php:198
 msgid "Update Hive"
-msgstr "Aggiorna alveare"
+msgstr ""
 
-#: templates/hive-form.php:221 templates/hive-qr.php:61 templates/hive.php:89
+#: templates/hive-form.php:221
+#: templates/hive-qr.php:61
+#: templates/hive.php:89
 msgid "Hive Not Found"
-msgstr "Alveare non trovato"
+msgstr ""
 
-#: templates/hive-form.php:222 templates/hive-qr.php:62 templates/hive.php:90
+#: templates/hive-form.php:222
+#: templates/hive-qr.php:62
+#: templates/hive.php:90
 msgid "The requested hive is not available."
-msgstr "L’alveare richiesto non è disponibile."
+msgstr ""
 
 #: templates/hive-form.php:232
 msgid "You do not have permission to add hives."
-msgstr "Non hai i permessi per aggiungere alveari."
+msgstr ""
 
-#: templates/hive-form.php:233 templates/hive.php:96
+#: templates/hive-form.php:233
+#: templates/hive.php:96
 msgid "You do not have permission to edit this hive."
-msgstr "Non hai i permessi per modificare questo alveare."
+msgstr ""
 
 #: templates/hive-form.php:278
 msgid "Set Current Location"
-msgstr "Imposta località corrente"
+msgstr ""
 
 #: templates/hive-form.php:306
 msgid "Getting current location..."
-msgstr "Recupero della posizione attuale..."
+msgstr ""
 
 #: templates/hive-form.php:307
 msgid "Current location set."
-msgstr "Posizione attuale impostata."
+msgstr ""
 
 #: templates/hive-form.php:308
 msgid "Location access is unavailable in this browser."
-msgstr "L’accesso alla posizione non è disponibile in questo browser."
+msgstr ""
 
 #: templates/hive-form.php:309
 msgid "Location access requires HTTPS or localhost."
-msgstr "L’accesso alla posizione richiede HTTPS o localhost."
+msgstr ""
 
 #: templates/hive-form.php:310
 msgid "Allow location access and try again."
-msgstr "Consenti l’accesso alla posizione e riprova."
+msgstr ""
 
 #: templates/hive-form.php:311
 msgid "Current location could not be read."
-msgstr "Impossibile leggere la posizione attuale."
+msgstr ""
 
 #: templates/hive-qr.php:48
 #, php-format
 msgid "%s QR"
-msgstr "%s QR"
+msgstr ""
 
-#: templates/hive-qr.php:48 templates/hive.php:144
+#: templates/hive-qr.php:48
+#: templates/hive.php:144
 msgid "Hive QR"
-msgstr "QR code dell’alveare"
+msgstr ""
 
 #: templates/hive-qr.php:68
 msgid "You do not have permission to view this hive QR."
-msgstr "Non hai i permessi per visualizzare questo QR dell’alveare."
+msgstr ""
 
 #. translators: %s: the title of the hive.
-#: templates/hive-qr.php:72 templates/hive-qr.php:74 templates/hive.php:141
+#: templates/hive-qr.php:72
+#: templates/hive-qr.php:74
+#: templates/hive.php:141
 #, php-format
 msgid "QR code for %s"
-msgstr "Codice QR per %s"
+msgstr ""
 
-#: templates/hive.php:110 templates/visit.php:233 templates/visit.php:236
+#: templates/hive.php:110
+#: templates/visit.php:233
+#: templates/visit.php:236
 #: templates/visit.php:320
 msgid "New Visit"
-msgstr "Nuova visita"
+msgstr ""
 
-#: templates/hive.php:113 templates/hive.php:146
+#: templates/hive.php:113
+#: templates/hive.php:146
 msgid "Print QR"
-msgstr "Stampa QR"
+msgstr ""
 
 #: templates/hive.php:126
 msgid "Hive updated."
-msgstr "Alveare aggiornato."
+msgstr ""
 
-#: templates/hive.php:130 templates/visit.php:346
+#: templates/hive.php:130
+#: templates/visit.php:346
 msgid "Visit saved."
-msgstr "Visita salvata."
+msgstr ""
 
 #: templates/hive.php:134
 msgid "Visit removed."
-msgstr "Visita rimossa."
+msgstr ""
+
+#: templates/hive.php:152
+msgid "Hive location"
+msgstr ""
 
 #: templates/hive.php:162
 msgid "Visits"
-msgstr "Visite"
+msgstr ""
 
 #: templates/hive.php:165
 msgid "No visits yet."
-msgstr "Ancora nessuna visita."
+msgstr ""
 
 #. translators: %s: the display name of the user who recorded the visit.
-#: templates/hive.php:192 templates/visit.php:331
+#: templates/hive.php:192
+#: templates/visit.php:331
 #, php-format
 msgid "by %s"
-msgstr "da %s"
+msgstr ""
 
-#: templates/hive.php:193 templates/visit.php:332
+#: templates/hive.php:193
+#: templates/visit.php:332
 msgid "Unknown"
-msgstr "Sconosciuto"
+msgstr ""
 
 #: templates/hive.php:199
 msgid "View / Edit"
-msgstr "Visualizza / Modifica"
+msgstr ""
 
-#: templates/hive.php:209 templates/visit.php:448
+#: templates/hive.php:209
+#: templates/visit.php:448
 msgid "Reason:"
-msgstr "Ragione:"
+msgstr ""
 
 #: templates/hive.php:218
 msgid "Registered weather"
-msgstr "Meteo registrato"
+msgstr ""
 
-#: templates/hive.php:219 templates/visit.php:466
+#: templates/hive.php:219
+#: templates/visit.php:466
 msgid "Registered Weather"
-msgstr "Meteo registrato"
+msgstr ""
 
-#: templates/hive.php:230 templates/visit.php:454
+#: templates/hive.php:230
+#: templates/visit.php:454
 msgid "No observations marked."
-msgstr "Nessuna osservazione registrata."
+msgstr ""
 
 #. translators: %d: number of media files attached to a visit.
 #: templates/hive.php:246
 #, php-format
 msgid "%d media file"
 msgid_plural "%d media files"
-msgstr[0] "%d file media"
-msgstr[1] "%d file media"
+msgstr[0] ""
+msgstr[1] ""
 
-#: templates/index.php:50 templates/visit.php:340
+#: templates/index.php:50
+#: templates/visit.php:340
 msgid "WordPress Admin"
-msgstr "Amministrazione WordPress"
+msgstr ""
 
 #: templates/index.php:56
 msgid "Apiary removed."
-msgstr "Apiario rimosso."
+msgstr ""
 
 #: templates/index.php:60
 msgid "Saved Apiaries"
-msgstr "Apiari salvati"
+msgstr ""
 
 #: templates/index.php:63
 msgid "No apiaries yet."
-msgstr "Ancora nessun apiario."
+msgstr ""
 
 #: templates/index.php:89
 #, php-format
 msgid "%d hive"
 msgid_plural "%d hives"
-msgstr[0] "%d alveare"
-msgstr[1] "%d alveari"
+msgstr[0] ""
+msgstr[1] ""
 
-#: templates/visit.php:62 templates/visit.php:164
+#: templates/visit.php:62
+#: templates/visit.php:164
 msgid "The visit could not be saved. Reload and try again."
-msgstr "La visita non può essere salvata. Ricarica e riprova."
+msgstr ""
 
-#: templates/visit.php:64 templates/visit.php:71 templates/visit.php:166
+#: templates/visit.php:64
+#: templates/visit.php:71
+#: templates/visit.php:166
 #: templates/visit.php:173
 msgid "Visit date is invalid."
-msgstr "La data della visita non è valida."
+msgstr ""
 
-#: templates/visit.php:66 templates/visit.php:168
+#: templates/visit.php:66
+#: templates/visit.php:168
 msgid "Visit time is invalid."
-msgstr "L’ora della visita non è valida."
+msgstr ""
 
 #. translators: 1: hive title, 2: visit date
-#: templates/visit.php:75 templates/visit.php:177
+#: templates/visit.php:75
+#: templates/visit.php:177
 #, php-format
 msgid "%1$s visit on %2$s"
-msgstr "Visita a %1$s del %2$s"
+msgstr ""
 
 #: templates/visit.php:122
 msgid "The visit could not be removed. Reload and try again."
-msgstr "La visita non può essere rimossa. Ricarica e riprova."
+msgstr ""
 
 #: templates/visit.php:124
 msgid "You do not have permission to remove this visit."
-msgstr "Non hai i permessi per rimuovere questa visita."
+msgstr ""
 
 #: templates/visit.php:129
 msgid "The visit could not be removed."
-msgstr "La visita non può essere rimossa."
+msgstr ""
 
 #: templates/visit.php:142
 msgid "The media could not be removed. Reload and try again."
-msgstr "Il media non può essere rimosso. Ricarica e riprova."
+msgstr ""
 
 #: templates/visit.php:144
 msgid "The media could not be removed."
-msgstr "Il media non può essere rimosso."
+msgstr ""
 
 #: templates/visit.php:236
 msgid "Edit Visit"
-msgstr "Modifica visita"
+msgstr ""
 
 #: templates/visit.php:237
 msgid "Save Visit"
-msgstr "Salva visita"
+msgstr ""
 
 #: templates/visit.php:237
 msgid "Update Visit"
-msgstr "Aggiorna visita"
+msgstr ""
 
 #: templates/visit.php:294
 msgid "Visit Not Found"
-msgstr "Visita non trovata"
+msgstr ""
 
 #: templates/visit.php:295
 msgid "The requested visit is not available for this hive."
-msgstr "La visita richiesta non è disponibile per questo alveare."
+msgstr ""
 
 #: templates/visit.php:305
 msgid "You do not have permission to add a visit to this hive."
-msgstr "Non hai i permessi per aggiungere una visita a questo alveare."
+msgstr ""
 
 #: templates/visit.php:306
 msgid "You do not have permission to edit this visit."
-msgstr "Non hai i permessi per modificare questa visita."
+msgstr ""
 
 #: templates/visit.php:310
 msgid "Back to Hive"
-msgstr "Torna all’alveare"
+msgstr ""
 
 #: templates/visit.php:350
 msgid "Visit updated."
-msgstr "Visita modificata."
+msgstr ""
 
 #: templates/visit.php:354
 msgid "Media removed."
-msgstr "Media rimosso."
+msgstr ""
 
 #. translators: %d: number of media files that failed to upload.
 #: templates/visit.php:363
 #, php-format
 msgid "%d media file could not be uploaded."
 msgid_plural "%d media files could not be uploaded."
-msgstr[0] "Impossibile caricare %d file media."
-msgstr[1] "Impossibile caricare %d file media."
+msgstr[0] ""
+msgstr[1] ""
 
 #: templates/visit.php:383
 msgid "Date"
-msgstr "Data"
+msgstr ""
 
 #: templates/visit.php:388
 msgid "Time"
-msgstr "Ora"
+msgstr ""
 
 #: templates/visit.php:394
 msgid "Reason"
-msgstr "Ragione"
+msgstr ""
 
 #: templates/visit.php:426
 msgid "Add media"
-msgstr "Aggiungi media"
+msgstr ""
 
 #: templates/visit.php:428
 msgid "Photos or videos are saved to the media library and linked to this visit."
-msgstr "Foto o video vengono salvati nella libreria media e collegati a questa visita."
+msgstr ""
 
 #: templates/visit.php:438
 msgid "Visit Summary"
-msgstr "Riepilogo visita"
+msgstr ""
 
 #: templates/visit.php:443
 msgid "No notes recorded."
-msgstr "Nessuna nota registrata."
+msgstr ""
 
 #: templates/visit.php:471
 msgid "No weather snapshot recorded."
-msgstr "Nessun dato meteo registrato."
+msgstr ""
 
 #: templates/visit.php:494
 msgid "Media"
-msgstr "Media"
+msgstr ""
 
 #: templates/visit.php:497
 msgid "No media attached."
-msgstr "Nessun media allegato."
+msgstr ""
 
 #: templates/visit.php:534
 msgid "Remove media"
-msgstr "Rimuovi media"
+msgstr ""
 
 #: templates/visit.php:535
 msgid "Remove this media from the visit?"
-msgstr "Rimuovere questo media dalla visita?"
+msgstr ""
 
 #: templates/visit.php:548
 msgid "Remove this visit from the hive record."
-msgstr "Rimuovi questa visita dalla scheda dell’alveare."
+msgstr ""
 
 #: templates/visit.php:550
 msgid "Remove Visit"
-msgstr "Rimuovi visita"
-
-#: templates/hive.php:152
-msgid "Hive location"
-msgstr "Posizione alveare"
+msgstr ""
