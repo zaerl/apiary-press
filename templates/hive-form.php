@@ -68,6 +68,13 @@ if ( ! function_exists( 'appr_read_coordinate_input' ) ) {
 }
 
 if ( ! function_exists( 'appr_update_coordinate_meta' ) ) {
+	/**
+	 * Helper function to update or delete coordinate meta based on the input value.
+	 *
+	 * @param int    $appr_hive_id The ID of the hive.
+	 * @param string $appr_meta_key The meta key to update.
+	 * @param string $appr_value The value to set. If empty, the meta will be deleted.
+	 */
 	function appr_update_coordinate_meta( int $appr_hive_id, string $appr_meta_key, string $appr_value ): void {
 		if ( '' === $appr_value ) {
 			delete_post_meta( $appr_hive_id, $appr_meta_key );
@@ -559,7 +566,7 @@ $appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 			);
 			?>
 			;
-			const queenHintTemplate = 
+			const queenHintTemplate =
 			<?php
 				/* translators: 1: four-digit queen birth year, 2: name of the international marking color (e.g. White, Yellow). */
 				echo wp_json_encode( __( 'Standard color for %1$s: %2$s.', 'apiary-press' ) );

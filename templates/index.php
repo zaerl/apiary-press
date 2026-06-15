@@ -86,7 +86,7 @@ $appr_apiaries = get_posts(
 									</a>
 								</h3>
 								<div class="meta">
-									<?php echo esc_html( sprintf( _n( '%d hive', '%d hives', count( $appr_hive_ids ), 'apiary-press' ), count( $appr_hive_ids ) ) ); ?>
+									<?php echo esc_html( sprintf( /* translators: %d: number of hives */ _n( '%d hive', '%d hives', count( $appr_hive_ids ), 'apiary-press' ), count( $appr_hive_ids ) ) ); ?>
 								</div>
 								<?php if ( $appr_summary ) : ?>
 									<p class="summary"><?php echo esc_html( $appr_summary ); ?></p>

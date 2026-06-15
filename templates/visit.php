@@ -323,13 +323,13 @@ if ( $appr_form_error ) {
 						?>
 					</h1>
 					<?php if ( ! $appr_is_new_visit ) : ?>
-						<?php $author_name = get_the_author_meta( 'display_name', (int) $appr_visit->post_author ); ?>
+						<?php $appr_author_name = get_the_author_meta( 'display_name', (int) $appr_visit->post_author ); ?>
 						<div class="muted">
 							<?php
 							printf(
 								/* translators: %s: the display name of the user who recorded the visit. */
 								esc_html__( 'by %s', 'apiary-press' ),
-								esc_html( $author_name ? $author_name : __( 'Unknown', 'apiary-press' ) )
+								esc_html( $appr_author_name ? $appr_author_name : __( 'Unknown', 'apiary-press' ) )
 							);
 							?>
 						</div>
@@ -393,9 +393,9 @@ if ( $appr_form_error ) {
 						<div class="field">
 							<label for="ap_visit_reason"><?php echo esc_html__( 'Reason', 'apiary-press' ); ?></label>
 							<select id="ap_visit_reason" name="ap_visit_reason">
-								<?php foreach ( $appr_reason_labels as $reason_slug => $reason_label ) : ?>
-									<option value="<?php echo esc_attr( $reason_slug ); ?>" <?php selected( $appr_visit_reason, $reason_slug ); ?>>
-										<?php echo esc_html( $reason_label ); ?>
+								<?php foreach ( $appr_reason_labels as $appr_reason_slug => $appr_reason_label ) : ?>
+									<option value="<?php echo esc_attr( $appr_reason_slug ); ?>" <?php selected( $appr_visit_reason, $appr_reason_slug ); ?>>
+										<?php echo esc_html( $appr_reason_label ); ?>
 									</option>
 								<?php endforeach; ?>
 							</select>

@@ -45,7 +45,7 @@ if ( $appr_not_found ) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_app_title( $appr_hive ? sprintf( __( '%s QR', 'apiary-press' ), get_the_title( $appr_hive ) ) : __( 'Hive QR', 'apiary-press' ) ); ?></title>
+	<title><?php wp_app_title( $appr_hive ? /* translators: %s: hive name */ sprintf( __( '%s QR', 'apiary-press' ), get_the_title( $appr_hive ) ) : __( 'Hive QR', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
 	<style>
 		#wpadminbar,
@@ -69,9 +69,9 @@ if ( $appr_not_found ) {
 				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Apiaries', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
-			<section class="print-sheet" aria-label="<?php echo esc_attr( sprintf( __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>">
+			<section class="print-sheet" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: hive name */ __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>">
 				<div class="qr-frame">
-					<img src="<?php echo esc_attr( $appr_hive_qr ); ?>" alt="<?php echo esc_attr( sprintf( __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>">
+					<img src="<?php echo esc_attr( $appr_hive_qr ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: hive name */ __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>">
 				</div>
 			</section>
 		<?php endif; ?>
