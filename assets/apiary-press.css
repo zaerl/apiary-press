@@ -457,6 +457,15 @@ p.summary { background: transparent; border: 0; border-radius: 0; box-shadow: no
 	overflow-wrap: anywhere;
 	margin-bottom: 12px;
 }
+.qr-panel-map {
+	align-self: stretch;
+	background: var(--ap-paper);
+	border: 1px solid var(--ap-line);
+	border-radius: 10px;
+	flex: 1 1 240px;
+	min-height: 164px;
+	overflow: hidden;
+}
 
 /* ---- Forms ---- */
 label {
@@ -845,6 +854,7 @@ textarea { min-height: 140px; resize: vertical; }
 	.stats { align-items: flex-start; text-align: left; flex-direction: row; flex-wrap: wrap; }
 	.coordinate-grid, .date-time-grid, .check-grid, .weather-list { grid-template-columns: 1fr; }
 	.qr-panel { align-items: flex-start; flex-direction: column; }
+	.qr-panel-map { width: 100%; min-height: 200px; }
 	.visit-head { flex-direction: column; gap: 6px; }
 	.layout { grid-template-columns: 1fr; }
 	.qr-frame img { height: min(320px, calc(100vw - 24px)); width: min(320px, calc(100vw - 24px)); }

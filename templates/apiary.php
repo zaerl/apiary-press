@@ -121,7 +121,14 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 			<?php endif; ?>
 
 			<?php if ( ! empty( $appr_map_markers ) ) : ?>
-				<div id="ap_hive_map" class="hive-map" role="region" aria-label="<?php echo esc_attr__( 'Hive locations', 'apiary-press' ); ?>"></div>
+				<div
+					id="ap_hive_map"
+					class="hive-map"
+					role="region"
+					aria-label="<?php echo esc_attr__( 'Hive locations', 'apiary-press' ); ?>"
+					data-ap-hive-map
+					data-markers="<?php echo esc_attr( wp_json_encode( $appr_map_markers ) ); ?>"
+				></div>
 			<?php endif; ?>
 
 			<section aria-labelledby="hive-list-heading">
@@ -199,80 +206,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 
 	<?php if ( ! $appr_not_found && ! $appr_forbidden && ! empty( $appr_map_markers ) ) : ?>
 		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-		<script>
-			(function() {
-				const markers = <?php echo wp_json_encode( $appr_map_markers ); ?>;
-				const container = document.getElementById('ap_hive_map');
-
-				if (!container || !window.L || !markers.length) {
-					return;
-				}
-
-				const map = L.map(container);
-
-				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-					maxZoom: 19,
-					attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-				}).addTo(map);
-
-				const rings = [
-					{ radius: 5000, fillOpacity: 0.08 },
-					{ radius: 3500, fillOpacity: 0.16 },
-					{ radius: 2000, fillOpacity: 0.28 }
-				];
-				const circleLayer = L.layerGroup().addTo(map);
-
-				const latLngs = markers.map(function(marker) {
-					const latLng = [marker.latitude, marker.longitude];
-					const popup = '<a href="' + marker.url + '">' + marker.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</a>';
-
-					const leafletMarker = L.circleMarker(latLng, {
-						radius: 8,
-						color: '#fff',
-						weight: 2,
-						opacity: 1,
-						fillColor: '#E7AE43',
-						fillOpacity: 1
-					}).addTo(map).bindPopup(popup);
-
-					leafletMarker.on('click', function() {
-						circleLayer.clearLayers();
-						let smallestCircle = null;
-						rings.forEach(function(ring) {
-							const circle = L.circle(latLng, {
-								radius: ring.radius,
-								color: '#E7AE43',
-								weight: 1,
-								opacity: 0.7,
-								fillColor: '#E7AE43',
-								fillOpacity: ring.fillOpacity,
-								interactive: false
-							}).addTo(circleLayer);
-
-							if (!smallestCircle || ring.radius < smallestCircle.getRadius()) {
-								smallestCircle = circle;
-							}
-						});
-
-						if (smallestCircle) {
-							map.fitBounds(smallestCircle.getBounds(), { padding: [16, 16] });
-						}
-					});
-
-					return latLng;
-				});
-
-				map.on('click', function() {
-					circleLayer.clearLayers();
-				});
-
-				if (latLngs.length === 1) {
-					map.setView(latLngs[0], 15);
-				} else {
-					map.fitBounds(L.latLngBounds(latLngs), { padding: [24, 24] });
-				}
-			})();
-		</script>
+		<script src="<?php echo esc_url( App::get_asset_url( 'hive-map.js' ) ); ?>"></script>
 	<?php endif; ?>
 </body>
 </html>

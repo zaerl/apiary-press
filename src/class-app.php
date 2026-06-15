@@ -51,6 +51,23 @@ class App extends BaseApp {
 	}
 
 	/**
+	 * Build a URL to a file in the plugin's assets directory, with a filemtime cache buster when available.
+	 *
+	 * @param string $relative Path relative to the assets/ directory (e.g., 'hive-map.js').
+	 */
+	public static function get_asset_url( string $relative ): string {
+		$relative   = ltrim( $relative, '/' );
+		$asset_path = dirname( __DIR__ ) . '/assets/' . $relative;
+		$asset_url  = plugins_url( 'assets/' . $relative, dirname( __DIR__ ) . '/apiary-press.php' );
+
+		if ( file_exists( $asset_path ) ) {
+			$asset_url = add_query_arg( 'ver', (string) filemtime( $asset_path ), $asset_url );
+		}
+
+		return $asset_url;
+	}
+
+	/**
 	 * Get the base URL path for the app. This is used to route requests and generate links.
 	 */
 	protected function get_url_path(): string {

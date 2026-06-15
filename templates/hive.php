@@ -39,11 +39,22 @@ if ( $appr_not_found ) {
 	status_header( 403 );
 }
 
-$appr_visits = array();
+$appr_visits     = array();
+$appr_map_marker = array();
 
 if ( ! $appr_not_found && ! $appr_forbidden ) {
 	$appr_hive_url = App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id );
 	$appr_hive_qr  = ( new QRCode() )->render( $appr_hive_url );
+
+	$appr_coords = Hive::get_coordinates( $appr_hive_id );
+
+	if ( ! empty( $appr_coords ) ) {
+		$appr_map_marker[] = array(
+			'latitude'  => $appr_coords['latitude'],
+			'longitude' => $appr_coords['longitude'],
+			'title'     => get_the_title( $appr_hive ),
+		);
+	}
 
 	$appr_visits = get_posts(
 		array(
@@ -65,6 +76,9 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?php wp_app_title( $appr_hive ? get_the_title( $appr_hive ) : __( 'Hive', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
+	<?php if ( ! empty( $appr_map_marker ) ) : ?>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+	<?php endif; ?>
 </head>
 <body>
 	<?php wp_app_body_open(); ?>
@@ -131,6 +145,16 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 						<a class="qr-link" href="<?php echo esc_url( $appr_hive_url ); ?>"><?php echo esc_html( $appr_hive_url ); ?></a>
 						<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/qr' ) ); ?>"><?php echo esc_html__( 'Print QR', 'apiary-press' ); ?></a></p>
 					</div>
+					<?php if ( ! empty( $appr_map_marker ) ) : ?>
+						<div
+							class="qr-panel-map"
+							role="region"
+							aria-label="<?php echo esc_attr__( 'Hive location', 'apiary-press' ); ?>"
+							data-ap-hive-map
+							data-markers="<?php echo esc_attr( wp_json_encode( $appr_map_marker ) ); ?>"
+							data-zoom="15"
+						></div>
+					<?php endif; ?>
 				</section>
 			<?php endif; ?>
 
@@ -234,5 +258,10 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	</main>
 
 	<?php wp_app_body_close(); ?>
+
+	<?php if ( ! $appr_not_found && ! $appr_forbidden && ! empty( $appr_map_marker ) ) : ?>
+		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+		<script src="<?php echo esc_url( App::get_asset_url( 'hive-map.js' ) ); ?>"></script>
+	<?php endif; ?>
 </body>
 </html>
