@@ -38,18 +38,20 @@ class App extends BaseApp {
 		add_action( 'init', array( $this, 'register_treatment_meta' ) );
 		add_action( 'init', array( $this, 'register_harvest_meta' ) );
 
-		add_action( 'wp_app_head', array( $this, 'enqueue_assets' ), 20 );
+		add_action( 'template_redirect', array( $this, 'maybe_setup_assets' ) );
 	}
 
 	/**
 	 * Enqueue the shared Apiary Press stylesheet for every app template.
 	 */
-	public function enqueue_assets(): void {
-		$asset_path = dirname( __DIR__ ) . '/assets/apiary-press.css';
-		$asset_url  = plugins_url( 'assets/apiary-press.css', dirname( __DIR__ ) . '/apiary-press.php' );
-		$version    = file_exists( $asset_path ) ? (string) filemtime( $asset_path ) : '1.0.0';
+	public function maybe_setup_assets(): void {
+		if ( $this->app->is_app_request() ) {
+			$asset_path = dirname( __DIR__ ) . '/assets/apiary-press.css';
+			$asset_url  = plugins_url( 'assets/apiary-press.css', dirname( __DIR__ ) . '/apiary-press.php' );
+			$version    = file_exists( $asset_path ) ? (string) filemtime( $asset_path ) : '1.0.0';
 
-		wp_app_enqueue_style( 'apiary-press', $asset_url, array(), $version );
+			wp_app_enqueue_style( 'apiary-press', $asset_url, array(), $version );
+		}
 	}
 
 	/**
