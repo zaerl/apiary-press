@@ -722,6 +722,100 @@ textarea { min-height: 140px; resize: vertical; }
 	font-size: 13px;
 }
 
+/* ---- Media gallery ---- */
+.media-upload input[type="file"] {
+	width: 100%;
+	border: 1.5px dashed var(--ap-line-strong);
+	border-radius: 10px;
+	background: var(--ap-cream);
+	color: var(--ap-ink);
+	font: inherit;
+	padding: 12px 14px;
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+.media-upload input[type="file"]:hover,
+.media-upload input[type="file"]:focus {
+	border-color: var(--ap-honey);
+	background: var(--ap-paper);
+}
+.media-help {
+	color: var(--ap-ink-soft);
+	font-size: 12px;
+	margin: 8px 0 0;
+}
+.media-grid {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+}
+.media-item {
+	position: relative;
+	aspect-ratio: 1;
+	background: var(--ap-cream);
+	border: 1px solid var(--ap-line);
+	border-radius: 10px;
+	box-shadow: var(--ap-shadow-sm);
+	overflow: hidden;
+}
+.media-item img,
+.media-item video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+.media-item .media-link {
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+.media-file {
+	align-items: center;
+	color: var(--ap-ink-soft);
+	display: flex;
+	font-size: 11px;
+	font-weight: 700;
+	justify-content: center;
+	overflow: hidden;
+	padding: 8px;
+	text-align: center;
+	text-decoration: none;
+	overflow-wrap: anywhere;
+}
+.media-remove-form {
+	margin: 0;
+	position: absolute;
+	right: 4px;
+	top: 4px;
+}
+.media-remove {
+	align-items: center;
+	background: rgba(0, 0, 0, 0.55);
+	border: 0;
+	border-radius: 999px;
+	color: #fff;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 16px;
+	font-weight: 800;
+	height: 24px;
+	justify-content: center;
+	line-height: 1;
+	padding: 0;
+	width: 24px;
+	box-shadow: var(--ap-shadow-sm);
+	transition: background 0.15s ease, transform 0.12s ease;
+}
+.media-remove:hover {
+	background: var(--ap-danger);
+	transform: scale(1.05);
+}
+.visit-media-count {
+	margin-top: 10px;
+	font-weight: 600;
+}
+
 /* ---- Print sheet ---- */
 .print-sheet {
 	align-items: center;

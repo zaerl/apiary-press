@@ -101,7 +101,14 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_visit && 'create_vis
 
 				Weather::store_visit_weather_snapshot( $appr_visit_id, $appr_hive_id, $appr_visit_date_raw, $appr_visit_time_raw );
 
-				wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit_id ) ) ) );
+				$appr_media_errors  = Visit::handle_media_uploads( (int) $appr_visit_id );
+				$appr_redirect_args = array( 'created' => '1' );
+
+				if ( ! empty( $appr_media_errors ) ) {
+					$appr_redirect_args['media_errors'] = count( $appr_media_errors );
+				}
+
+				wp_safe_redirect( add_query_arg( $appr_redirect_args, App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit_id ) ) ) );
 				exit;
 			}
 		}
@@ -124,6 +131,20 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'delete_v
 			wp_safe_redirect( add_query_arg( 'visit_deleted', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ) );
 			exit;
 		}
+	}
+}
+
+if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'delete_visit_media' === $appr_action ) {
+	$appr_nonce         = isset( $_POST['ap_media_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_media_nonce'] ) ) : '';
+	$appr_attachment_id = isset( $_POST['ap_attachment_id'] ) ? absint( $_POST['ap_attachment_id'] ) : 0;
+
+	if ( ! wp_verify_nonce( $appr_nonce, 'ap_delete_visit_media_' . $appr_hive_visit_id . '_' . $appr_attachment_id ) ) {
+		$appr_form_error = __( 'The media could not be removed. Reload and try again.', 'apiary-press' );
+	} elseif ( ! Visit::delete_visit_media( $appr_attachment_id, $appr_hive_visit_id ) ) {
+		$appr_form_error = __( 'The media could not be removed.', 'apiary-press' );
+	} else {
+		wp_safe_redirect( add_query_arg( 'media_removed', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ) );
+		exit;
 	}
 }
 
@@ -178,7 +199,14 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'update_v
 
 				update_post_meta( $appr_hive_visit_id, Visit::REASON_META_KEY, $appr_reason_value );
 
-				wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ) );
+				$appr_media_errors  = Visit::handle_media_uploads( $appr_hive_visit_id );
+				$appr_redirect_args = array( 'updated' => '1' );
+
+				if ( ! empty( $appr_media_errors ) ) {
+					$appr_redirect_args['media_errors'] = count( $appr_media_errors );
+				}
+
+				wp_safe_redirect( add_query_arg( $appr_redirect_args, App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ) );
 				exit;
 			}
 		}
@@ -322,6 +350,23 @@ if ( $appr_form_error ) {
 				<div class="notice"><?php echo esc_html__( 'Visit updated.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
+			<?php if ( isset( $_GET['media_removed'] ) ) : ?>
+				<div class="notice"><?php echo esc_html__( 'Media removed.', 'apiary-press' ); ?></div>
+			<?php endif; ?>
+
+			<?php if ( isset( $_GET['media_errors'] ) ) : ?>
+				<div class="error">
+					<?php
+					$appr_media_error_count = absint( $_GET['media_errors'] );
+					printf(
+						/* translators: %d: number of media files that failed to upload. */
+						esc_html( _n( '%d media file could not be uploaded.', '%d media files could not be uploaded.', $appr_media_error_count, 'apiary-press' ) ),
+						(int) $appr_media_error_count
+					);
+					?>
+				</div>
+			<?php endif; ?>
+
 			<?php if ( $appr_form_error ) : ?>
 				<div class="error"><?php echo esc_html( $appr_form_error ); ?></div>
 			<?php endif; ?>
@@ -329,7 +374,7 @@ if ( $appr_form_error ) {
 			<div class="layout <?php echo $appr_is_new_visit ? 'layout-single' : ''; ?>">
 				<section class="panel" aria-labelledby="edit-visit-heading">
 					<h2 id="edit-visit-heading"><?php echo esc_html( $appr_form_heading ); ?></h2>
-					<form method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_form_url_visit ) ); ?>">
+					<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_form_url_visit ) ); ?>">
 						<input type="hidden" name="ap_action" value="<?php echo esc_attr( $appr_form_action ); ?>">
 						<?php wp_nonce_field( $appr_form_nonce, 'ap_nonce' ); ?>
 
@@ -375,6 +420,14 @@ if ( $appr_form_error ) {
 							<label for="ap_visit_notes"><?php echo esc_html__( 'Notes', 'apiary-press' ); ?></label>
 							<textarea id="ap_visit_notes" name="ap_visit_notes"><?php echo esc_textarea( $appr_visit_notes ); ?></textarea>
 						</div>
+
+						<?php if ( current_user_can( 'upload_files' ) ) : ?>
+							<div class="field media-upload">
+								<label for="ap_visit_media"><?php echo esc_html__( 'Add media', 'apiary-press' ); ?></label>
+								<input id="ap_visit_media" name="ap_visit_media[]" type="file" accept="image/*,video/*" multiple>
+								<p class="media-help"><?php echo esc_html__( 'Photos or videos are saved to the media library and linked to this visit.', 'apiary-press' ); ?></p>
+							</div>
+						<?php endif; ?>
 
 						<button class="button" type="submit"><?php echo esc_html( $appr_form_button ); ?></button>
 					</form>
@@ -430,6 +483,62 @@ if ( $appr_form_error ) {
 										</div>
 									<?php endforeach; ?>
 								</dl>
+							<?php endif; ?>
+						</div>
+
+						<?php
+						$appr_visit_media = Visit::get_visit_media( $appr_hive_visit_id );
+						$appr_visit_url   = App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id );
+						?>
+						<div class="summary-section" aria-labelledby="visit-media-heading">
+							<h3 id="visit-media-heading"><?php echo esc_html__( 'Media', 'apiary-press' ); ?></h3>
+
+							<?php if ( empty( $appr_visit_media ) ) : ?>
+								<div class="muted"><?php echo esc_html__( 'No media attached.', 'apiary-press' ); ?></div>
+							<?php else : ?>
+								<div class="media-grid">
+									<?php foreach ( $appr_visit_media as $appr_attachment ) : ?>
+										<?php
+										$appr_attachment_id  = (int) $appr_attachment->ID;
+										$appr_attachment_url = wp_get_attachment_url( $appr_attachment_id );
+										$appr_attachment_alt = trim( (string) get_post_meta( $appr_attachment_id, '_wp_attachment_image_alt', true ) );
+
+										if ( '' === $appr_attachment_alt ) {
+											$appr_attachment_alt = get_the_title( $appr_attachment_id );
+										}
+
+										$appr_is_image = wp_attachment_is_image( $appr_attachment_id );
+										$appr_is_video = wp_attachment_is( 'video', $appr_attachment_id );
+										?>
+										<div class="media-item">
+											<?php if ( $appr_is_image ) : ?>
+												<a class="media-link" href="<?php echo esc_url( $appr_attachment_url ); ?>" target="_blank" rel="noopener">
+													<?php echo wp_get_attachment_image( $appr_attachment_id, 'thumbnail', false, array( 'alt' => $appr_attachment_alt ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+												</a>
+											<?php elseif ( $appr_is_video ) : ?>
+												<video class="media-link" controls preload="metadata" src="<?php echo esc_url( $appr_attachment_url ); ?>"></video>
+											<?php else : ?>
+												<a class="media-link media-file" href="<?php echo esc_url( $appr_attachment_url ); ?>" target="_blank" rel="noopener">
+													<?php echo esc_html( get_the_title( $appr_attachment_id ) ); ?>
+												</a>
+											<?php endif; ?>
+
+											<?php if ( current_user_can( 'delete_post', $appr_attachment_id ) ) : ?>
+												<form method="post" action="<?php echo esc_url( $appr_visit_url ); ?>" class="media-remove-form">
+													<input type="hidden" name="ap_action" value="delete_visit_media">
+													<input type="hidden" name="ap_attachment_id" value="<?php echo esc_attr( (string) $appr_attachment_id ); ?>">
+													<?php wp_nonce_field( 'ap_delete_visit_media_' . $appr_hive_visit_id . '_' . $appr_attachment_id, 'ap_media_nonce' ); ?>
+													<button
+														type="submit"
+														class="media-remove"
+														aria-label="<?php echo esc_attr__( 'Remove media', 'apiary-press' ); ?>"
+														onclick="return confirm('<?php echo esc_js( __( 'Remove this media from the visit?', 'apiary-press' ) ); ?>');"
+													>&times;</button>
+												</form>
+											<?php endif; ?>
+										</div>
+									<?php endforeach; ?>
+								</div>
 							<?php endif; ?>
 						</div>
 

@@ -23,6 +23,8 @@ class Visit {
 		'saw_queen',
 	);
 
+	public const MEDIA_UPLOAD_FIELD = 'ap_visit_media';
+
 	public const REASON_META_KEY = 'reason';
 
 	public const REASON_DEFAULT = 'routine_inspection';
@@ -237,5 +239,118 @@ class Visit {
 		$value = sanitize_key( (string) $value );
 
 		return in_array( $value, self::REASON_VALUES, true ) ? $value : self::REASON_DEFAULT;
+	}
+
+	/**
+	 * Get the attachments parented to a visit, ordered by upload time.
+	 *
+	 * @param int $visit_id The visit (post) ID.
+	 * @return \WP_Post[]
+	 */
+	public static function get_visit_media( int $visit_id ): array {
+		if ( ! $visit_id ) {
+			return array();
+		}
+
+		$attachments = get_children(
+			array(
+				'post_parent'    => $visit_id,
+				'post_type'      => 'attachment',
+				'posts_per_page' => -1,
+				'orderby'        => array(
+					'menu_order' => 'ASC',
+					'date'       => 'ASC',
+				),
+			)
+		);
+
+		return is_array( $attachments ) ? array_values( $attachments ) : array();
+	}
+
+	/**
+	 * Process files submitted under MEDIA_UPLOAD_FIELD and attach them to the visit.
+	 *
+	 * Nonce verification is expected to have happened already on the request.
+	 *
+	 * @param int $visit_id The visit (post) ID files will be attached to.
+	 * @return string[] Error messages from failed uploads (the visit itself is unaffected).
+	 */
+	public static function handle_media_uploads( int $visit_id ): array {
+		$field = self::MEDIA_UPLOAD_FIELD;
+
+		if ( ! $visit_id || empty( $_FILES[ $field ]['name'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			return array();
+		}
+
+		if ( ! current_user_can( 'upload_files' ) ) {
+			return array( __( 'You do not have permission to upload files.', 'apiary-press' ) );
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+
+		// Nonce verification is the caller's responsibility; media_handle_upload validates each file.
+		$raw    = $_FILES[ $field ]; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$errors = array();
+		$names  = is_array( $raw['name'] ) ? $raw['name'] : array( $raw['name'] );
+		$slot   = $field . '_single';
+
+		foreach ( $names as $index => $name ) {
+			$file = is_array( $raw['name'] )
+				? array(
+					'name'     => $raw['name'][ $index ],
+					'type'     => $raw['type'][ $index ],
+					'tmp_name' => $raw['tmp_name'][ $index ],
+					'error'    => $raw['error'][ $index ],
+					'size'     => $raw['size'][ $index ],
+				)
+				: $raw;
+
+			if ( UPLOAD_ERR_NO_FILE === (int) $file['error'] || '' === (string) $file['name'] ) {
+				continue;
+			}
+
+			$_FILES[ $slot ] = $file;
+			$attachment_id   = media_handle_upload( $slot, $visit_id );
+			unset( $_FILES[ $slot ] );
+
+			if ( is_wp_error( $attachment_id ) ) {
+				$errors[] = sprintf(
+					/* translators: 1: file name, 2: error message. */
+					__( '%1$s: %2$s', 'apiary-press' ),
+					sanitize_file_name( (string) $file['name'] ),
+					$attachment_id->get_error_message()
+				);
+			}
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Delete an attachment if it actually belongs to the given visit and the user can delete it.
+	 *
+	 * @param int $attachment_id The attachment to remove.
+	 * @param int $visit_id      The visit the attachment must be parented to.
+	 */
+	public static function delete_visit_media( int $attachment_id, int $visit_id ): bool {
+		if ( ! $attachment_id || ! $visit_id ) {
+			return false;
+		}
+
+		$attachment = get_post( $attachment_id );
+
+		if ( ! $attachment
+			|| 'attachment' !== $attachment->post_type
+			|| absint( $attachment->post_parent ) !== $visit_id ) {
+			return false;
+		}
+
+		if ( ! current_user_can( 'delete_post', $attachment_id ) ) {
+			return false;
+		}
+
+		return (bool) wp_delete_attachment( $attachment_id, true );
 	}
 }

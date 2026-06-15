@@ -149,6 +149,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 							$appr_author_name   = get_the_author_meta( 'display_name', (int) $appr_visit->post_author );
 							$appr_visit_reason  = (string) get_post_meta( $appr_visit->ID, Visit::REASON_META_KEY, true );
 							$appr_reason_label  = Visit::get_visit_meta_labels()[ $appr_visit_reason ] ?? '';
+							$appr_media_count   = count( Visit::get_visit_media( (int) $appr_visit->ID ) );
 
 							foreach ( $appr_meta_labels as $appr_meta_key => $appr_label ) {
 								if ( rest_sanitize_boolean( get_post_meta( $appr_visit->ID, $appr_meta_key, true ) ) ) {
@@ -210,6 +211,18 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 												<?php echo esc_html( $appr_label ); ?>
 											</span>
 										<?php endforeach; ?>
+									</div>
+								<?php endif; ?>
+
+								<?php if ( $appr_media_count > 0 ) : ?>
+									<div class="muted visit-media-count">
+										<?php
+										printf(
+											/* translators: %d: number of media files attached to a visit. */
+											esc_html( _n( '%d media file', '%d media files', $appr_media_count, 'apiary-press' ) ),
+											(int) $appr_media_count
+										);
+										?>
 									</div>
 								<?php endif; ?>
 							</article>
