@@ -35,6 +35,8 @@ class App extends BaseApp {
 		add_action( 'init', array( $this, 'register_apiary_meta' ) );
 		add_action( 'init', array( $this, 'register_hive_meta' ) );
 		add_action( 'init', array( $this, 'register_visit_meta' ) );
+		add_action( 'init', array( $this, 'register_treatment_meta' ) );
+		add_action( 'init', array( $this, 'register_harvest_meta' ) );
 
 		add_action( 'wp_app_head', array( $this, 'enqueue_assets' ), 20 );
 	}
@@ -94,6 +96,8 @@ class App extends BaseApp {
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/edit', 'hive-form.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/qr', 'hive-qr.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/visit/{hive_visit}', 'visit.php' );
+		$this->app->route( 'apiary/{apiary_id}/hive/{id}/treatment/{hive_treatment}', 'treatment.php' );
+		$this->app->route( 'apiary/{apiary_id}/hive/{id}/harvest/{hive_harvest}', 'harvest.php' );
 	}
 
 	/**
@@ -119,6 +123,8 @@ class App extends BaseApp {
 	public function register_post_types(): void {
 		Hive::register_post_types();
 		Visit::register_post_types();
+		Treatment::register_post_types();
+		Harvest::register_post_types();
 	}
 
 	/**
@@ -140,6 +146,20 @@ class App extends BaseApp {
 	 */
 	public function register_visit_meta(): void {
 		Visit::register_meta();
+	}
+
+	/**
+	 * Register the post meta fields for the treatment post type.
+	 */
+	public function register_treatment_meta(): void {
+		Treatment::register_meta();
+	}
+
+	/**
+	 * Register the post meta fields for the harvest post type.
+	 */
+	public function register_harvest_meta(): void {
+		Harvest::register_meta();
 	}
 
 	/**
@@ -173,6 +193,8 @@ class App extends BaseApp {
 		$this->register_apiary_meta();
 		$this->register_hive_meta();
 		$this->register_visit_meta();
+		$this->register_treatment_meta();
+		$this->register_harvest_meta();
 
 		flush_rewrite_rules();
 	}

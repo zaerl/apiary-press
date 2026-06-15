@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-15T12:17:12+00:00\n"
+"POT-Creation-Date: 2026-06-15T14:30:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: apiary-press\n"
@@ -31,7 +31,7 @@ msgid "Francesco Bigiarini"
 msgstr ""
 
 #: src/class-apiary.php:24
-#: src/class-app.php:111
+#: src/class-app.php:115
 #: templates/apiary-form.php:146
 #: templates/apiary.php:91
 #: templates/index.php:33
@@ -72,42 +72,224 @@ msgstr ""
 msgid "Apiaries managed in Apiary Press."
 msgstr ""
 
-#: src/class-hive.php:29
+#: src/class-harvest.php:40
+msgid "Centrifugal extractor"
+msgstr ""
+
+#: src/class-harvest.php:41
+msgid "Crush and strain"
+msgstr ""
+
+#: src/class-harvest.php:42
+msgid "Pressed"
+msgstr ""
+
+#: src/class-harvest.php:43
+msgid "Comb honey"
+msgstr ""
+
+#: src/class-harvest.php:44
+#: src/class-treatment.php:84
+msgid "Other"
+msgstr ""
+
+#: src/class-harvest.php:56
+#: templates/hive.php:290
+msgid "Harvests"
+msgstr ""
+
+#: src/class-harvest.php:57
+#: templates/harvest.php:208
+msgid "Harvest"
+msgstr ""
+
+#: src/class-harvest.php:58
+msgid "Add New Harvest"
+msgstr ""
+
+#: src/class-harvest.php:59
+#: templates/harvest.php:211
+msgid "Edit Harvest"
+msgstr ""
+
+#: src/class-harvest.php:60
+#: templates/harvest.php:208
+#: templates/harvest.php:211
+#: templates/hive.php:144
+msgid "New Harvest"
+msgstr ""
+
+#: src/class-harvest.php:61
+msgid "View Harvest"
+msgstr ""
+
+#: src/class-harvest.php:62
+msgid "Search Harvests"
+msgstr ""
+
+#: src/class-harvest.php:64
+msgid "Honey harvest entries for Apiary Press hives."
+msgstr ""
+
+#: src/class-hive.php:44
 #: templates/apiary.php:135
 msgid "Hives"
 msgstr ""
 
-#: src/class-hive.php:30
-#: templates/hive.php:77
+#: src/class-hive.php:45
+#: templates/hive.php:105
 msgid "Hive"
 msgstr ""
 
-#: src/class-hive.php:31
+#: src/class-hive.php:46
 msgid "Add New Hive"
 msgstr ""
 
-#: src/class-hive.php:32
-#: templates/hive-form.php:194
-#: templates/hive.php:116
+#: src/class-hive.php:47
+#: templates/hive-form.php:335
+#: templates/hive.php:150
 msgid "Edit Hive"
 msgstr ""
 
-#: src/class-hive.php:33
+#: src/class-hive.php:48
 #: templates/apiary.php:99
-#: templates/hive-form.php:194
+#: templates/hive-form.php:335
 msgid "New Hive"
 msgstr ""
 
-#: src/class-hive.php:34
+#: src/class-hive.php:49
 msgid "View Hive"
 msgstr ""
 
-#: src/class-hive.php:35
+#: src/class-hive.php:50
 msgid "Search Hives"
 msgstr ""
 
-#: src/class-hive.php:37
+#: src/class-hive.php:52
 msgid "Bee hives managed in Apiary Press."
+msgstr ""
+
+#: src/class-hive.php:271
+#: templates/hive-form.php:553
+msgid "White"
+msgstr ""
+
+#: src/class-hive.php:273
+#: templates/hive-form.php:554
+msgid "Yellow"
+msgstr ""
+
+#: src/class-hive.php:275
+#: templates/hive-form.php:555
+msgid "Red"
+msgstr ""
+
+#: src/class-hive.php:277
+#: templates/hive-form.php:556
+msgid "Green"
+msgstr ""
+
+#: src/class-hive.php:279
+#: templates/hive-form.php:557
+msgid "Blue"
+msgstr ""
+
+#: src/class-treatment.php:68
+msgid "Treatment"
+msgstr ""
+
+#: src/class-treatment.php:69
+#: src/class-visit.php:62
+msgid "Feeding"
+msgstr ""
+
+#: src/class-treatment.php:78
+msgid "Varroa"
+msgstr ""
+
+#: src/class-treatment.php:79
+msgid "Nosema"
+msgstr ""
+
+#: src/class-treatment.php:80
+msgid "Foulbrood"
+msgstr ""
+
+#: src/class-treatment.php:81
+msgid "Chalkbrood"
+msgstr ""
+
+#: src/class-treatment.php:82
+msgid "Small hive beetle"
+msgstr ""
+
+#: src/class-treatment.php:83
+msgid "Wax moth"
+msgstr ""
+
+#. translators: abbreviated form of "grams"
+#: src/class-treatment.php:94
+msgid "g"
+msgstr ""
+
+#. translators: abbreviated form of "kilograms"
+#: src/class-treatment.php:96
+msgid "kg"
+msgstr ""
+
+#. translators: abbreviated form of "milliliters"
+#: src/class-treatment.php:98
+msgid "ml"
+msgstr ""
+
+#. translators: abbreviated form of "liters"
+#: src/class-treatment.php:100
+msgid "L"
+msgstr ""
+
+#: src/class-treatment.php:101
+msgid "strips"
+msgstr ""
+
+#: src/class-treatment.php:102
+msgid "tablets"
+msgstr ""
+
+#: src/class-treatment.php:103
+msgid "doses"
+msgstr ""
+
+#: src/class-treatment.php:115
+msgid "Treatments & Feedings"
+msgstr ""
+
+#: src/class-treatment.php:116
+#: templates/treatment.php:235
+msgid "Treatment / Feeding"
+msgstr ""
+
+#: src/class-treatment.php:117
+msgid "Add New Treatment"
+msgstr ""
+
+#: src/class-treatment.php:118
+msgid "Edit Treatment"
+msgstr ""
+
+#: src/class-treatment.php:119
+msgid "New Treatment"
+msgstr ""
+
+#: src/class-treatment.php:120
+msgid "View Treatment"
+msgstr ""
+
+#: src/class-treatment.php:121
+msgid "Search Treatments"
+msgstr ""
+
+#: src/class-treatment.php:123
+msgid "Treatments and feedings applied to Apiary Press hives."
 msgstr ""
 
 #: src/class-visit.php:57
@@ -128,10 +310,6 @@ msgstr ""
 
 #: src/class-visit.php:61
 msgid "Equipment maintenance"
-msgstr ""
-
-#: src/class-visit.php:62
-msgid "Feeding"
 msgstr ""
 
 #: src/class-visit.php:63
@@ -334,21 +512,25 @@ msgstr ""
 #: templates/apiary-form.php:140
 #: templates/apiary.php:80
 #: templates/apiary.php:86
-#: templates/hive-form.php:223
-#: templates/hive-form.php:237
+#: templates/harvest.php:231
+#: templates/hive-form.php:381
+#: templates/hive-form.php:395
 #: templates/hive-qr.php:63
 #: templates/hive-qr.php:69
-#: templates/hive.php:91
-#: templates/hive.php:97
+#: templates/hive.php:119
+#: templates/hive.php:125
+#: templates/treatment.php:258
 #: templates/visit.php:296
 msgid "Back to Apiaries"
 msgstr ""
 
 #: templates/apiary-form.php:130
 #: templates/apiary.php:84
-#: templates/hive-form.php:227
+#: templates/harvest.php:235
+#: templates/hive-form.php:385
 #: templates/hive-qr.php:67
-#: templates/hive.php:95
+#: templates/hive.php:123
+#: templates/treatment.php:262
 #: templates/visit.php:300
 msgid "Access Denied"
 msgstr ""
@@ -363,12 +545,14 @@ msgid "You do not have permission to edit this apiary."
 msgstr ""
 
 #: templates/apiary-form.php:163
-#: templates/hive-form.php:260
+#: templates/hive-form.php:418
 msgid "Name"
 msgstr ""
 
 #: templates/apiary-form.php:168
-#: templates/hive-form.php:284
+#: templates/harvest.php:345
+#: templates/hive-form.php:442
+#: templates/treatment.php:396
 #: templates/visit.php:420
 msgid "Notes"
 msgstr ""
@@ -382,7 +566,7 @@ msgid "Apiary updated."
 msgstr ""
 
 #: templates/apiary.php:116
-#: templates/hive.php:122
+#: templates/hive.php:156
 msgid "Hive saved."
 msgstr ""
 
@@ -415,6 +599,151 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+#. translators: 1: hive title, 2: harvested date.
+#: templates/harvest.php:61
+#, php-format
+msgid "%1$s — Harvest on %2$s"
+msgstr ""
+
+#: templates/harvest.php:78
+#: templates/harvest.php:145
+msgid "The harvest could not be saved. Reload and try again."
+msgstr ""
+
+#: templates/harvest.php:80
+#: templates/harvest.php:147
+msgid "Harvest date is invalid."
+msgstr ""
+
+#: templates/harvest.php:82
+#: templates/harvest.php:149
+msgid "Quantity (kg) is required and must be a number."
+msgstr ""
+
+#: templates/harvest.php:84
+#: templates/harvest.php:151
+msgid "Quantity (kg) must be zero or greater."
+msgstr ""
+
+#: templates/harvest.php:86
+#: templates/harvest.php:153
+msgid "Frames extracted must be a non-negative whole number."
+msgstr ""
+
+#: templates/harvest.php:120
+msgid "The harvest could not be removed. Reload and try again."
+msgstr ""
+
+#: templates/harvest.php:122
+msgid "You do not have permission to remove this harvest."
+msgstr ""
+
+#: templates/harvest.php:127
+msgid "The harvest could not be removed."
+msgstr ""
+
+#: templates/harvest.php:212
+msgid "Save Harvest"
+msgstr ""
+
+#: templates/harvest.php:212
+msgid "Update Harvest"
+msgstr ""
+
+#: templates/harvest.php:229
+msgid "Harvest Not Found"
+msgstr ""
+
+#: templates/harvest.php:230
+msgid "The requested harvest is not available for this hive."
+msgstr ""
+
+#: templates/harvest.php:240
+msgid "You do not have permission to add a harvest to this hive."
+msgstr ""
+
+#: templates/harvest.php:241
+msgid "You do not have permission to edit this harvest."
+msgstr ""
+
+#: templates/harvest.php:245
+#: templates/treatment.php:272
+#: templates/visit.php:310
+msgid "Back to Hive"
+msgstr ""
+
+#. translators: %s: the display name of the user who recorded the harvest.
+#. translators: %s: the display name of the user who recorded the entry.
+#. translators: %s: the display name of the user who recorded the visit.
+#: templates/harvest.php:258
+#: templates/hive.php:336
+#: templates/hive.php:431
+#: templates/hive.php:522
+#: templates/treatment.php:285
+#: templates/visit.php:331
+#, php-format
+msgid "by %s"
+msgstr ""
+
+#: templates/harvest.php:259
+#: templates/hive.php:337
+#: templates/hive.php:432
+#: templates/hive.php:523
+#: templates/treatment.php:286
+#: templates/visit.php:332
+msgid "Unknown"
+msgstr ""
+
+#: templates/harvest.php:268
+msgid "Harvest saved."
+msgstr ""
+
+#: templates/harvest.php:272
+msgid "Harvest updated."
+msgstr ""
+
+#: templates/harvest.php:287
+msgid "Harvested on"
+msgstr ""
+
+#: templates/harvest.php:292
+msgid "Quantity (kg)"
+msgstr ""
+
+#: templates/harvest.php:307
+msgid "Honey type"
+msgstr ""
+
+#: templates/harvest.php:313
+msgid "e.g. Acacia, wildflower, chestnut"
+msgstr ""
+
+#: templates/harvest.php:319
+msgid "Frames extracted (optional)"
+msgstr ""
+
+#: templates/harvest.php:332
+msgid "Extraction method"
+msgstr ""
+
+#: templates/harvest.php:334
+#: templates/treatment.php:347
+#: templates/treatment.php:373
+msgid "— Select —"
+msgstr ""
+
+#: templates/harvest.php:357
+msgid "Remove this harvest from the hive record."
+msgstr ""
+
+#: templates/harvest.php:361
+msgid "Remove this harvest?"
+msgstr ""
+
+#: templates/harvest.php:363
+msgid "Remove Harvest"
+msgstr ""
+
 #. translators: %s: coordinate field label
 #: templates/hive-form.php:42
 #, php-format
@@ -427,88 +756,166 @@ msgstr ""
 msgid "%1$s must be between %2$s and %3$s."
 msgstr ""
 
-#: templates/hive-form.php:108
-#: templates/hive-form.php:150
-#: templates/hive-form.php:266
-msgid "Latitude"
+#: templates/hive-form.php:118
+msgid "Queen year must be a four-digit year."
 msgstr ""
 
-#: templates/hive-form.php:109
-#: templates/hive-form.php:151
-#: templates/hive-form.php:271
-msgid "Longitude"
+#. translators: 1: minimum year, 2: maximum year
+#: templates/hive-form.php:126
+#, php-format
+msgid "Queen year must be between %1$d and %2$d."
 msgstr ""
 
-#: templates/hive-form.php:112
-#: templates/hive-form.php:154
-msgid "The hive could not be saved. Reload and try again."
-msgstr ""
-
-#: templates/hive-form.php:114
-#: templates/hive-form.php:156
-msgid "Hive name is required."
-msgstr ""
-
-#: templates/hive-form.php:120
-#: templates/hive-form.php:162
-msgid "Add both latitude and longitude, or leave both blank."
-msgstr ""
-
-#: templates/hive-form.php:198
-msgid "Save Hive"
-msgstr ""
-
-#: templates/hive-form.php:198
-msgid "Update Hive"
-msgstr ""
-
-#: templates/hive-form.php:221
-#: templates/hive-qr.php:61
-#: templates/hive.php:89
-msgid "Hive Not Found"
+#: templates/hive-form.php:140
+msgid "Queen install date is not valid."
 msgstr ""
 
 #: templates/hive-form.php:222
+#: templates/hive-form.php:269
+#: templates/hive-form.php:424
+msgid "Latitude"
+msgstr ""
+
+#: templates/hive-form.php:223
+#: templates/hive-form.php:270
+#: templates/hive-form.php:429
+msgid "Longitude"
+msgstr ""
+
+#: templates/hive-form.php:228
+#: templates/hive-form.php:275
+msgid "The hive could not be saved. Reload and try again."
+msgstr ""
+
+#: templates/hive-form.php:230
+#: templates/hive-form.php:277
+msgid "Hive name is required."
+msgstr ""
+
+#: templates/hive-form.php:236
+#: templates/hive-form.php:283
+msgid "Add both latitude and longitude, or leave both blank."
+msgstr ""
+
+#: templates/hive-form.php:339
+msgid "Save Hive"
+msgstr ""
+
+#: templates/hive-form.php:339
+msgid "Update Hive"
+msgstr ""
+
+#: templates/hive-form.php:355
+msgid "Auto (from year)"
+msgstr ""
+
+#: templates/hive-form.php:356
+msgid "White (years ending 1, 6)"
+msgstr ""
+
+#: templates/hive-form.php:357
+msgid "Yellow (years ending 2, 7)"
+msgstr ""
+
+#: templates/hive-form.php:358
+msgid "Red (years ending 3, 8)"
+msgstr ""
+
+#: templates/hive-form.php:359
+msgid "Green (years ending 4, 9)"
+msgstr ""
+
+#: templates/hive-form.php:360
+msgid "Blue (years ending 5, 0)"
+msgstr ""
+
+#: templates/hive-form.php:379
+#: templates/hive-qr.php:61
+#: templates/hive.php:117
+msgid "Hive Not Found"
+msgstr ""
+
+#: templates/hive-form.php:380
 #: templates/hive-qr.php:62
-#: templates/hive.php:90
+#: templates/hive.php:118
 msgid "The requested hive is not available."
 msgstr ""
 
-#: templates/hive-form.php:232
+#: templates/hive-form.php:390
 msgid "You do not have permission to add hives."
 msgstr ""
 
-#: templates/hive-form.php:233
-#: templates/hive.php:96
+#: templates/hive-form.php:391
+#: templates/hive.php:124
 msgid "You do not have permission to edit this hive."
 msgstr ""
 
-#: templates/hive-form.php:278
+#: templates/hive-form.php:436
 msgid "Set Current Location"
 msgstr ""
 
-#: templates/hive-form.php:306
+#: templates/hive-form.php:447
+#: templates/hive.php:195
+msgid "Queen"
+msgstr ""
+
+#: templates/hive-form.php:451
+#: templates/hive.php:199
+msgid "Year"
+msgstr ""
+
+#: templates/hive-form.php:465
+#: templates/hive.php:206
+msgid "Marking color"
+msgstr ""
+
+#: templates/hive-form.php:477
+#: templates/hive.php:219
+msgid "Installed on"
+msgstr ""
+
+#: templates/hive-form.php:487
+msgid "Origin / breeder"
+msgstr ""
+
+#: templates/hive-form.php:500
+#: templates/hive.php:237
+msgid "Marked"
+msgstr ""
+
+#: templates/hive-form.php:504
+#: templates/hive.php:240
+msgid "Clipped"
+msgstr ""
+
+#: templates/hive-form.php:527
 msgid "Getting current location..."
 msgstr ""
 
-#: templates/hive-form.php:307
+#: templates/hive-form.php:528
 msgid "Current location set."
 msgstr ""
 
-#: templates/hive-form.php:308
+#: templates/hive-form.php:529
 msgid "Location access is unavailable in this browser."
 msgstr ""
 
-#: templates/hive-form.php:309
+#: templates/hive-form.php:530
 msgid "Location access requires HTTPS or localhost."
 msgstr ""
 
-#: templates/hive-form.php:310
+#: templates/hive-form.php:531
 msgid "Allow location access and try again."
 msgstr ""
 
-#: templates/hive-form.php:311
+#: templates/hive-form.php:532
 msgid "Current location could not be read."
+msgstr ""
+
+#. translators: 1: four-digit queen birth year, 2: name of the international marking color (e.g. White, Yellow).
+#: templates/hive-form.php:565
+#, php-format
+msgid "Standard color for %1$s: %2$s."
 msgstr ""
 
 #: templates/hive-qr.php:48
@@ -517,7 +924,7 @@ msgid "%s QR"
 msgstr ""
 
 #: templates/hive-qr.php:48
-#: templates/hive.php:144
+#: templates/hive.php:257
 msgid "Hive QR"
 msgstr ""
 
@@ -528,85 +935,166 @@ msgstr ""
 #. translators: %s: the title of the hive.
 #: templates/hive-qr.php:72
 #: templates/hive-qr.php:74
-#: templates/hive.php:141
+#: templates/hive.php:254
 #, php-format
 msgid "QR code for %s"
 msgstr ""
 
-#: templates/hive.php:110
+#: templates/hive.php:138
 #: templates/visit.php:233
 #: templates/visit.php:236
 #: templates/visit.php:320
 msgid "New Visit"
 msgstr ""
 
-#: templates/hive.php:113
-#: templates/hive.php:146
+#: templates/hive.php:141
+#: templates/treatment.php:235
+#: templates/treatment.php:238
+msgid "New Treatment / Feeding"
+msgstr ""
+
+#: templates/hive.php:147
+#: templates/hive.php:259
 msgid "Print QR"
 msgstr ""
 
-#: templates/hive.php:126
+#: templates/hive.php:160
 msgid "Hive updated."
 msgstr ""
 
-#: templates/hive.php:130
+#: templates/hive.php:164
 #: templates/visit.php:346
 msgid "Visit saved."
 msgstr ""
 
-#: templates/hive.php:134
+#: templates/hive.php:168
 msgid "Visit removed."
 msgstr ""
 
-#: templates/hive.php:152
+#: templates/hive.php:172
+msgid "Entry removed."
+msgstr ""
+
+#: templates/hive.php:176
+msgid "Harvest removed."
+msgstr ""
+
+#: templates/hive.php:211
+msgid "auto from year"
+msgstr ""
+
+#: templates/hive.php:226
+msgid "Origin"
+msgstr ""
+
+#: templates/hive.php:233
+msgid "Flags"
+msgstr ""
+
+#: templates/hive.php:265
 msgid "Hive location"
 msgstr ""
 
-#: templates/hive.php:162
-msgid "Visits"
+#: templates/hive.php:294
+msgid "Total harvested"
 msgstr ""
 
-#: templates/hive.php:165
-msgid "No visits yet."
-msgstr ""
-
-#. translators: %s: the display name of the user who recorded the visit.
-#: templates/hive.php:192
-#: templates/visit.php:331
+#. translators: %s: kilograms of honey harvested.
+#: templates/hive.php:300
+#: templates/hive.php:353
 #, php-format
-msgid "by %s"
+msgid "%s kg"
 msgstr ""
 
-#: templates/hive.php:193
-#: templates/visit.php:332
-msgid "Unknown"
+#. translators: %d: number of harvest entries.
+#: templates/hive.php:310
+#, php-format
+msgid "over %d entry"
+msgid_plural "over %d entries"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/hive.php:319
+msgid "No harvests logged yet."
 msgstr ""
 
-#: templates/hive.php:199
+#: templates/hive.php:343
+#: templates/hive.php:438
+#: templates/hive.php:529
 msgid "View / Edit"
 msgstr ""
 
-#: templates/hive.php:209
+#. translators: %d: number of frames extracted.
+#: templates/hive.php:371
+#, php-format
+msgid "%d frame"
+msgid_plural "%d frames"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/hive.php:393
+msgid "Treatments &amp; Feedings"
+msgstr ""
+
+#. translators: %d: the number of treatments currently in progress.
+#: templates/hive.php:400
+#, php-format
+msgid "%d treatment is currently in progress."
+msgid_plural "%d treatments are currently in progress."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/hive.php:408
+msgid "No treatments or feedings logged."
+msgstr ""
+
+#: templates/hive.php:450
+msgid "In progress"
+msgstr ""
+
+#: templates/hive.php:457
+#: templates/treatment.php:340
+msgid "Product"
+msgstr ""
+
+#: templates/hive.php:464
+#: templates/treatment.php:358
+msgid "Quantity"
+msgstr ""
+
+#: templates/hive.php:476
+msgid "End date"
+msgstr ""
+
+#: templates/hive.php:492
+msgid "Visits"
+msgstr ""
+
+#: templates/hive.php:495
+msgid "No visits yet."
+msgstr ""
+
+#: templates/hive.php:539
 #: templates/visit.php:448
 msgid "Reason:"
 msgstr ""
 
-#: templates/hive.php:218
+#: templates/hive.php:548
 msgid "Registered weather"
 msgstr ""
 
-#: templates/hive.php:219
+#: templates/hive.php:549
 #: templates/visit.php:466
 msgid "Registered Weather"
 msgstr ""
 
-#: templates/hive.php:230
+#: templates/hive.php:560
 #: templates/visit.php:454
 msgid "No observations marked."
 msgstr ""
 
 #. translators: %d: number of media files attached to a visit.
-#: templates/hive.php:246
+#: templates/hive.php:576
 #, php-format
 msgid "%d media file"
 msgid_plural "%d media files"
@@ -636,6 +1124,126 @@ msgid "%d hive"
 msgid_plural "%d hives"
 msgstr[0] ""
 msgstr[1] ""
+
+#. translators: 1: hive title, 2: kind (Treatment or Feeding), 3: applied date.
+#: templates/treatment.php:67
+#, php-format
+msgid "%1$s — %2$s on %3$s"
+msgstr ""
+
+#: templates/treatment.php:88
+#: templates/treatment.php:162
+msgid "The entry could not be saved. Reload and try again."
+msgstr ""
+
+#: templates/treatment.php:90
+#: templates/treatment.php:164
+msgid "Applied date is invalid."
+msgstr ""
+
+#: templates/treatment.php:92
+#: templates/treatment.php:166
+msgid "Product is required."
+msgstr ""
+
+#: templates/treatment.php:94
+#: templates/treatment.php:168
+msgid "Quantity must be a number."
+msgstr ""
+
+#: templates/treatment.php:96
+#: templates/treatment.php:170
+msgid "End date is invalid."
+msgstr ""
+
+#: templates/treatment.php:98
+#: templates/treatment.php:172
+msgid "End date must be on or after the applied date."
+msgstr ""
+
+#: templates/treatment.php:134
+msgid "The entry could not be removed. Reload and try again."
+msgstr ""
+
+#: templates/treatment.php:136
+msgid "You do not have permission to remove this entry."
+msgstr ""
+
+#: templates/treatment.php:141
+msgid "The entry could not be removed."
+msgstr ""
+
+#: templates/treatment.php:238
+msgid "Edit Entry"
+msgstr ""
+
+#: templates/treatment.php:239
+msgid "Save Entry"
+msgstr ""
+
+#: templates/treatment.php:239
+msgid "Update Entry"
+msgstr ""
+
+#: templates/treatment.php:256
+msgid "Entry Not Found"
+msgstr ""
+
+#: templates/treatment.php:257
+msgid "The requested treatment or feeding entry is not available for this hive."
+msgstr ""
+
+#: templates/treatment.php:267
+msgid "You do not have permission to add an entry to this hive."
+msgstr ""
+
+#: templates/treatment.php:268
+msgid "You do not have permission to edit this entry."
+msgstr ""
+
+#: templates/treatment.php:295
+msgid "Entry saved."
+msgstr ""
+
+#: templates/treatment.php:299
+msgid "Entry updated."
+msgstr ""
+
+#: templates/treatment.php:312
+msgid "Kind"
+msgstr ""
+
+#: templates/treatment.php:329
+msgid "Applied on"
+msgstr ""
+
+#: templates/treatment.php:334
+msgid "End date (optional)"
+msgstr ""
+
+#: templates/treatment.php:341
+msgid "e.g. Apivar, oxalic acid, 1:1 syrup"
+msgstr ""
+
+#: templates/treatment.php:345
+msgid "Target"
+msgstr ""
+
+#: templates/treatment.php:371
+msgid "Unit"
+msgstr ""
+
+#: templates/treatment.php:408
+msgid "Remove this entry from the hive record."
+msgstr ""
+
+#: templates/treatment.php:412
+msgid "Remove this entry?"
+msgstr ""
+
+#: templates/treatment.php:414
+msgid "Remove Entry"
+msgstr ""
 
 #: templates/visit.php:62
 #: templates/visit.php:164
@@ -707,10 +1315,6 @@ msgstr ""
 
 #: templates/visit.php:306
 msgid "You do not have permission to edit this visit."
-msgstr ""
-
-#: templates/visit.php:310
-msgid "Back to Hive"
 msgstr ""
 
 #: templates/visit.php:350

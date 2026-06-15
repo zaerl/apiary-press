@@ -8,6 +8,8 @@
 namespace ApiaryPress;
 
 use ApiaryPress\App;
+use ApiaryPress\Harvest;
+use ApiaryPress\Treatment;
 use ApiaryPress\Visit;
 use ApiaryPress\Weather;
 use chillerlan\QRCode\QRCode;
@@ -40,6 +42,8 @@ if ( $appr_not_found ) {
 }
 
 $appr_visits     = array();
+$appr_treatments = array();
+$appr_harvests   = array();
 $appr_map_marker = array();
 
 if ( ! $appr_not_found && ! $appr_forbidden ) {
@@ -59,6 +63,30 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	$appr_visits = get_posts(
 		array(
 			'post_type'        => Visit::HIVE_VISIT_POST_TYPE,
+			'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+			'post_parent'      => $appr_hive_id,
+			'numberposts'      => -1,
+			'orderby'          => 'date',
+			'order'            => 'DESC',
+			'suppress_filters' => false,
+		)
+	);
+
+	$appr_treatments = get_posts(
+		array(
+			'post_type'        => Treatment::HIVE_TREATMENT_POST_TYPE,
+			'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+			'post_parent'      => $appr_hive_id,
+			'numberposts'      => -1,
+			'orderby'          => 'date',
+			'order'            => 'DESC',
+			'suppress_filters' => false,
+		)
+	);
+
+	$appr_harvests = get_posts(
+		array(
+			'post_type'        => Harvest::HIVE_HARVEST_POST_TYPE,
 			'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
 			'post_parent'      => $appr_hive_id,
 			'numberposts'      => -1,
@@ -109,6 +137,12 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 					<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/new' ) ); ?>">
 						<?php echo esc_html__( 'New Visit', 'apiary-press' ); ?>
 					</a>
+					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/new' ) ); ?>">
+						<?php echo esc_html__( 'New Treatment / Feeding', 'apiary-press' ); ?>
+					</a>
+					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/new' ) ); ?>">
+						<?php echo esc_html__( 'New Harvest', 'apiary-press' ); ?>
+					</a>
 					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/qr' ) ); ?>">
 						<?php echo esc_html__( 'Print QR', 'apiary-press' ); ?>
 					</a>
@@ -132,6 +166,14 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 
 			<?php if ( isset( $_GET['visit_deleted'] ) ) : ?>
 				<div class="notice"><?php echo esc_html__( 'Visit removed.', 'apiary-press' ); ?></div>
+			<?php endif; ?>
+
+			<?php if ( isset( $_GET['treatment_deleted'] ) ) : ?>
+				<div class="notice"><?php echo esc_html__( 'Entry removed.', 'apiary-press' ); ?></div>
+			<?php endif; ?>
+
+			<?php if ( isset( $_GET['harvest_deleted'] ) ) : ?>
+				<div class="notice"><?php echo esc_html__( 'Harvest removed.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
 			<?php
@@ -228,6 +270,223 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 					<?php endif; ?>
 				</section>
 			<?php endif; ?>
+
+			<?php
+			$appr_kind_labels   = Treatment::get_kind_labels();
+			$appr_target_labels = Treatment::get_target_labels();
+			$appr_unit_labels   = Treatment::get_unit_labels();
+			$appr_ongoing_count = 0;
+			foreach ( $appr_treatments as $appr_treatment_post ) {
+				if ( Treatment::is_ongoing( $appr_treatment_post ) ) {
+					++$appr_ongoing_count;
+				}
+			}
+			?>
+			<?php
+			$appr_method_labels = Harvest::get_method_labels();
+			$appr_harvest_total = Harvest::total_kg( $appr_harvests );
+			?>
+			<section aria-labelledby="harvest-list-heading">
+				<h2 id="harvest-list-heading"><?php echo esc_html__( 'Harvests', 'apiary-press' ); ?></h2>
+
+				<?php if ( ! empty( $appr_harvests ) ) : ?>
+					<div class="harvest-total" role="status">
+						<span class="harvest-total-label"><?php echo esc_html__( 'Total harvested', 'apiary-press' ); ?></span>
+						<span class="harvest-total-value">
+							<?php
+							echo esc_html(
+								sprintf(
+									/* translators: %s: kilograms of honey harvested. */
+									__( '%s kg', 'apiary-press' ),
+									Harvest::format_kg( $appr_harvest_total )
+								)
+							);
+							?>
+						</span>
+						<span class="harvest-total-count muted">
+							<?php
+							printf(
+								/* translators: %d: number of harvest entries. */
+								esc_html( _n( 'over %d entry', 'over %d entries', count( $appr_harvests ), 'apiary-press' ) ),
+								(int) count( $appr_harvests )
+							);
+							?>
+						</span>
+					</div>
+				<?php endif; ?>
+
+				<?php if ( empty( $appr_harvests ) ) : ?>
+					<div class="empty-state"><?php echo esc_html__( 'No harvests logged yet.', 'apiary-press' ); ?></div>
+				<?php else : ?>
+					<div class="harvest-list">
+						<?php foreach ( $appr_harvests as $appr_harvest_post ) : ?>
+							<?php
+							$appr_h            = Harvest::get_harvest( (int) $appr_harvest_post->ID );
+							$appr_method_label = $appr_h['method'] && isset( $appr_method_labels[ $appr_h['method'] ] ) ? $appr_method_labels[ $appr_h['method'] ] : '';
+							$appr_h_author     = get_the_author_meta( 'display_name', (int) $appr_harvest_post->post_author );
+							?>
+							<article class="visit-row harvest-row">
+								<div class="visit-head">
+									<div>
+										<div class="visit-date"><?php echo esc_html( mysql2date( get_option( 'date_format' ), $appr_harvest_post->post_date ) ); ?></div>
+										<div class="muted">
+											<?php
+											printf(
+												/* translators: %s: the display name of the user who recorded the harvest. */
+												esc_html__( 'by %s', 'apiary-press' ),
+												esc_html( $appr_h_author ? $appr_h_author : __( 'Unknown', 'apiary-press' ) )
+											);
+											?>
+										</div>
+									</div>
+									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . absint( $appr_harvest_post->ID ) ) ); ?>" class="muted">
+										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
+									</a>
+								</div>
+
+								<div class="harvest-headline">
+									<span class="harvest-headline-value">
+										<?php
+										echo esc_html(
+											sprintf(
+												/* translators: %s: kilograms of honey harvested. */
+												__( '%s kg', 'apiary-press' ),
+												Harvest::format_kg( $appr_h['quantity_kg'] )
+											)
+										);
+										?>
+									</span>
+									<?php if ( '' !== $appr_h['honey_type'] ) : ?>
+										<span class="harvest-type"><?php echo esc_html( $appr_h['honey_type'] ); ?></span>
+									<?php endif; ?>
+								</div>
+
+								<?php if ( $appr_h['frames'] > 0 || $appr_method_label ) : ?>
+									<div class="badge-list">
+										<?php if ( $appr_h['frames'] > 0 ) : ?>
+											<span class="badge">
+												<?php
+												printf(
+													/* translators: %d: number of frames extracted. */
+													esc_html( _n( '%d frame', '%d frames', $appr_h['frames'], 'apiary-press' ) ),
+													(int) $appr_h['frames']
+												);
+												?>
+											</span>
+										<?php endif; ?>
+										<?php if ( $appr_method_label ) : ?>
+											<span class="badge"><?php echo esc_html( $appr_method_label ); ?></span>
+										<?php endif; ?>
+									</div>
+								<?php endif; ?>
+
+								<?php if ( trim( $appr_harvest_post->post_content ) ) : ?>
+									<p class="visit-notes"><?php echo esc_html( wp_strip_all_tags( $appr_harvest_post->post_content ) ); ?></p>
+								<?php endif; ?>
+							</article>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
+			</section>
+
+			<section aria-labelledby="treatment-list-heading">
+				<h2 id="treatment-list-heading"><?php echo esc_html__( 'Treatments &amp; Feedings', 'apiary-press' ); ?></h2>
+
+				<?php if ( $appr_ongoing_count > 0 ) : ?>
+					<div class="notice notice-attention">
+						<?php
+						printf(
+							/* translators: %d: the number of treatments currently in progress. */
+							esc_html( _n( '%d treatment is currently in progress.', '%d treatments are currently in progress.', $appr_ongoing_count, 'apiary-press' ) ),
+							(int) $appr_ongoing_count
+						);
+						?>
+					</div>
+				<?php endif; ?>
+
+				<?php if ( empty( $appr_treatments ) ) : ?>
+					<div class="empty-state"><?php echo esc_html__( 'No treatments or feedings logged.', 'apiary-press' ); ?></div>
+				<?php else : ?>
+					<div class="treatment-list">
+						<?php foreach ( $appr_treatments as $appr_treatment_post ) : ?>
+							<?php
+							$appr_t              = Treatment::get_treatment( (int) $appr_treatment_post->ID );
+							$appr_kind_label     = $appr_kind_labels[ $appr_t['kind'] ] ?? '';
+							$appr_target_label   = $appr_t['target'] && isset( $appr_target_labels[ $appr_t['target'] ] ) ? $appr_target_labels[ $appr_t['target'] ] : '';
+							$appr_unit_label     = $appr_t['unit'] && isset( $appr_unit_labels[ $appr_t['unit'] ] ) ? $appr_unit_labels[ $appr_t['unit'] ] : '';
+							$appr_t_author       = get_the_author_meta( 'display_name', (int) $appr_treatment_post->post_author );
+							$appr_is_ongoing     = Treatment::is_ongoing( $appr_treatment_post );
+							$appr_quantity_label = $appr_t['quantity'] > 0
+								? rtrim( rtrim( number_format( $appr_t['quantity'], 3, '.', '' ), '0' ), '.' )
+								: '';
+							?>
+							<article class="visit-row treatment-row">
+								<div class="visit-head">
+									<div>
+										<div class="visit-date"><?php echo esc_html( mysql2date( get_option( 'date_format' ), $appr_treatment_post->post_date ) ); ?></div>
+										<div class="muted">
+											<?php
+											printf(
+												/* translators: %s: the display name of the user who recorded the entry. */
+												esc_html__( 'by %s', 'apiary-press' ),
+												esc_html( $appr_t_author ? $appr_t_author : __( 'Unknown', 'apiary-press' ) )
+											);
+											?>
+										</div>
+									</div>
+									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . absint( $appr_treatment_post->ID ) ) ); ?>" class="muted">
+										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
+									</a>
+								</div>
+
+								<div class="badge-list">
+									<span class="badge badge-kind badge-kind-<?php echo esc_attr( $appr_t['kind'] ); ?>">
+										<?php echo esc_html( $appr_kind_label ); ?>
+									</span>
+									<?php if ( $appr_target_label ) : ?>
+										<span class="badge"><?php echo esc_html( $appr_target_label ); ?></span>
+									<?php endif; ?>
+									<?php if ( $appr_is_ongoing ) : ?>
+										<span class="badge badge-attention"><?php echo esc_html__( 'In progress', 'apiary-press' ); ?></span>
+									<?php endif; ?>
+								</div>
+
+								<dl class="treatment-summary">
+									<?php if ( '' !== $appr_t['product'] ) : ?>
+										<div>
+											<dt><?php echo esc_html__( 'Product', 'apiary-press' ); ?></dt>
+											<dd><?php echo esc_html( $appr_t['product'] ); ?></dd>
+										</div>
+									<?php endif; ?>
+
+									<?php if ( '' !== $appr_quantity_label ) : ?>
+										<div>
+											<dt><?php echo esc_html__( 'Quantity', 'apiary-press' ); ?></dt>
+											<dd>
+												<?php echo esc_html( $appr_quantity_label ); ?>
+												<?php if ( $appr_unit_label ) : ?>
+													<span class="muted"><?php echo esc_html( $appr_unit_label ); ?></span>
+												<?php endif; ?>
+											</dd>
+										</div>
+									<?php endif; ?>
+
+									<?php if ( '' !== $appr_t['end_date'] ) : ?>
+										<div>
+											<dt><?php echo esc_html__( 'End date', 'apiary-press' ); ?></dt>
+											<dd><?php echo esc_html( mysql2date( get_option( 'date_format' ), $appr_t['end_date'] ) ); ?></dd>
+										</div>
+									<?php endif; ?>
+								</dl>
+
+								<?php if ( trim( $appr_treatment_post->post_content ) ) : ?>
+									<p class="visit-notes"><?php echo esc_html( wp_strip_all_tags( $appr_treatment_post->post_content ) ); ?></p>
+								<?php endif; ?>
+							</article>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
+			</section>
 
 			<section aria-labelledby="visit-list-heading">
 				<h2 id="visit-list-heading"><?php echo esc_html__( 'Visits', 'apiary-press' ); ?></h2>
