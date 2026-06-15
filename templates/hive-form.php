@@ -78,6 +78,120 @@ if ( ! function_exists( 'appr_update_coordinate_meta' ) ) {
 	}
 }
 
+if ( ! function_exists( 'appr_read_queen_inputs' ) ) {
+	/**
+	 * Pull the queen-related fields off the current POST request, lightly sanitized.
+	 * Returns a structured array; validation happens in the caller so errors can short-circuit save.
+	 */
+	function appr_read_queen_inputs(): array {
+		$year_raw     = isset( $_POST['ap_queen_year'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['ap_queen_year'] ) ) ) : '';
+		$color_raw    = isset( $_POST['ap_queen_color'] ) ? sanitize_key( wp_unslash( $_POST['ap_queen_color'] ) ) : '';
+		$origin_raw   = isset( $_POST['ap_queen_origin'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_queen_origin'] ) ) : '';
+		$installed_at = isset( $_POST['ap_queen_installed_at'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_queen_installed_at'] ) ) : '';
+		$marked       = isset( $_POST['ap_queen_marked'] );
+		$clipped      = isset( $_POST['ap_queen_clipped'] );
+
+		return array(
+			'year'         => $year_raw,
+			'color'        => in_array( $color_raw, Hive::QUEEN_COLOR_VALUES, true ) ? $color_raw : '',
+			'origin'       => $origin_raw,
+			'installed_at' => $installed_at,
+			'marked'       => $marked,
+			'clipped'      => $clipped,
+		);
+	}
+}
+
+if ( ! function_exists( 'appr_validate_queen_inputs' ) ) {
+	/**
+	 * Validate queen inputs and return ['' or error message, normalized values].
+	 *
+	 * @param array $appr_queen_inputs Raw queen field values from the POST request.
+	 */
+	function appr_validate_queen_inputs( array $appr_queen_inputs ): array {
+		$error           = '';
+		$year_normalized = 0;
+		$installed_at    = '';
+
+		if ( '' !== $appr_queen_inputs['year'] ) {
+			if ( ! ctype_digit( $appr_queen_inputs['year'] ) ) {
+				$error = __( 'Queen year must be a four-digit year.', 'apiary-press' );
+			} else {
+				$year     = (int) $appr_queen_inputs['year'];
+				$max_year = (int) gmdate( 'Y' ) + 1;
+
+				if ( $year < 1990 || $year > $max_year ) {
+					$error = sprintf(
+						/* translators: 1: minimum year, 2: maximum year */
+						__( 'Queen year must be between %1$d and %2$d.', 'apiary-press' ),
+						1990,
+						$max_year
+					);
+				} else {
+					$year_normalized = $year;
+				}
+			}
+		}
+
+		if ( '' === $error && '' !== $appr_queen_inputs['installed_at'] ) {
+			$timestamp = strtotime( $appr_queen_inputs['installed_at'] );
+
+			if ( false === $timestamp ) {
+				$error = __( 'Queen install date is not valid.', 'apiary-press' );
+			} else {
+				$installed_at = gmdate( 'Y-m-d', $timestamp );
+			}
+		}
+
+		return array(
+			'error'        => $error,
+			'year'         => $year_normalized,
+			'color'        => $appr_queen_inputs['color'],
+			'origin'       => $appr_queen_inputs['origin'],
+			'installed_at' => $installed_at,
+			'marked'       => (bool) $appr_queen_inputs['marked'],
+			'clipped'      => (bool) $appr_queen_inputs['clipped'],
+		);
+	}
+}
+
+if ( ! function_exists( 'appr_save_queen_meta' ) ) {
+	/**
+	 * Persist the validated queen fields onto a hive post.
+	 *
+	 * @param int   $appr_hive_id The hive post ID.
+	 * @param array $appr_queen   The validated queen values from appr_validate_queen_inputs().
+	 */
+	function appr_save_queen_meta( int $appr_hive_id, array $appr_queen ): void {
+		if ( $appr_queen['year'] > 0 ) {
+			update_post_meta( $appr_hive_id, Hive::QUEEN_YEAR_META_KEY, $appr_queen['year'] );
+		} else {
+			delete_post_meta( $appr_hive_id, Hive::QUEEN_YEAR_META_KEY );
+		}
+
+		if ( '' !== $appr_queen['color'] ) {
+			update_post_meta( $appr_hive_id, Hive::QUEEN_COLOR_META_KEY, $appr_queen['color'] );
+		} else {
+			delete_post_meta( $appr_hive_id, Hive::QUEEN_COLOR_META_KEY );
+		}
+
+		if ( '' !== $appr_queen['origin'] ) {
+			update_post_meta( $appr_hive_id, Hive::QUEEN_ORIGIN_META_KEY, $appr_queen['origin'] );
+		} else {
+			delete_post_meta( $appr_hive_id, Hive::QUEEN_ORIGIN_META_KEY );
+		}
+
+		if ( '' !== $appr_queen['installed_at'] ) {
+			update_post_meta( $appr_hive_id, Hive::QUEEN_INSTALLED_META_KEY, $appr_queen['installed_at'] );
+		} else {
+			delete_post_meta( $appr_hive_id, Hive::QUEEN_INSTALLED_META_KEY );
+		}
+
+		update_post_meta( $appr_hive_id, Hive::QUEEN_MARKED_META_KEY, $appr_queen['marked'] ? 1 : 0 );
+		update_post_meta( $appr_hive_id, Hive::QUEEN_CLIPPED_META_KEY, $appr_queen['clipped'] ? 1 : 0 );
+	}
+}
+
 global $wp_app_route;
 
 $appr_route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
@@ -107,6 +221,8 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_hive && 'create_hive
 	$appr_notes           = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
 	$appr_latitude_input  = appr_read_coordinate_input( 'ap_hive_latitude', __( 'Latitude', 'apiary-press' ), -90, 90 );
 	$appr_longitude_input = appr_read_coordinate_input( 'ap_hive_longitude', __( 'Longitude', 'apiary-press' ), -180, 180 );
+	$appr_queen_inputs    = appr_read_queen_inputs();
+	$appr_queen_validated = appr_validate_queen_inputs( $appr_queen_inputs );
 
 	if ( ! wp_verify_nonce( $appr_nonce, 'ap_create_hive' ) ) {
 		$appr_form_error = __( 'The hive could not be saved. Reload and try again.', 'apiary-press' );
@@ -118,6 +234,8 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_hive && 'create_hive
 		$appr_form_error = $appr_longitude_input['error'];
 	} elseif ( ( '' === $appr_latitude_input['value'] ) !== ( '' === $appr_longitude_input['value'] ) ) {
 		$appr_form_error = __( 'Add both latitude and longitude, or leave both blank.', 'apiary-press' );
+	} elseif ( $appr_queen_validated['error'] ) {
+		$appr_form_error = $appr_queen_validated['error'];
 	} else {
 		$appr_new_hive_id = wp_insert_post(
 			array(
@@ -136,6 +254,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_hive && 'create_hive
 		} else {
 			appr_update_coordinate_meta( $appr_new_hive_id, 'latitude', $appr_latitude_input['value'] );
 			appr_update_coordinate_meta( $appr_new_hive_id, 'longitude', $appr_longitude_input['value'] );
+			appr_save_queen_meta( $appr_new_hive_id, $appr_queen_validated );
 
 			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . absint( $appr_new_hive_id ) ) ) );
 			exit;
@@ -149,6 +268,8 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'update_hi
 	$appr_notes           = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : '';
 	$appr_latitude_input  = appr_read_coordinate_input( 'ap_hive_latitude', __( 'Latitude', 'apiary-press' ), -90, 90 );
 	$appr_longitude_input = appr_read_coordinate_input( 'ap_hive_longitude', __( 'Longitude', 'apiary-press' ), -180, 180 );
+	$appr_queen_inputs    = appr_read_queen_inputs();
+	$appr_queen_validated = appr_validate_queen_inputs( $appr_queen_inputs );
 
 	if ( ! wp_verify_nonce( $appr_nonce, 'ap_update_hive_' . $appr_hive_id ) ) {
 		$appr_form_error = __( 'The hive could not be saved. Reload and try again.', 'apiary-press' );
@@ -160,6 +281,8 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'update_hi
 		$appr_form_error = $appr_longitude_input['error'];
 	} elseif ( ( '' === $appr_latitude_input['value'] ) !== ( '' === $appr_longitude_input['value'] ) ) {
 		$appr_form_error = __( 'Add both latitude and longitude, or leave both blank.', 'apiary-press' );
+	} elseif ( $appr_queen_validated['error'] ) {
+		$appr_form_error = $appr_queen_validated['error'];
 	} else {
 		$appr_updated_id = wp_update_post(
 			array(
@@ -176,6 +299,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'update_hi
 		} else {
 			appr_update_coordinate_meta( $appr_hive_id, 'latitude', $appr_latitude_input['value'] );
 			appr_update_coordinate_meta( $appr_hive_id, 'longitude', $appr_longitude_input['value'] );
+			appr_save_queen_meta( $appr_hive_id, $appr_queen_validated );
 
 			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ) );
 			exit;
@@ -191,18 +315,52 @@ $appr_hive_title     = ! $appr_not_found && ! $appr_is_new_hive ? get_the_title(
 $appr_hive_notes     = ! $appr_not_found && ! $appr_is_new_hive ? $appr_hive->post_content : '';
 $appr_hive_latitude  = ! $appr_not_found && ! $appr_is_new_hive ? get_post_meta( $appr_hive_id, 'latitude', true ) : '';
 $appr_hive_longitude = ! $appr_not_found && ! $appr_is_new_hive ? get_post_meta( $appr_hive_id, 'longitude', true ) : '';
-$appr_page_title     = $appr_is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
-$appr_form_action    = $appr_is_new_hive ? 'create_hive' : 'update_hive';
-$appr_form_nonce     = $appr_is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $appr_hive_id;
-$appr_form_url       = $appr_is_new_hive ? App::get_url( 'apiary/' . $appr_apiary_id . '/hive/new' ) : App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/edit' );
-$appr_button_text    = $appr_is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
+
+$appr_queen           = ! $appr_not_found && ! $appr_is_new_hive ? Hive::get_queen( $appr_hive_id ) : array(
+	'year'           => 0,
+	'color'          => '',
+	'color_override' => '',
+	'marked'         => false,
+	'clipped'        => false,
+	'origin'         => '',
+	'installed_at'   => '',
+);
+$appr_queen_year      = $appr_queen['year'] ? (string) $appr_queen['year'] : '';
+$appr_queen_color     = $appr_queen['color_override'];
+$appr_queen_origin    = $appr_queen['origin'];
+$appr_queen_installed = $appr_queen['installed_at'];
+$appr_queen_marked    = (bool) $appr_queen['marked'];
+$appr_queen_clipped   = (bool) $appr_queen['clipped'];
+
+$appr_page_title  = $appr_is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
+$appr_form_action = $appr_is_new_hive ? 'create_hive' : 'update_hive';
+$appr_form_nonce  = $appr_is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $appr_hive_id;
+$appr_form_url    = $appr_is_new_hive ? App::get_url( 'apiary/' . $appr_apiary_id . '/hive/new' ) : App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/edit' );
+$appr_button_text = $appr_is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
 
 if ( $appr_form_error ) {
-	$appr_hive_title     = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : $appr_hive_title;
-	$appr_hive_notes     = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : $appr_hive_notes;
-	$appr_hive_latitude  = isset( $_POST['ap_hive_latitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_latitude'] ) ) : $appr_hive_latitude;
-	$appr_hive_longitude = isset( $_POST['ap_hive_longitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_longitude'] ) ) : $appr_hive_longitude;
+	$appr_hive_title      = isset( $_POST['ap_hive_name'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_name'] ) ) : $appr_hive_title;
+	$appr_hive_notes      = isset( $_POST['ap_hive_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_hive_notes'] ) ) : $appr_hive_notes;
+	$appr_hive_latitude   = isset( $_POST['ap_hive_latitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_latitude'] ) ) : $appr_hive_latitude;
+	$appr_hive_longitude  = isset( $_POST['ap_hive_longitude'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_hive_longitude'] ) ) : $appr_hive_longitude;
+	$appr_queen_year      = isset( $_POST['ap_queen_year'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_queen_year'] ) ) : $appr_queen_year;
+	$appr_queen_color     = isset( $_POST['ap_queen_color'] ) ? sanitize_key( wp_unslash( $_POST['ap_queen_color'] ) ) : $appr_queen_color;
+	$appr_queen_origin    = isset( $_POST['ap_queen_origin'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_queen_origin'] ) ) : $appr_queen_origin;
+	$appr_queen_installed = isset( $_POST['ap_queen_installed_at'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_queen_installed_at'] ) ) : $appr_queen_installed;
+	$appr_queen_marked    = isset( $_POST['ap_queen_marked'] );
+	$appr_queen_clipped   = isset( $_POST['ap_queen_clipped'] );
 }
+
+$appr_queen_color_options = array(
+	''       => __( 'Auto (from year)', 'apiary-press' ),
+	'white'  => __( 'White (years ending 1, 6)', 'apiary-press' ),
+	'yellow' => __( 'Yellow (years ending 2, 7)', 'apiary-press' ),
+	'red'    => __( 'Red (years ending 3, 8)', 'apiary-press' ),
+	'green'  => __( 'Green (years ending 4, 9)', 'apiary-press' ),
+	'blue'   => __( 'Blue (years ending 5, 0)', 'apiary-press' ),
+);
+
+$appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 ?>
 <!DOCTYPE html>
 <html <?php wp_app_language_attributes(); ?>>
@@ -285,6 +443,69 @@ if ( $appr_form_error ) {
 						<textarea id="ap_hive_notes" name="ap_hive_notes"><?php echo esc_textarea( $appr_hive_notes ); ?></textarea>
 					</div>
 
+					<fieldset class="queen-fieldset">
+						<legend><?php echo esc_html__( 'Queen', 'apiary-press' ); ?></legend>
+
+						<div class="queen-grid">
+							<div class="field">
+								<label for="ap_queen_year"><?php echo esc_html__( 'Year', 'apiary-press' ); ?></label>
+								<input
+									id="ap_queen_year"
+									name="ap_queen_year"
+									type="number"
+									inputmode="numeric"
+									min="1990"
+									max="<?php echo esc_attr( (string) $appr_queen_max_year ); ?>"
+									step="1"
+									value="<?php echo esc_attr( $appr_queen_year ); ?>"
+								>
+							</div>
+
+							<div class="field">
+								<label for="ap_queen_color"><?php echo esc_html__( 'Marking color', 'apiary-press' ); ?></label>
+								<select id="ap_queen_color" name="ap_queen_color">
+									<?php foreach ( $appr_queen_color_options as $appr_color_value => $appr_color_label ) : ?>
+										<option value="<?php echo esc_attr( $appr_color_value ); ?>" <?php selected( $appr_queen_color, $appr_color_value ); ?>>
+											<?php echo esc_html( $appr_color_label ); ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
+								<p id="ap_queen_color_hint" class="muted queen-color-hint" aria-live="polite"></p>
+							</div>
+
+							<div class="field">
+								<label for="ap_queen_installed_at"><?php echo esc_html__( 'Installed on', 'apiary-press' ); ?></label>
+								<input
+									id="ap_queen_installed_at"
+									name="ap_queen_installed_at"
+									type="date"
+									value="<?php echo esc_attr( $appr_queen_installed ); ?>"
+								>
+							</div>
+
+							<div class="field">
+								<label for="ap_queen_origin"><?php echo esc_html__( 'Origin / breeder', 'apiary-press' ); ?></label>
+								<input
+									id="ap_queen_origin"
+									name="ap_queen_origin"
+									type="text"
+									value="<?php echo esc_attr( $appr_queen_origin ); ?>"
+								>
+							</div>
+						</div>
+
+						<div class="queen-flags">
+							<label class="checkbox">
+								<input type="checkbox" name="ap_queen_marked" value="1" <?php checked( $appr_queen_marked ); ?>>
+								<?php echo esc_html__( 'Marked', 'apiary-press' ); ?>
+							</label>
+							<label class="checkbox">
+								<input type="checkbox" name="ap_queen_clipped" value="1" <?php checked( $appr_queen_clipped ); ?>>
+								<?php echo esc_html__( 'Clipped', 'apiary-press' ); ?>
+							</label>
+						</div>
+					</fieldset>
+
 					<button class="button" type="submit"><?php echo esc_html( $appr_button_text ); ?></button>
 				</form>
 			</section>
@@ -321,6 +542,64 @@ if ( $appr_form_error ) {
 			const setStatus = function(message) {
 				status.textContent = message;
 			};
+
+			const queenYearInput = document.getElementById('ap_queen_year');
+			const queenColorSelect = document.getElementById('ap_queen_color');
+			const queenColorHint = document.getElementById('ap_queen_color_hint');
+			const queenColorLabels =
+			<?php
+			echo wp_json_encode(
+				array(
+					'white'  => __( 'White', 'apiary-press' ),
+					'yellow' => __( 'Yellow', 'apiary-press' ),
+					'red'    => __( 'Red', 'apiary-press' ),
+					'green'  => __( 'Green', 'apiary-press' ),
+					'blue'   => __( 'Blue', 'apiary-press' ),
+				)
+			);
+			?>
+			;
+			const queenHintTemplate = 
+			<?php
+				/* translators: 1: four-digit queen birth year, 2: name of the international marking color (e.g. White, Yellow). */
+				echo wp_json_encode( __( 'Standard color for %1$s: %2$s.', 'apiary-press' ) );
+			?>
+			;
+
+			const queenColorForYear = function(year) {
+				const cycle = ['blue', 'white', 'yellow', 'red', 'green', 'blue', 'white', 'yellow', 'red', 'green'];
+				return cycle[year % 10];
+			};
+
+			const refreshQueenHint = function() {
+				if (!queenYearInput || !queenColorSelect || !queenColorHint) {
+					return;
+				}
+
+				const rawYear = parseInt(queenYearInput.value, 10);
+
+				if (!rawYear || rawYear < 1990) {
+					queenColorHint.textContent = '';
+					return;
+				}
+
+				const colorSlug = queenColorForYear(rawYear);
+				const colorLabel = queenColorLabels[colorSlug] || '';
+
+				if (!colorLabel) {
+					queenColorHint.textContent = '';
+					return;
+				}
+
+				queenColorHint.textContent = queenHintTemplate
+					.replace('%1$s', String(rawYear))
+					.replace('%2$s', colorLabel);
+			};
+
+			if (queenYearInput) {
+				queenYearInput.addEventListener('input', refreshQueenHint);
+				refreshQueenHint();
+			}
 
 			locationButton.addEventListener('click', function() {
 				if (!('geolocation' in navigator)) {

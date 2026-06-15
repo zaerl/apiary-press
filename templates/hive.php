@@ -134,6 +134,77 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				<div class="notice"><?php echo esc_html__( 'Visit removed.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
+			<?php
+			$appr_queen          = Hive::get_queen( $appr_hive_id );
+			$appr_has_queen_info = $appr_queen['year']
+				|| '' !== $appr_queen['color']
+				|| '' !== $appr_queen['origin']
+				|| '' !== $appr_queen['installed_at']
+				|| $appr_queen['marked']
+				|| $appr_queen['clipped'];
+			?>
+
+			<?php if ( $appr_has_queen_info ) : ?>
+				<?php
+				$appr_queen_color_label = $appr_queen['color'] ? Hive::queen_color_label( $appr_queen['color'] ) : '';
+				$appr_queen_swatch      = $appr_queen['color'] ? Hive::queen_color_swatch( $appr_queen['color'] ) : '';
+				?>
+				<section class="queen-panel" aria-labelledby="hive-queen-heading">
+					<h2 id="hive-queen-heading"><?php echo esc_html__( 'Queen', 'apiary-press' ); ?></h2>
+					<dl class="queen-summary">
+						<?php if ( $appr_queen['year'] ) : ?>
+							<div class="queen-summary-row">
+								<dt><?php echo esc_html__( 'Year', 'apiary-press' ); ?></dt>
+								<dd><?php echo esc_html( (string) $appr_queen['year'] ); ?></dd>
+							</div>
+						<?php endif; ?>
+
+						<?php if ( $appr_queen_color_label ) : ?>
+							<div class="queen-summary-row">
+								<dt><?php echo esc_html__( 'Marking color', 'apiary-press' ); ?></dt>
+								<dd>
+									<span class="queen-color-swatch" style="background-color: <?php echo esc_attr( $appr_queen_swatch ); ?>;" aria-hidden="true"></span>
+									<?php echo esc_html( $appr_queen_color_label ); ?>
+									<?php if ( '' === $appr_queen['color_override'] && $appr_queen['year'] ) : ?>
+										<span class="muted">(<?php echo esc_html__( 'auto from year', 'apiary-press' ); ?>)</span>
+									<?php endif; ?>
+								</dd>
+							</div>
+						<?php endif; ?>
+
+						<?php if ( '' !== $appr_queen['installed_at'] ) : ?>
+							<div class="queen-summary-row">
+								<dt><?php echo esc_html__( 'Installed on', 'apiary-press' ); ?></dt>
+								<dd><?php echo esc_html( mysql2date( get_option( 'date_format' ), $appr_queen['installed_at'] ) ); ?></dd>
+							</div>
+						<?php endif; ?>
+
+						<?php if ( '' !== $appr_queen['origin'] ) : ?>
+							<div class="queen-summary-row">
+								<dt><?php echo esc_html__( 'Origin', 'apiary-press' ); ?></dt>
+								<dd><?php echo esc_html( $appr_queen['origin'] ); ?></dd>
+							</div>
+						<?php endif; ?>
+
+						<?php if ( $appr_queen['marked'] || $appr_queen['clipped'] ) : ?>
+							<div class="queen-summary-row">
+								<dt><?php echo esc_html__( 'Flags', 'apiary-press' ); ?></dt>
+								<dd>
+									<div class="badge-list">
+										<?php if ( $appr_queen['marked'] ) : ?>
+											<span class="badge"><?php echo esc_html__( 'Marked', 'apiary-press' ); ?></span>
+										<?php endif; ?>
+										<?php if ( $appr_queen['clipped'] ) : ?>
+											<span class="badge"><?php echo esc_html__( 'Clipped', 'apiary-press' ); ?></span>
+										<?php endif; ?>
+									</div>
+								</dd>
+							</div>
+						<?php endif; ?>
+					</dl>
+				</section>
+			<?php endif; ?>
+
 			<?php if ( $appr_hive_qr ) : ?>
 				<section class="qr-panel" aria-labelledby="hive-qr-heading">
 					<img
