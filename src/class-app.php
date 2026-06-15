@@ -23,9 +23,10 @@ class App extends BaseApp {
 			$this->get_template_dir(),
 			$this->get_url_path(),
 			array(
-				'require_login'      => true,
-				'require_capability' => 'edit_posts',
-				'app_name'           => 'Apiary Press',
+				'require_login'       => true,
+				'require_capability'  => 'edit_posts',
+				'app_name'            => 'Apiary Press',
+				'app_name_textdomain' => 'apiary-press',
 			)
 		);
 

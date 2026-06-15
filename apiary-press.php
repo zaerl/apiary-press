@@ -43,12 +43,11 @@ spl_autoload_register(
 );
 
 add_action(
-	'init',
+	'plugins_loaded',
 	function () {
 		$app = new App();
 		$app->init();
-	},
-	5 // TODO: use `plugins_loaded` instead of `init` once the app is fully decoupled from WordPress and doesn't need to register post types and meta fields on every request.
+	}
 );
 
 register_activation_hook(
