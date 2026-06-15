@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-15T14:30:39+00:00\n"
+"POT-Creation-Date: 2026-06-15T14:40:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: apiary-press\n"
@@ -33,14 +33,14 @@ msgstr ""
 #: src/class-apiary.php:24
 #: src/class-app.php:115
 #: templates/apiary-form.php:146
-#: templates/apiary.php:91
+#: templates/apiary.php:118
 #: templates/index.php:33
 #: templates/index.php:43
 msgid "Apiaries"
 msgstr ""
 
 #: src/class-apiary.php:25
-#: templates/apiary.php:68
+#: templates/apiary.php:95
 msgid "Apiary"
 msgstr ""
 
@@ -50,7 +50,7 @@ msgstr ""
 
 #: src/class-apiary.php:27
 #: templates/apiary-form.php:99
-#: templates/apiary.php:102
+#: templates/apiary.php:129
 msgid "Edit Apiary"
 msgstr ""
 
@@ -132,14 +132,17 @@ msgid "Honey harvest entries for Apiary Press hives."
 msgstr ""
 
 #: src/class-hive.php:44
-#: templates/apiary.php:135
+#: templates/apiary.php:194
 msgid "Hives"
 msgstr ""
 
 #: src/class-hive.php:45
+#: templates/apiary.php:168
 #: templates/hive.php:105
 msgid "Hive"
-msgstr ""
+msgid_plural "Hives"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/class-hive.php:46
 msgid "Add New Hive"
@@ -152,7 +155,7 @@ msgid "Edit Hive"
 msgstr ""
 
 #: src/class-hive.php:48
-#: templates/apiary.php:99
+#: templates/apiary.php:126
 #: templates/hive-form.php:335
 msgid "New Hive"
 msgstr ""
@@ -227,22 +230,22 @@ msgstr ""
 msgid "Wax moth"
 msgstr ""
 
-#. translators: abbreviated form of "grams"
+#. translators: abbreviated form of "grams".
 #: src/class-treatment.php:94
 msgid "g"
 msgstr ""
 
-#. translators: abbreviated form of "kilograms"
+#. translators: abbreviated form of "kilograms".
 #: src/class-treatment.php:96
 msgid "kg"
 msgstr ""
 
-#. translators: abbreviated form of "milliliters"
+#. translators: abbreviated form of "milliliters".
 #: src/class-treatment.php:98
 msgid "ml"
 msgstr ""
 
-#. translators: abbreviated form of "liters"
+#. translators: abbreviated form of "liters".
 #: src/class-treatment.php:100
 msgid "L"
 msgstr ""
@@ -365,7 +368,7 @@ msgid "Capped brood"
 msgstr ""
 
 #: src/class-visit.php:84
-#: templates/apiary.php:191
+#: templates/apiary.php:264
 msgid "Check soon"
 msgstr ""
 
@@ -499,19 +502,19 @@ msgid "Update Apiary"
 msgstr ""
 
 #: templates/apiary-form.php:124
-#: templates/apiary.php:78
+#: templates/apiary.php:105
 msgid "Apiary Not Found"
 msgstr ""
 
 #: templates/apiary-form.php:125
-#: templates/apiary.php:79
+#: templates/apiary.php:106
 msgid "The requested apiary is not available."
 msgstr ""
 
 #: templates/apiary-form.php:126
 #: templates/apiary-form.php:140
-#: templates/apiary.php:80
-#: templates/apiary.php:86
+#: templates/apiary.php:107
+#: templates/apiary.php:113
 #: templates/harvest.php:231
 #: templates/hive-form.php:381
 #: templates/hive-form.php:395
@@ -525,7 +528,7 @@ msgid "Back to Apiaries"
 msgstr ""
 
 #: templates/apiary-form.php:130
-#: templates/apiary.php:84
+#: templates/apiary.php:111
 #: templates/harvest.php:235
 #: templates/hive-form.php:385
 #: templates/hive-qr.php:67
@@ -540,7 +543,7 @@ msgid "You do not have permission to add apiaries."
 msgstr ""
 
 #: templates/apiary-form.php:136
-#: templates/apiary.php:85
+#: templates/apiary.php:112
 msgid "You do not have permission to edit this apiary."
 msgstr ""
 
@@ -557,44 +560,75 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: templates/apiary.php:108
+#: templates/apiary.php:135
 msgid "Apiary saved."
 msgstr ""
 
-#: templates/apiary.php:112
+#: templates/apiary.php:139
 msgid "Apiary updated."
 msgstr ""
 
-#: templates/apiary.php:116
+#: templates/apiary.php:143
 #: templates/hive.php:156
 msgid "Hive saved."
 msgstr ""
 
-#: templates/apiary.php:120
+#: templates/apiary.php:147
 msgid "Hive removed."
 msgstr ""
 
-#: templates/apiary.php:128
+#: templates/apiary.php:155
 msgid "Hive locations"
 msgstr ""
 
-#: templates/apiary.php:138
+#: templates/apiary.php:163
+msgid "Apiary at a glance"
+msgstr ""
+
+#. translators: %s: kilograms of honey harvested.
+#: templates/apiary.php:178
+#: templates/hive.php:300
+#: templates/hive.php:353
+#, php-format
+msgid "%s kg"
+msgstr ""
+
+#: templates/apiary.php:184
+msgid "Harvested (all time)"
+msgstr ""
+
+#: templates/apiary.php:188
+#: templates/hive.php:450
+msgid "In progress"
+msgstr ""
+
+#: templates/apiary.php:197
 msgid "No hives yet."
 msgstr ""
 
-#: templates/apiary.php:179
+#: templates/apiary.php:240
 #, php-format
 msgid "%d visit"
 msgid_plural "%d visits"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/apiary.php:182
+#: templates/apiary.php:243
 #, php-format
 msgid "Last visit %s"
 msgstr ""
 
-#: templates/apiary.php:194
+#. translators: %s: kilograms of honey harvested from one hive.
+#: templates/apiary.php:251
+#, php-format
+msgid "%s kg harvested"
+msgstr ""
+
+#: templates/apiary.php:267
+msgid "In treatment"
+msgstr ""
+
+#: templates/apiary.php:270
 #: templates/index.php:97
 msgid "Open"
 msgstr ""
@@ -999,13 +1033,6 @@ msgstr ""
 msgid "Total harvested"
 msgstr ""
 
-#. translators: %s: kilograms of honey harvested.
-#: templates/hive.php:300
-#: templates/hive.php:353
-#, php-format
-msgid "%s kg"
-msgstr ""
-
 #. translators: %d: number of harvest entries.
 #: templates/hive.php:310
 #, php-format
@@ -1046,10 +1073,6 @@ msgstr[1] ""
 
 #: templates/hive.php:408
 msgid "No treatments or feedings logged."
-msgstr ""
-
-#: templates/hive.php:450
-msgid "In progress"
 msgstr ""
 
 #: templates/hive.php:457

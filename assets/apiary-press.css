@@ -752,6 +752,67 @@ textarea { min-height: 140px; resize: vertical; }
 	margin: 0;
 }
 
+.visually-hidden {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.apiary-stats {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	margin: 0 0 24px;
+}
+.apiary-stat {
+	background: var(--ap-paper);
+	border: 1px solid var(--ap-line);
+	border-radius: var(--ap-radius-md);
+	box-shadow: var(--ap-shadow-sm);
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 16px 20px;
+	position: relative;
+	overflow: hidden;
+}
+.apiary-stat::before {
+	background: linear-gradient(180deg, var(--ap-honey) 0%, var(--ap-honey-deep) 100%);
+	border-bottom-left-radius: var(--ap-radius-md);
+	border-top-left-radius: var(--ap-radius-md);
+	bottom: 0;
+	content: "";
+	left: 0;
+	opacity: 0.85;
+	position: absolute;
+	top: 0;
+	width: 4px;
+}
+.apiary-stat-value {
+	color: var(--ap-honey-dark);
+	font-size: 26px;
+	font-weight: 900;
+	letter-spacing: -0.02em;
+	line-height: 1.1;
+}
+.apiary-stat-label {
+	color: var(--ap-ink-soft);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+.apiary-stat-attention { background: var(--ap-attention-bg); border-color: var(--ap-attention-border); }
+.apiary-stat-attention::before { background: var(--ap-attention); }
+.apiary-stat-attention .apiary-stat-value { color: var(--ap-attention); }
+.apiary-stat-attention .apiary-stat-label { color: var(--ap-attention); }
+
 .harvest-total {
 	align-items: baseline;
 	background: linear-gradient(135deg, var(--ap-cream-alt) 0%, var(--ap-paper) 100%);
@@ -1056,7 +1117,7 @@ textarea { min-height: 140px; resize: vertical; }
 	.actions { justify-content: flex-start; }
 	.apiary-row, .hive-row { grid-template-columns: 1fr; }
 	.stats { align-items: flex-start; text-align: left; flex-direction: row; flex-wrap: wrap; }
-	.coordinate-grid, .date-time-grid, .check-grid, .weather-list, .queen-grid, .quantity-grid { grid-template-columns: 1fr; }
+	.coordinate-grid, .date-time-grid, .check-grid, .weather-list, .queen-grid, .quantity-grid, .apiary-stats { grid-template-columns: 1fr; }
 	.queen-summary, .treatment-summary { grid-template-columns: 1fr; gap: 4px 0; }
 	.queen-summary dt, .treatment-summary dt { margin-top: 8px; }
 	.qr-panel { align-items: flex-start; flex-direction: column; }

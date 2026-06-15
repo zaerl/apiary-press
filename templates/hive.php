@@ -143,9 +143,6 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/new' ) ); ?>">
 						<?php echo esc_html__( 'New Harvest', 'apiary-press' ); ?>
 					</a>
-					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/qr' ) ); ?>">
-						<?php echo esc_html__( 'Print QR', 'apiary-press' ); ?>
-					</a>
 					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/edit' ) ); ?>">
 						<?php echo esc_html__( 'Edit Hive', 'apiary-press' ); ?>
 					</a>

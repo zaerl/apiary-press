@@ -8,6 +8,8 @@
 namespace ApiaryPress;
 
 use ApiaryPress\App;
+use ApiaryPress\Harvest;
+use ApiaryPress\Treatment;
 use ApiaryPress\Visit;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,8 +30,14 @@ if ( $appr_not_found ) {
 	status_header( 403 );
 }
 
-$appr_hives       = array();
-$appr_map_markers = array();
+$appr_hives                = array();
+$appr_map_markers          = array();
+$appr_harvests_by_hive     = array();
+$appr_treatments_by_hive   = array();
+$appr_apiary_total_kg      = 0.0;
+$appr_apiary_ongoing_count = 0;
+$appr_ongoing_by_hive      = array();
+$appr_harvest_kg_by_hive   = array();
 
 if ( ! $appr_not_found && ! $appr_forbidden ) {
 	$appr_hives = get_posts(
@@ -57,6 +65,25 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 			'title'     => get_the_title( $appr_hive ),
 			'url'       => App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . absint( $appr_hive->ID ) ),
 		);
+	}
+
+	$appr_hive_ids           = array_map( static fn( $hive ) => (int) $hive->ID, $appr_hives );
+	$appr_harvests_by_hive   = Harvest::get_for_hives( $appr_hive_ids );
+	$appr_treatments_by_hive = Treatment::get_for_hives( $appr_hive_ids );
+
+	foreach ( $appr_hive_ids as $appr_hid ) {
+		$appr_hive_total_kg                   = Harvest::total_kg( $appr_harvests_by_hive[ $appr_hid ] ?? array() );
+		$appr_harvest_kg_by_hive[ $appr_hid ] = $appr_hive_total_kg;
+		$appr_apiary_total_kg                += $appr_hive_total_kg;
+
+		$appr_hive_ongoing = 0;
+		foreach ( $appr_treatments_by_hive[ $appr_hid ] ?? array() as $appr_treatment_post ) {
+			if ( Treatment::is_ongoing( $appr_treatment_post ) ) {
+				++$appr_hive_ongoing;
+			}
+		}
+		$appr_ongoing_by_hive[ $appr_hid ] = $appr_hive_ongoing;
+		$appr_apiary_ongoing_count        += $appr_hive_ongoing;
 	}
 }
 ?>
@@ -131,6 +158,38 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				></div>
 			<?php endif; ?>
 
+			<?php if ( ! empty( $appr_hives ) ) : ?>
+				<section class="apiary-stats" aria-labelledby="apiary-stats-heading">
+					<h2 id="apiary-stats-heading" class="visually-hidden"><?php echo esc_html__( 'Apiary at a glance', 'apiary-press' ); ?></h2>
+					<div class="apiary-stat">
+						<span class="apiary-stat-value"><?php echo esc_html( (string) count( $appr_hives ) ); ?></span>
+						<span class="apiary-stat-label">
+							<?php
+							echo esc_html( _n( 'Hive', 'Hives', count( $appr_hives ), 'apiary-press' ) );
+							?>
+						</span>
+					</div>
+					<div class="apiary-stat">
+						<span class="apiary-stat-value">
+							<?php
+							echo esc_html(
+								sprintf(
+									/* translators: %s: kilograms of honey harvested. */
+									__( '%s kg', 'apiary-press' ),
+									Harvest::format_kg( $appr_apiary_total_kg )
+								)
+							);
+							?>
+						</span>
+						<span class="apiary-stat-label"><?php echo esc_html__( 'Harvested (all time)', 'apiary-press' ); ?></span>
+					</div>
+					<div class="apiary-stat <?php echo $appr_apiary_ongoing_count > 0 ? 'apiary-stat-attention' : ''; ?>">
+						<span class="apiary-stat-value"><?php echo esc_html( (string) $appr_apiary_ongoing_count ); ?></span>
+						<span class="apiary-stat-label"><?php echo esc_html__( 'In progress', 'apiary-press' ); ?></span>
+					</div>
+				</section>
+			<?php endif; ?>
+
 			<section aria-labelledby="hive-list-heading">
 				<h2 id="hive-list-heading"><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></h2>
 
@@ -167,6 +226,8 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 							$appr_check_soon      = $appr_latest_visit_id ? rest_sanitize_boolean( get_post_meta( $appr_latest_visit_id, 'check_soon', true ) ) : false;
 							$appr_summary         = wp_trim_words( wp_strip_all_tags( $appr_hive->post_content ), 24 );
 							$appr_hive_url        = App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . absint( $appr_hive->ID ) );
+							$appr_hive_kg         = $appr_harvest_kg_by_hive[ $appr_hive->ID ] ?? 0.0;
+							$appr_hive_ongoing    = $appr_ongoing_by_hive[ $appr_hive->ID ] ?? 0;
 							?>
 							<article class="hive-row">
 								<div>
@@ -181,6 +242,18 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 											<?php echo esc_html( ' / ' ); ?>
 											<?php echo esc_html( sprintf( __( 'Last visit %s', 'apiary-press' ), mysql2date( get_option( 'date_format' ), $appr_latest_visit[0]->post_date ) ) ); ?>
 										<?php endif; ?>
+										<?php if ( $appr_hive_kg > 0 ) : ?>
+											<?php echo esc_html( ' / ' ); ?>
+											<?php
+											echo esc_html(
+												sprintf(
+													/* translators: %s: kilograms of honey harvested from one hive. */
+													__( '%s kg harvested', 'apiary-press' ),
+													Harvest::format_kg( $appr_hive_kg )
+												)
+											);
+											?>
+										<?php endif; ?>
 									</div>
 									<?php if ( $appr_summary ) : ?>
 										<p class="summary"><?php echo esc_html( $appr_summary ); ?></p>
@@ -189,6 +262,9 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 								<div class="stats">
 									<?php if ( $appr_check_soon ) : ?>
 										<span class="badge badge-attention"><?php echo esc_html__( 'Check soon', 'apiary-press' ); ?></span>
+									<?php endif; ?>
+									<?php if ( $appr_hive_ongoing > 0 ) : ?>
+										<span class="badge badge-attention"><?php echo esc_html__( 'In treatment', 'apiary-press' ); ?></span>
 									<?php endif; ?>
 									<a class="admin-link" href="<?php echo esc_url( $appr_hive_url ); ?>">
 										<?php echo esc_html__( 'Open', 'apiary-press' ); ?>

@@ -90,13 +90,13 @@ class Treatment {
 	 */
 	public static function get_unit_labels(): array {
 		return array(
-			// translators: abbreviated form of "grams"
+			// translators: abbreviated form of "grams".
 			'g'       => __( 'g', 'apiary-press' ),
-			// translators: abbreviated form of "kilograms"
+			// translators: abbreviated form of "kilograms".
 			'kg'      => __( 'kg', 'apiary-press' ),
-			// translators: abbreviated form of "milliliters"
+			// translators: abbreviated form of "milliliters".
 			'ml'      => __( 'ml', 'apiary-press' ),
-			// translators: abbreviated form of "liters"
+			// translators: abbreviated form of "liters".
 			'l'       => __( 'L', 'apiary-press' ),
 			'strips'  => __( 'strips', 'apiary-press' ),
 			'tablets' => __( 'tablets', 'apiary-press' ),
@@ -320,6 +320,43 @@ class Treatment {
 			'unit'     => (string) get_post_meta( $treatment_id, self::UNIT_META_KEY, true ),
 			'end_date' => (string) get_post_meta( $treatment_id, self::END_DATE_META_KEY, true ),
 		);
+	}
+
+	/**
+	 * Fetch all treatment posts for a list of hives in a single query, bucketed by hive ID.
+	 *
+	 * @param int[] $hive_ids Hive post IDs to include. Empty list returns an empty array.
+	 * @return array<int, \WP_Post[]> Map of hive_id → array of treatment posts, sorted by date DESC within each bucket.
+	 */
+	public static function get_for_hives( array $hive_ids ): array {
+		$hive_ids = array_values( array_filter( array_map( 'absint', $hive_ids ) ) );
+		$bucket   = array_fill_keys( $hive_ids, array() );
+
+		if ( empty( $hive_ids ) ) {
+			return $bucket;
+		}
+
+		$posts = get_posts(
+			array(
+				'post_type'        => self::HIVE_TREATMENT_POST_TYPE,
+				'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+				'post_parent__in'  => $hive_ids,
+				'numberposts'      => -1,
+				'orderby'          => 'date',
+				'order'            => 'DESC',
+				'suppress_filters' => false,
+			)
+		);
+
+		foreach ( $posts as $post ) {
+			$parent = absint( $post->post_parent );
+
+			if ( isset( $bucket[ $parent ] ) ) {
+				$bucket[ $parent ][] = $post;
+			}
+		}
+
+		return $bucket;
 	}
 
 	/**
