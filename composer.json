@@ -32,6 +32,14 @@
 	},
 	"scripts": {
 		"lint": "phpcs --standard=phpcs.xml.dist",
-		"format": "phpcbf --standard=phpcs.xml.dist"
+		"format": "phpcbf --standard=phpcs.xml.dist",
+		"make-pot": "wp i18n make-pot . languages/apiary-press.pot --slug=apiary-press",
+		"update-po": "wp i18n update-po languages/apiary-press.pot languages/",
+		"make-mo": "wp i18n make-mo languages/",
+		"i18n": [
+			"@make-pot",
+			"@update-po",
+			"@make-mo"
+		]
 	}
 }
