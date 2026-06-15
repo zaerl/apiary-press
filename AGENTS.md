@@ -18,3 +18,7 @@ record visits they make to those hives.
 ## Style
 
 - `#E7AE43` is the app's main color.
+
+## Tooling
+
+- WP-CLI is available; invoke it as `wp`.
