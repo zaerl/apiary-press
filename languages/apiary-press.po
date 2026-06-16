@@ -32,7 +32,7 @@ msgstr ""
 #: src/class-apiary.php:24
 #: src/class-app.php:124
 #: templates/apiary-form.php:165
-#: templates/apiary.php:144
+#: templates/apiary.php:145
 #: templates/index.php:33
 #: templates/index.php:43
 msgid "Apiaries"
@@ -49,13 +49,14 @@ msgstr ""
 
 #: src/class-apiary.php:27
 #: templates/apiary-form.php:118
-#: templates/apiary.php:155
+#: templates/apiary.php:156
 msgid "Edit Apiary"
 msgstr ""
 
 #: src/class-apiary.php:28
 #: templates/apiary-form.php:118
 #: templates/index.php:47
+#: templates/index.php:71
 msgid "New Apiary"
 msgstr ""
 
@@ -72,12 +73,12 @@ msgid "Apiaries managed in Apiary Press."
 msgstr ""
 
 #: src/class-hive.php:44
-#: templates/apiary.php:224
+#: templates/apiary.php:227
 msgid "Hives"
 msgstr ""
 
 #: src/class-hive.php:45
-#: templates/apiary.php:198
+#: templates/apiary.php:199
 #: templates/hive.php:105
 msgid "Hive"
 msgid_plural "Hives"
@@ -89,14 +90,16 @@ msgid "Add New Hive"
 msgstr ""
 
 #: src/class-hive.php:47
-#: templates/hive-form.php:361
-#: templates/hive.php:147
+#: templates/hive-form.php:364
+#: templates/hive.php:148
 msgid "Edit Hive"
 msgstr ""
 
 #: src/class-hive.php:48
-#: templates/apiary.php:152
-#: templates/hive-form.php:361
+#: templates/apiary.php:153
+#: templates/apiary.php:231
+#: templates/apiary.php:240
+#: templates/hive-form.php:364
 msgid "New Hive"
 msgstr ""
 
@@ -113,27 +116,27 @@ msgid "Bee hives managed in Apiary Press."
 msgstr ""
 
 #: src/class-hive.php:271
-#: templates/hive-form.php:594
+#: templates/hive-form.php:599
 msgid "White"
 msgstr ""
 
 #: src/class-hive.php:273
-#: templates/hive-form.php:595
+#: templates/hive-form.php:600
 msgid "Yellow"
 msgstr ""
 
 #: src/class-hive.php:275
-#: templates/hive-form.php:596
+#: templates/hive-form.php:601
 msgid "Red"
 msgstr ""
 
 #: src/class-hive.php:277
-#: templates/hive-form.php:597
+#: templates/hive-form.php:602
 msgid "Green"
 msgstr ""
 
 #: src/class-hive.php:279
-#: templates/hive-form.php:598
+#: templates/hive-form.php:603
 msgid "Blue"
 msgstr ""
 
@@ -313,7 +316,7 @@ msgid "Capped brood"
 msgstr ""
 
 #: src/class-visit.php:84
-#: templates/apiary.php:294
+#: templates/apiary.php:325
 msgid "Check soon"
 msgstr ""
 
@@ -447,37 +450,37 @@ msgid "Update Apiary"
 msgstr ""
 
 #: templates/apiary-form.php:143
-#: templates/apiary.php:131
+#: templates/apiary.php:132
 msgid "Apiary Not Found"
 msgstr ""
 
 #: templates/apiary-form.php:144
-#: templates/apiary.php:132
+#: templates/apiary.php:133
 msgid "The requested apiary is not available."
 msgstr ""
 
 #: templates/apiary-form.php:145
 #: templates/apiary-form.php:159
-#: templates/apiary.php:133
-#: templates/apiary.php:139
+#: templates/apiary.php:134
+#: templates/apiary.php:140
 #: templates/harvest.php:231
-#: templates/hive-form.php:407
-#: templates/hive-form.php:421
+#: templates/hive-form.php:410
+#: templates/hive-form.php:424
 #: templates/hive-qr.php:63
 #: templates/hive-qr.php:69
-#: templates/hive.php:119
-#: templates/hive.php:125
+#: templates/hive.php:120
+#: templates/hive.php:126
 #: templates/treatment.php:258
 #: templates/visit.php:296
 msgid "Back to Apiaries"
 msgstr ""
 
 #: templates/apiary-form.php:149
-#: templates/apiary.php:137
+#: templates/apiary.php:138
 #: templates/harvest.php:235
-#: templates/hive-form.php:411
+#: templates/hive-form.php:414
 #: templates/hive-qr.php:67
-#: templates/hive.php:123
+#: templates/hive.php:124
 #: templates/treatment.php:262
 #: templates/visit.php:300
 msgid "Access Denied"
@@ -488,235 +491,237 @@ msgid "You do not have permission to add apiaries."
 msgstr ""
 
 #: templates/apiary-form.php:155
-#: templates/apiary.php:138
+#: templates/apiary.php:139
 msgid "You do not have permission to edit this apiary."
 msgstr ""
 
 #: templates/apiary-form.php:182
-#: templates/hive-form.php:444
+#: templates/hive-form.php:447
 msgid "Name"
 msgstr ""
 
 #: templates/apiary-form.php:187
 #: templates/harvest.php:345
-#: templates/hive-form.php:468
+#: templates/hive-form.php:471
 #: templates/treatment.php:396
 #: templates/visit.php:420
 msgid "Notes"
 msgstr ""
 
-#: templates/apiary.php:161
+#: templates/apiary.php:162
 msgid "Apiary saved."
 msgstr ""
 
-#: templates/apiary.php:165
+#: templates/apiary.php:166
 msgid "Apiary updated."
 msgstr ""
 
-#: templates/apiary.php:169
-#: templates/hive.php:153
+#: templates/apiary.php:170
+#: templates/hive.php:155
 msgid "Hive saved."
 msgstr ""
 
-#: templates/apiary.php:173
+#: templates/apiary.php:174
 msgid "Hive removed."
 msgstr ""
 
-#: templates/apiary.php:185
+#: templates/apiary.php:186
 msgid "Hive locations"
 msgstr ""
 
-#: templates/apiary.php:227
+#: templates/apiary.php:238
 msgid "No hives yet."
 msgstr ""
 
-#: templates/apiary.php:270
+#. translators: %d: number of visits logged for a hive.
+#: templates/apiary.php:289
 #, php-format
 msgid "%d visit"
 msgid_plural "%d visits"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/apiary.php:273
+#. translators: %s: formatted date of the latest hive visit.
+#: templates/apiary.php:300
 #, php-format
 msgid "Last visit %s"
 msgstr ""
 
-#: templates/apiary.php:300
-#: templates/index.php:97
+#: templates/apiary.php:331
+#: templates/index.php:107
 msgid "Open"
 msgstr ""
 
 #. translators: %s: coordinate field label
-#: templates/hive-form.php:42
+#: templates/hive-form.php:43
 #, php-format
 msgid "%s must be a number."
 msgstr ""
 
 #. translators: 1: coordinate field label, 2: minimum value, 3: maximum value
-#: templates/hive-form.php:55
+#: templates/hive-form.php:56
 #, php-format
 msgid "%1$s must be between %2$s and %3$s."
 msgstr ""
 
-#: templates/hive-form.php:125
+#: templates/hive-form.php:128
 msgid "Queen year must be a four-digit year."
 msgstr ""
 
 #. translators: 1: minimum year, 2: maximum year
-#: templates/hive-form.php:133
+#: templates/hive-form.php:136
 #, php-format
 msgid "Queen year must be between %1$d and %2$d."
 msgstr ""
 
-#: templates/hive-form.php:147
+#: templates/hive-form.php:150
 msgid "Queen install date is not valid."
 msgstr ""
 
-#: templates/hive-form.php:229
-#: templates/hive-form.php:276
-#: templates/hive-form.php:450
+#: templates/hive-form.php:232
+#: templates/hive-form.php:279
+#: templates/hive-form.php:453
 msgid "Latitude"
 msgstr ""
 
-#: templates/hive-form.php:230
-#: templates/hive-form.php:277
-#: templates/hive-form.php:455
+#: templates/hive-form.php:233
+#: templates/hive-form.php:280
+#: templates/hive-form.php:458
 msgid "Longitude"
 msgstr ""
 
-#: templates/hive-form.php:235
-#: templates/hive-form.php:282
+#: templates/hive-form.php:238
+#: templates/hive-form.php:285
 msgid "The hive could not be saved. Reload and try again."
 msgstr ""
 
-#: templates/hive-form.php:237
-#: templates/hive-form.php:284
+#: templates/hive-form.php:240
+#: templates/hive-form.php:287
 msgid "Hive name is required."
 msgstr ""
 
-#: templates/hive-form.php:243
-#: templates/hive-form.php:290
+#: templates/hive-form.php:246
+#: templates/hive-form.php:293
 msgid "Add both latitude and longitude, or leave both blank."
 msgstr ""
 
-#: templates/hive-form.php:365
+#: templates/hive-form.php:368
 msgid "Save Hive"
 msgstr ""
 
-#: templates/hive-form.php:365
+#: templates/hive-form.php:368
 msgid "Update Hive"
 msgstr ""
 
-#: templates/hive-form.php:381
+#: templates/hive-form.php:384
 msgid "Auto (from year)"
 msgstr ""
 
-#: templates/hive-form.php:382
+#: templates/hive-form.php:385
 msgid "White (years ending 1, 6)"
 msgstr ""
 
-#: templates/hive-form.php:383
+#: templates/hive-form.php:386
 msgid "Yellow (years ending 2, 7)"
 msgstr ""
 
-#: templates/hive-form.php:384
+#: templates/hive-form.php:387
 msgid "Red (years ending 3, 8)"
 msgstr ""
 
-#: templates/hive-form.php:385
+#: templates/hive-form.php:388
 msgid "Green (years ending 4, 9)"
 msgstr ""
 
-#: templates/hive-form.php:386
+#: templates/hive-form.php:389
 msgid "Blue (years ending 5, 0)"
 msgstr ""
 
-#: templates/hive-form.php:405
+#: templates/hive-form.php:408
 #: templates/hive-qr.php:61
-#: templates/hive.php:117
+#: templates/hive.php:118
 msgid "Hive Not Found"
 msgstr ""
 
-#: templates/hive-form.php:406
+#: templates/hive-form.php:409
 #: templates/hive-qr.php:62
-#: templates/hive.php:118
+#: templates/hive.php:119
 msgid "The requested hive is not available."
 msgstr ""
 
-#: templates/hive-form.php:416
+#: templates/hive-form.php:419
 msgid "You do not have permission to add hives."
 msgstr ""
 
-#: templates/hive-form.php:417
-#: templates/hive.php:124
+#: templates/hive-form.php:420
+#: templates/hive.php:125
 msgid "You do not have permission to edit this hive."
 msgstr ""
 
-#: templates/hive-form.php:462
+#: templates/hive-form.php:465
 msgid "Set Current Location"
 msgstr ""
 
-#: templates/hive-form.php:473
-#: templates/hive.php:192
+#: templates/hive-form.php:476
+#: templates/hive.php:240
 msgid "Queen"
 msgstr ""
 
-#: templates/hive-form.php:477
-#: templates/hive.php:196
+#: templates/hive-form.php:480
+#: templates/hive.php:244
 msgid "Year"
 msgstr ""
 
-#: templates/hive-form.php:491
-#: templates/hive.php:203
+#: templates/hive-form.php:494
+#: templates/hive.php:251
 msgid "Marking color"
 msgstr ""
 
-#: templates/hive-form.php:503
-#: templates/hive.php:216
+#: templates/hive-form.php:506
+#: templates/hive.php:264
 msgid "Installed on"
 msgstr ""
 
-#: templates/hive-form.php:513
+#: templates/hive-form.php:516
 msgid "Origin / breeder"
 msgstr ""
 
-#: templates/hive-form.php:526
-#: templates/hive.php:234
+#: templates/hive-form.php:529
+#: templates/hive.php:282
 msgid "Marked"
 msgstr ""
 
-#: templates/hive-form.php:530
-#: templates/hive.php:237
+#: templates/hive-form.php:533
+#: templates/hive.php:285
 msgid "Clipped"
 msgstr ""
 
-#: templates/hive-form.php:568
+#: templates/hive-form.php:573
 msgid "Getting current location..."
 msgstr ""
 
-#: templates/hive-form.php:569
+#: templates/hive-form.php:574
 msgid "Current location set."
 msgstr ""
 
-#: templates/hive-form.php:570
+#: templates/hive-form.php:575
 msgid "Location access is unavailable in this browser."
 msgstr ""
 
-#: templates/hive-form.php:571
+#: templates/hive-form.php:576
 msgid "Location access requires HTTPS or localhost."
 msgstr ""
 
-#: templates/hive-form.php:572
+#: templates/hive-form.php:577
 msgid "Allow location access and try again."
 msgstr ""
 
-#: templates/hive-form.php:573
+#: templates/hive-form.php:578
 msgid "Current location could not be read."
 msgstr ""
 
 #. translators: 1: four-digit queen birth year, 2: name of the international marking color (e.g. White, Yellow).
-#: templates/hive-form.php:606
+#: templates/hive-form.php:611
 #, php-format
 msgid "Standard color for %1$s: %2$s."
 msgstr ""
@@ -729,7 +734,7 @@ msgstr ""
 
 #. translators: %s: hive name
 #: templates/hive-qr.php:48
-#: templates/hive.php:254
+#: templates/hive.php:302
 msgid "Hive QR"
 msgstr ""
 
@@ -741,74 +746,78 @@ msgstr ""
 #. translators: %s: the title of the hive.
 #: templates/hive-qr.php:72
 #: templates/hive-qr.php:74
-#: templates/hive.php:251
+#: templates/hive.php:299
 #, php-format
 msgid "QR code for %s"
 msgstr ""
 
-#: templates/hive.php:138
+#: templates/hive.php:139
+#: templates/hive.php:556
+#: templates/hive.php:565
 #: templates/visit.php:233
 #: templates/visit.php:236
 #: templates/visit.php:320
 msgid "New Visit"
 msgstr ""
 
-#: templates/hive.php:141
+#: templates/hive.php:142
+#: templates/hive.php:443
+#: templates/hive.php:464
 #: templates/treatment.php:235
 #: templates/treatment.php:238
 msgid "New Treatment / Feeding"
 msgstr ""
 
-#: templates/hive.php:256
+#: templates/hive.php:304
 msgid "Print QR"
 msgstr ""
 
-#: templates/hive.php:157
+#: templates/hive.php:160
 msgid "Hive updated."
 msgstr ""
 
-#: templates/hive.php:161
+#: templates/hive.php:165
 #: templates/visit.php:346
 msgid "Visit saved."
 msgstr ""
 
-#: templates/hive.php:165
+#: templates/hive.php:170
 msgid "Visit removed."
 msgstr ""
 
-#: templates/hive.php:169
+#: templates/hive.php:175
 msgid "Entry removed."
 msgstr ""
 
-#: templates/hive.php:208
+#: templates/hive.php:256
 msgid "auto from year"
 msgstr ""
 
-#: templates/hive.php:223
+#: templates/hive.php:271
 msgid "Origin"
 msgstr ""
 
-#: templates/hive.php:230
+#: templates/hive.php:278
 msgid "Flags"
 msgstr ""
 
-#: templates/hive.php:262
+#: templates/hive.php:310
 msgid "Hive location"
 msgstr ""
 
-#: templates/hive.php:391
+#: templates/hive.php:439
 msgid "Treatments &amp; Feedings"
 msgstr ""
 
 #. translators: %d: the number of treatments currently in progress.
-#: templates/hive.php:398
+#: templates/hive.php:453
 #, php-format
 msgid "%d treatment is currently in progress."
 msgid_plural "%d treatments are currently in progress."
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/hive.php:406
+#: templates/hive.php:462
 msgid "No treatments or feedings logged."
 msgstr ""
 
@@ -816,9 +825,9 @@ msgstr ""
 #. translators: %s: the display name of the user who recorded the entry.
 #. translators: %s: the display name of the user who recorded the visit.
 #: templates/harvest.php:258
-#: templates/hive.php:334
-#: templates/hive.php:429
-#: templates/hive.php:520
+#: templates/hive.php:380
+#: templates/hive.php:489
+#: templates/hive.php:594
 #: templates/treatment.php:285
 #: templates/visit.php:331
 #, php-format
@@ -826,68 +835,69 @@ msgid "by %s"
 msgstr ""
 
 #: templates/harvest.php:259
-#: templates/hive.php:335
-#: templates/hive.php:430
-#: templates/hive.php:521
+#: templates/hive.php:381
+#: templates/hive.php:490
+#: templates/hive.php:595
 #: templates/treatment.php:286
 #: templates/visit.php:332
 msgid "Unknown"
 msgstr ""
 
-#: templates/hive.php:341
-#: templates/hive.php:436
-#: templates/hive.php:527
+#: templates/hive.php:387
+#: templates/hive.php:496
+#: templates/hive.php:601
 msgid "View / Edit"
 msgstr ""
 
-#: templates/apiary.php:218
-#: templates/hive.php:448
+#: templates/apiary.php:219
+#: templates/hive.php:230
+#: templates/hive.php:508
 msgid "In progress"
 msgstr ""
 
-#: templates/hive.php:455
+#: templates/hive.php:515
 #: templates/treatment.php:340
 msgid "Product"
 msgstr ""
 
-#: templates/hive.php:462
+#: templates/hive.php:522
 #: templates/treatment.php:358
 msgid "Quantity"
 msgstr ""
 
-#: templates/hive.php:474
+#: templates/hive.php:534
 msgid "End date"
 msgstr ""
 
-#: templates/hive.php:490
+#: templates/hive.php:552
 msgid "Visits"
 msgstr ""
 
-#: templates/hive.php:493
+#: templates/hive.php:563
 msgid "No visits yet."
 msgstr ""
 
-#: templates/hive.php:537
-#: templates/visit.php:448
+#: templates/hive.php:611
+#: templates/visit.php:450
 msgid "Reason:"
 msgstr ""
 
-#: templates/hive.php:546
+#: templates/hive.php:620
 msgid "Registered weather"
 msgstr ""
 
-#: templates/hive.php:547
-#: templates/visit.php:466
+#: templates/hive.php:621
+#: templates/visit.php:468
 msgid "Registered Weather"
 msgstr ""
 
-#: templates/hive.php:558
-#: templates/visit.php:454
+#: templates/hive.php:632
+#: templates/visit.php:456
 msgid "No observations marked."
 msgstr ""
 
 #. translators: %d: number of media files attached to a visit.
-#: templates/hive.php:574
+#: templates/hive.php:648
 #, php-format
 msgid "%d media file"
 msgid_plural "%d media files"
@@ -899,20 +909,20 @@ msgstr[1] ""
 msgid "WordPress Admin"
 msgstr ""
 
-#: templates/index.php:56
+#: templates/index.php:57
 msgid "Apiary removed."
 msgstr ""
 
-#: templates/index.php:60
+#: templates/index.php:63
 msgid "Saved Apiaries"
 msgstr ""
 
-#: templates/index.php:63
+#: templates/index.php:69
 msgid "No apiaries yet."
 msgstr ""
 
 #. translators: %d: number of hives
-#: templates/index.php:89
+#: templates/index.php:99
 #, php-format
 msgid "%d hive"
 msgid_plural "%d hives"
@@ -1039,15 +1049,15 @@ msgstr ""
 msgid "Unit"
 msgstr ""
 
-#: templates/treatment.php:408
+#: templates/treatment.php:412
 msgid "Remove this entry from the hive record."
 msgstr ""
 
-#: templates/treatment.php:412
+#: templates/treatment.php:416
 msgid "Remove this entry?"
 msgstr ""
 
-#: templates/treatment.php:414
+#: templates/treatment.php:418
 msgid "Remove Entry"
 msgstr ""
 
@@ -1159,39 +1169,39 @@ msgstr ""
 msgid "Photos or videos are saved to the media library and linked to this visit."
 msgstr ""
 
-#: templates/visit.php:438
+#: templates/visit.php:440
 msgid "Visit Summary"
 msgstr ""
 
-#: templates/visit.php:443
+#: templates/visit.php:445
 msgid "No notes recorded."
 msgstr ""
 
-#: templates/visit.php:471
+#: templates/visit.php:473
 msgid "No weather snapshot recorded."
 msgstr ""
 
-#: templates/visit.php:494
+#: templates/visit.php:496
 msgid "Media"
 msgstr ""
 
-#: templates/visit.php:497
+#: templates/visit.php:499
 msgid "No media attached."
 msgstr ""
 
-#: templates/visit.php:534
+#: templates/visit.php:536
 msgid "Remove media"
 msgstr ""
 
-#: templates/visit.php:535
+#: templates/visit.php:537
 msgid "Remove this media from the visit?"
 msgstr ""
 
-#: templates/visit.php:548
+#: templates/visit.php:550
 msgid "Remove this visit from the hive record."
 msgstr ""
 
-#: templates/visit.php:550
+#: templates/visit.php:552
 msgid "Remove Visit"
 msgstr ""
 
@@ -1212,7 +1222,7 @@ msgid "Comb honey"
 msgstr ""
 
 #: src/class-harvest.php:56
-#: templates/hive.php:288
+#: templates/hive.php:322
 msgid "Harvests"
 msgstr ""
 
@@ -1233,7 +1243,9 @@ msgstr ""
 #: src/class-harvest.php:60
 #: templates/harvest.php:208
 #: templates/harvest.php:211
-#: templates/hive.php:144
+#: templates/hive.php:145
+#: templates/hive.php:326
+#: templates/hive.php:361
 msgid "New Harvest"
 msgstr ""
 
@@ -1348,69 +1360,70 @@ msgstr ""
 msgid "Extraction method"
 msgstr ""
 
-#: templates/harvest.php:357
+#: templates/harvest.php:361
 msgid "Remove this harvest from the hive record."
 msgstr ""
 
-#: templates/harvest.php:361
+#: templates/harvest.php:365
 msgid "Remove this harvest?"
 msgstr ""
 
-#: templates/harvest.php:363
+#: templates/harvest.php:367
 msgid "Remove Harvest"
 msgstr ""
 
-#: templates/hive.php:173
+#: templates/hive.php:180
 msgid "Harvest removed."
 msgstr ""
 
-#: templates/hive.php:292
+#: templates/hive.php:333
 msgid "Total harvested"
 msgstr ""
 
 #. translators: %s: kilograms of honey harvested.
-#: templates/apiary.php:208
-#: templates/hive.php:298
-#: templates/hive.php:351
+#: templates/apiary.php:209
+#: templates/hive.php:220
+#: templates/hive.php:339
+#: templates/hive.php:397
 #, php-format
 msgid "%s kg"
 msgstr ""
 
 #. translators: %d: number of harvest entries.
-#: templates/hive.php:308
+#: templates/hive.php:349
 #, php-format
 msgid "over %d entry"
 msgid_plural "over %d entries"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/hive.php:317
+#: templates/hive.php:359
 msgid "No harvests logged yet."
 msgstr ""
 
 #. translators: %d: number of frames extracted.
-#: templates/hive.php:369
+#: templates/hive.php:415
 #, php-format
 msgid "%d frame"
 msgid_plural "%d frames"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/apiary.php:193
+#: templates/apiary.php:194
 msgid "Apiary at a glance"
 msgstr ""
 
-#: templates/apiary.php:214
+#: templates/apiary.php:215
 msgid "Harvested (all time)"
 msgstr ""
 
 #. translators: %s: kilograms of honey harvested from one hive.
-#: templates/apiary.php:281
+#: templates/apiary.php:312
 #, php-format
 msgid "%s kg harvested"
 msgstr ""
 
-#: templates/apiary.php:297
+#: templates/apiary.php:328
 msgid "In treatment"
 msgstr ""
 
@@ -1426,20 +1439,20 @@ msgstr ""
 msgid "The apiary could not be removed."
 msgstr ""
 
-#: templates/apiary-form.php:198
+#: templates/apiary-form.php:200
 msgid "Delete this apiary and all hives, visits, treatments, feedings, harvests, and visit media."
 msgstr ""
 
-#: templates/apiary-form.php:202
+#: templates/apiary-form.php:204
 msgid "Delete this apiary and all related records?"
 msgstr ""
 
-#: templates/apiary-form.php:204
+#: templates/apiary-form.php:206
 msgid "Delete Apiary"
 msgstr ""
 
 #: templates/apiary.php:42
-#: templates/hive-form.php:321
+#: templates/hive-form.php:324
 msgid "The hive could not be removed. Reload and try again."
 msgstr ""
 
@@ -1448,28 +1461,42 @@ msgid "The hive is not available for this apiary."
 msgstr ""
 
 #: templates/apiary.php:46
-#: templates/hive-form.php:323
+#: templates/hive-form.php:326
 msgid "You do not have permission to remove this hive."
 msgstr ""
 
 #: templates/apiary.php:51
-#: templates/hive-form.php:328
+#: templates/hive-form.php:331
 msgid "The hive could not be removed."
 msgstr ""
 
-#: templates/apiary.php:310
-#: templates/hive-form.php:546
+#: templates/hive-form.php:551
 msgid "Delete this hive and all related records?"
 msgstr ""
 
-#: templates/apiary.php:312
-msgid "Delete"
-msgstr ""
-
-#: templates/hive-form.php:542
+#: templates/hive-form.php:547
 msgid "Delete this hive and all visits, treatments, feedings, harvests, and visit media."
 msgstr ""
 
-#: templates/hive-form.php:548
+#: templates/hive-form.php:553
 msgid "Delete Hive"
+msgstr ""
+
+#: templates/harvest.php:357
+#: templates/treatment.php:408
+msgid "Danger Zone"
+msgstr ""
+
+#: templates/hive.php:207
+msgid "Hive at a glance"
+msgstr ""
+
+#: templates/hive.php:211
+msgid "Visit"
+msgid_plural "Visits"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/hive.php:226
+msgid "Harvested"
 msgstr ""
