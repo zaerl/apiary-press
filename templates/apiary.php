@@ -23,11 +23,37 @@ $appr_apiary_id    = isset( $appr_route_params['id'] ) ? absint( $appr_route_par
 $appr_apiary       = $appr_apiary_id ? get_post( $appr_apiary_id ) : null;
 $appr_not_found    = ! $appr_apiary || Apiary::APIARY_POST_TYPE !== $appr_apiary->post_type;
 $appr_forbidden    = ! $appr_not_found && ! current_user_can( 'edit_post', $appr_apiary_id );
+$appr_form_error   = '';
 
 if ( $appr_not_found ) {
 	status_header( 404 );
 } elseif ( $appr_forbidden ) {
 	status_header( 403 );
+}
+
+$appr_action = isset( $_POST['ap_action'] ) ? sanitize_key( wp_unslash( $_POST['ap_action'] ) ) : '';
+
+if ( ! $appr_not_found && ! $appr_forbidden && 'delete_hive' === $appr_action ) {
+	$appr_hive_id = isset( $_POST['ap_hive_id'] ) ? absint( $_POST['ap_hive_id'] ) : 0;
+	$appr_nonce   = isset( $_POST['ap_delete_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_delete_nonce'] ) ) : '';
+	$appr_hive    = $appr_hive_id ? get_post( $appr_hive_id ) : null;
+
+	if ( ! wp_verify_nonce( $appr_nonce, 'ap_delete_hive_' . $appr_apiary_id . '_' . $appr_hive_id ) ) {
+		$appr_form_error = __( 'The hive could not be removed. Reload and try again.', 'apiary-press' );
+	} elseif ( ! $appr_hive || Hive::HIVE_POST_TYPE !== $appr_hive->post_type || absint( $appr_hive->post_parent ) !== $appr_apiary_id ) {
+		$appr_form_error = __( 'The hive is not available for this apiary.', 'apiary-press' );
+	} elseif ( ! current_user_can( 'delete_post', $appr_hive_id ) ) {
+		$appr_form_error = __( 'You do not have permission to remove this hive.', 'apiary-press' );
+	} else {
+		$appr_deleted = wp_delete_post( $appr_hive_id, true );
+
+		if ( ! $appr_deleted ) {
+			$appr_form_error = __( 'The hive could not be removed.', 'apiary-press' );
+		} else {
+			wp_safe_redirect( add_query_arg( 'hive_deleted', '1', App::get_url( 'apiary/' . $appr_apiary_id ) ) );
+			exit;
+		}
+	}
 }
 
 $appr_hives                = array();
@@ -145,6 +171,10 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 
 			<?php if ( isset( $_GET['hive_deleted'] ) ) : ?>
 				<div class="notice"><?php echo esc_html__( 'Hive removed.', 'apiary-press' ); ?></div>
+			<?php endif; ?>
+
+			<?php if ( $appr_form_error ) : ?>
+				<div class="error"><?php echo esc_html( $appr_form_error ); ?></div>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $appr_map_markers ) ) : ?>
@@ -269,6 +299,20 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 									<a class="admin-link" href="<?php echo esc_url( $appr_hive_url ); ?>">
 										<?php echo esc_html__( 'Open', 'apiary-press' ); ?>
 									</a>
+									<?php if ( current_user_can( 'delete_post', $appr_hive->ID ) ) : ?>
+										<form class="inline-action-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id ) ); ?>">
+											<input type="hidden" name="ap_action" value="delete_hive">
+											<input type="hidden" name="ap_hive_id" value="<?php echo esc_attr( (string) $appr_hive->ID ); ?>">
+											<?php wp_nonce_field( 'ap_delete_hive_' . $appr_apiary_id . '_' . $appr_hive->ID, 'ap_delete_nonce' ); ?>
+											<button
+												class="button button-danger"
+												type="submit"
+												onclick="return confirm('<?php echo esc_js( __( 'Delete this hive and all related records?', 'apiary-press' ) ); ?>');"
+											>
+												<?php echo esc_html__( 'Delete', 'apiary-press' ); ?>
+											</button>
+										</form>
+									<?php endif; ?>
 								</div>
 							</article>
 						<?php endforeach; ?>

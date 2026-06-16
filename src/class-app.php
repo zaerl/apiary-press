@@ -39,6 +39,7 @@ class App extends BaseApp {
 		add_action( 'init', array( $this, 'register_harvest_meta' ) );
 
 		add_action( 'template_redirect', array( $this, 'maybe_setup_assets' ) );
+		add_action( 'before_delete_post', array( $this, 'delete_related_resources' ), 10, 2 );
 	}
 
 	/**
@@ -91,18 +92,18 @@ class App extends BaseApp {
 	protected function setup_routes(): void {
 		$this->app->route( '' );
 
-		// Apiary routes:
+		// Apiary routes.
 		$this->app->route( 'apiary/new', 'apiary-form.php' );
 		$this->app->route( 'apiary/{id}', 'apiary.php' );
 		$this->app->route( 'apiary/{id}/edit', 'apiary-form.php' );
 
-		// Hive routes:
+		// Hive routes.
 		$this->app->route( 'apiary/{apiary_id}/hive/new', 'hive-form.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}', 'hive.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/edit', 'hive-form.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/qr', 'hive-qr.php' );
 
-		// Hive visit, treatment, and harvest routes:
+		// Hive visit, treatment, and harvest routes.
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/visit/{hive_visit}', 'visit.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/treatment/{hive_treatment}', 'treatment.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/harvest/{hive_harvest}', 'harvest.php' );
@@ -126,13 +127,78 @@ class App extends BaseApp {
 	}
 
 	/**
-	 * Register the hive and hive visit custom post types.
+	 * Register the Apiary Press custom post types.
 	 */
 	public function register_post_types(): void {
+		Apiary::register_post_types();
 		Hive::register_post_types();
 		Visit::register_post_types();
 		Treatment::register_post_types();
 		Harvest::register_post_types();
+	}
+
+	/**
+	 * Delete Apiary Press child resources before a parent post is permanently deleted.
+	 *
+	 * @param int           $post_id The post being deleted.
+	 * @param \WP_Post|null $post    The post object being deleted.
+	 */
+	public function delete_related_resources( int $post_id, ?\WP_Post $post = null ): void {
+		$post = $post instanceof \WP_Post ? $post : get_post( $post_id );
+
+		if ( ! $post ) {
+			return;
+		}
+
+		switch ( $post->post_type ) {
+			case Apiary::APIARY_POST_TYPE:
+				$this->delete_child_posts( $post_id, array( Hive::HIVE_POST_TYPE ) );
+				break;
+
+			case Hive::HIVE_POST_TYPE:
+				$this->delete_child_posts(
+					$post_id,
+					array(
+						Visit::HIVE_VISIT_POST_TYPE,
+						Treatment::HIVE_TREATMENT_POST_TYPE,
+						Harvest::HIVE_HARVEST_POST_TYPE,
+					)
+				);
+				break;
+
+			case Visit::HIVE_VISIT_POST_TYPE:
+				Visit::delete_all_visit_media( $post_id );
+				break;
+		}
+	}
+
+	/**
+	 * Permanently delete child posts of the given parent and post types.
+	 *
+	 * @param int      $parent_id  The parent post ID.
+	 * @param string[] $post_types Child post types to delete.
+	 */
+	private function delete_child_posts( int $parent_id, array $post_types ): void {
+		$child_ids = get_posts(
+			array(
+				'post_type'        => $post_types,
+				'post_status'      => get_post_stati( array(), 'names' ),
+				'post_parent'      => $parent_id,
+				'numberposts'      => -1,
+				'fields'           => 'ids',
+				'suppress_filters' => false,
+			)
+		);
+
+		foreach ( $child_ids as $child_id ) {
+			$child_id = absint( $child_id );
+
+			if ( ! $child_id || $child_id === $parent_id ) {
+				continue;
+			}
+
+			wp_delete_post( $child_id, true );
+		}
 	}
 
 	/**

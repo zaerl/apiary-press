@@ -353,4 +353,34 @@ class Visit {
 
 		return (bool) wp_delete_attachment( $attachment_id, true );
 	}
+
+	/**
+	 * Permanently delete every attachment parented to a visit.
+	 *
+	 * @param int $visit_id The visit whose media should be removed.
+	 */
+	public static function delete_all_visit_media( int $visit_id ): void {
+		if ( ! $visit_id ) {
+			return;
+		}
+
+		$attachment_ids = get_posts(
+			array(
+				'post_parent'      => $visit_id,
+				'post_type'        => 'attachment',
+				'post_status'      => get_post_stati( array(), 'names' ),
+				'posts_per_page'   => -1,
+				'fields'           => 'ids',
+				'suppress_filters' => false,
+			)
+		);
+
+		foreach ( $attachment_ids as $attachment_id ) {
+			$attachment_id = absint( $attachment_id );
+
+			if ( $attachment_id ) {
+				wp_delete_attachment( $attachment_id, true );
+			}
+		}
+	}
 }

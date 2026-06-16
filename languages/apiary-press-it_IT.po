@@ -2,21 +2,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Apiary Press 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/apiary-press\n"
+"POT-Creation-Date: 2026-06-15T08:28:59+00:00\n"
+"PO-Revision-Date: 2026-06-16 10:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-15T08:28:59+00:00\n"
-"PO-Revision-Date: 2026-06-15 14:20+0200\n"
-"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.9\n"
 "X-Domain: apiary-press\n"
 
 #. Plugin Name of the plugin
-#: apiary-press.php
-#: templates/index.php:42
+#: apiary-press.php templates/index.php:42
 msgid "Apiary Press"
 msgstr "Apiary Press"
 
@@ -30,17 +29,12 @@ msgstr "Prenditi cura delle tue 🐝"
 msgid "Francesco Bigiarini"
 msgstr "Francesco Bigiarini"
 
-#: src/class-apiary.php:24
-#: src/class-app.php:115
-#: templates/apiary-form.php:146
-#: templates/apiary.php:118
-#: templates/index.php:33
-#: templates/index.php:43
+#: src/class-apiary.php:24 src/class-app.php:124 templates/apiary-form.php:165
+#: templates/apiary.php:144 templates/index.php:33 templates/index.php:43
 msgid "Apiaries"
 msgstr "Apiari"
 
-#: src/class-apiary.php:25
-#: templates/apiary.php:95
+#: src/class-apiary.php:25 templates/apiary.php:121
 msgid "Apiary"
 msgstr "Apiario"
 
@@ -48,15 +42,12 @@ msgstr "Apiario"
 msgid "Add New Apiary"
 msgstr "Aggiungi nuovo apiario"
 
-#: src/class-apiary.php:27
-#: templates/apiary-form.php:99
-#: templates/apiary.php:129
+#: src/class-apiary.php:27 templates/apiary-form.php:118
+#: templates/apiary.php:155
 msgid "Edit Apiary"
 msgstr "Modifica apiario"
 
-#: src/class-apiary.php:28
-#: templates/apiary-form.php:99
-#: templates/index.php:47
+#: src/class-apiary.php:28 templates/apiary-form.php:118 templates/index.php:47
 msgid "New Apiary"
 msgstr "Nuovo apiario"
 
@@ -72,14 +63,11 @@ msgstr "Cerca apiari"
 msgid "Apiaries managed in Apiary Press."
 msgstr "Apiari gestiti in Apiary Press."
 
-#: src/class-hive.php:44
-#: templates/apiary.php:194
+#: src/class-hive.php:44 templates/apiary.php:224
 msgid "Hives"
 msgstr "Alveari"
 
-#: src/class-hive.php:45
-#: templates/apiary.php:168
-#: templates/hive.php:105
+#: src/class-hive.php:45 templates/apiary.php:198 templates/hive.php:105
 msgid "Hive"
 msgid_plural "Hives"
 msgstr[0] "Alveare"
@@ -89,15 +77,11 @@ msgstr[1] "Alveari"
 msgid "Add New Hive"
 msgstr "Aggiungi nuovo alveare"
 
-#: src/class-hive.php:47
-#: templates/hive-form.php:335
-#: templates/hive.php:150
+#: src/class-hive.php:47 templates/hive-form.php:361 templates/hive.php:147
 msgid "Edit Hive"
 msgstr "Modifica alveare"
 
-#: src/class-hive.php:48
-#: templates/apiary.php:126
-#: templates/hive-form.php:335
+#: src/class-hive.php:48 templates/apiary.php:152 templates/hive-form.php:361
 msgid "New Hive"
 msgstr "Nuovo alveare"
 
@@ -133,8 +117,7 @@ msgstr "Controllo / trattamento malattie"
 msgid "Equipment maintenance"
 msgstr "Manutenzione attrezzatura"
 
-#: src/class-treatment.php:69
-#: src/class-visit.php:62
+#: src/class-treatment.php:69 src/class-visit.php:62
 msgid "Feeding"
 msgstr "Nutrizione"
 
@@ -190,8 +173,7 @@ msgstr "Melario aggiunto"
 msgid "Capped brood"
 msgstr "Covata opercolata"
 
-#: src/class-visit.php:84
-#: templates/apiary.php:264
+#: src/class-visit.php:84 templates/apiary.php:294
 msgid "Check soon"
 msgstr "Da controllare a breve"
 
@@ -215,8 +197,7 @@ msgstr "Vista regina"
 msgid "Hive Visits"
 msgstr "Visite all’alveare"
 
-#: src/class-visit.php:101
-#: templates/visit.php:233
+#: src/class-visit.php:101 templates/visit.php:233
 msgid "Hive Visit"
 msgstr "Visita all’alveare"
 
@@ -306,122 +287,100 @@ msgstr "Il servizio meteo ha restituito una risposta non valida."
 msgid "Weather lookup did not return any forecast data."
 msgstr "Il servizio meteo non ha restituito dati di previsione."
 
-#: templates/apiary-form.php:41
-#: templates/apiary-form.php:71
+#: templates/apiary-form.php:41 templates/apiary-form.php:71
 msgid "The apiary could not be saved. Reload and try again."
 msgstr "L’apiario non può essere salvato. Ricarica e riprova."
 
-#: templates/apiary-form.php:43
-#: templates/apiary-form.php:73
+#: templates/apiary-form.php:43 templates/apiary-form.php:73
 msgid "Apiary name is required."
 msgstr "Il nome dell’apiario è obbligatorio."
 
-#: templates/apiary-form.php:103
+#: templates/apiary-form.php:122
 msgid "Save Apiary"
 msgstr "Salva apiario"
 
-#: templates/apiary-form.php:103
+#: templates/apiary-form.php:122
 msgid "Update Apiary"
 msgstr "Modifica apiario"
 
-#: templates/apiary-form.php:124
-#: templates/apiary.php:105
+#: templates/apiary-form.php:143 templates/apiary.php:131
 msgid "Apiary Not Found"
 msgstr "Apiario non trovato"
 
-#: templates/apiary-form.php:125
-#: templates/apiary.php:106
+#: templates/apiary-form.php:144 templates/apiary.php:132
 msgid "The requested apiary is not available."
 msgstr "L’apiario richiesto non è disponibile."
 
-#: templates/apiary-form.php:126
-#: templates/apiary-form.php:140
-#: templates/apiary.php:107
-#: templates/apiary.php:113
-#: templates/harvest.php:231
-#: templates/hive-form.php:381
-#: templates/hive-form.php:395
-#: templates/hive-qr.php:63
-#: templates/hive-qr.php:69
-#: templates/hive.php:119
-#: templates/hive.php:125
-#: templates/treatment.php:258
-#: templates/visit.php:296
+#: templates/apiary-form.php:145 templates/apiary-form.php:159
+#: templates/apiary.php:133 templates/apiary.php:139 templates/harvest.php:231
+#: templates/hive-form.php:407 templates/hive-form.php:421
+#: templates/hive-qr.php:63 templates/hive-qr.php:69 templates/hive.php:119
+#: templates/hive.php:125 templates/treatment.php:258 templates/visit.php:296
 msgid "Back to Apiaries"
 msgstr "Torna agli apiari"
 
-#: templates/apiary-form.php:130
-#: templates/apiary.php:111
-#: templates/harvest.php:235
-#: templates/hive-form.php:385
-#: templates/hive-qr.php:67
-#: templates/hive.php:123
-#: templates/treatment.php:262
+#: templates/apiary-form.php:149 templates/apiary.php:137
+#: templates/harvest.php:235 templates/hive-form.php:411
+#: templates/hive-qr.php:67 templates/hive.php:123 templates/treatment.php:262
 #: templates/visit.php:300
 msgid "Access Denied"
 msgstr "Accesso vietato"
 
-#: templates/apiary-form.php:135
+#: templates/apiary-form.php:154
 msgid "You do not have permission to add apiaries."
 msgstr "Non hai i permessi per aggiungere apiari."
 
-#: templates/apiary-form.php:136
-#: templates/apiary.php:112
+#: templates/apiary-form.php:155 templates/apiary.php:138
 msgid "You do not have permission to edit this apiary."
 msgstr "Non hai i permessi per modificare questo apiario."
 
-#: templates/apiary-form.php:163
-#: templates/hive-form.php:418
+#: templates/apiary-form.php:182 templates/hive-form.php:444
 msgid "Name"
 msgstr "Nome"
 
-#: templates/apiary-form.php:168
-#: templates/harvest.php:345
-#: templates/hive-form.php:442
-#: templates/treatment.php:396
+#: templates/apiary-form.php:187 templates/harvest.php:345
+#: templates/hive-form.php:468 templates/treatment.php:396
 #: templates/visit.php:420
 msgid "Notes"
 msgstr "Note"
 
-#: templates/apiary.php:135
+#: templates/apiary.php:161
 msgid "Apiary saved."
 msgstr "Apiario salvato."
 
-#: templates/apiary.php:139
+#: templates/apiary.php:165
 msgid "Apiary updated."
 msgstr "Apiario modificato."
 
-#: templates/apiary.php:143
-#: templates/hive.php:156
+#: templates/apiary.php:169 templates/hive.php:153
 msgid "Hive saved."
 msgstr "Alveare salvato."
 
-#: templates/apiary.php:147
+#: templates/apiary.php:173
 msgid "Hive removed."
 msgstr "Alveare rimosso."
 
-#: templates/apiary.php:155
+#: templates/apiary.php:185
 msgid "Hive locations"
 msgstr "Posizioni alveari"
 
-#: templates/apiary.php:197
+#: templates/apiary.php:227
 msgid "No hives yet."
 msgstr "Ancora nessun alveare."
 
-#: templates/apiary.php:240
+#: templates/apiary.php:270
 #, php-format
 msgid "%d visit"
 msgid_plural "%d visits"
 msgstr[0] "%d visita"
 msgstr[1] "%d visite"
 
-#: templates/apiary.php:243
+#: templates/apiary.php:273
 #, php-format
 msgid "Last visit %s"
 msgstr "Ultima visita %s"
 
-#: templates/apiary.php:270
-#: templates/index.php:97
+#: templates/apiary.php:300 templates/index.php:97
 msgid "Open"
 msgstr "Apri"
 
@@ -437,97 +396,88 @@ msgstr "%s deve essere un numero."
 msgid "%1$s must be between %2$s and %3$s."
 msgstr "%1$s deve essere compreso tra %2$s e %3$s."
 
-#: templates/hive-form.php:222
-#: templates/hive-form.php:269
-#: templates/hive-form.php:424
+#: templates/hive-form.php:229 templates/hive-form.php:276
+#: templates/hive-form.php:450
 msgid "Latitude"
 msgstr "Latitudine"
 
-#: templates/hive-form.php:223
-#: templates/hive-form.php:270
-#: templates/hive-form.php:429
+#: templates/hive-form.php:230 templates/hive-form.php:277
+#: templates/hive-form.php:455
 msgid "Longitude"
 msgstr "Longitudine"
 
-#: templates/hive-form.php:228
-#: templates/hive-form.php:275
+#: templates/hive-form.php:235 templates/hive-form.php:282
 msgid "The hive could not be saved. Reload and try again."
 msgstr "L’alveare non può essere salvato. Ricarica e riprova."
 
-#: templates/hive-form.php:230
-#: templates/hive-form.php:277
+#: templates/hive-form.php:237 templates/hive-form.php:284
 msgid "Hive name is required."
 msgstr "Il nome dell’alveare è obbligatorio."
 
-#: templates/hive-form.php:236
-#: templates/hive-form.php:283
+#: templates/hive-form.php:243 templates/hive-form.php:290
 msgid "Add both latitude and longitude, or leave both blank."
 msgstr "Inserisci sia latitudine che longitudine, oppure lascia entrambi i campi vuoti."
 
-#: templates/hive-form.php:339
+#: templates/hive-form.php:365
 msgid "Save Hive"
 msgstr "Salva alveare"
 
-#: templates/hive-form.php:339
+#: templates/hive-form.php:365
 msgid "Update Hive"
 msgstr "Aggiorna alveare"
 
-#: templates/hive-form.php:379
-#: templates/hive-qr.php:61
-#: templates/hive.php:117
+#: templates/hive-form.php:405 templates/hive-qr.php:61 templates/hive.php:117
 msgid "Hive Not Found"
 msgstr "Alveare non trovato"
 
-#: templates/hive-form.php:380
-#: templates/hive-qr.php:62
-#: templates/hive.php:118
+#: templates/hive-form.php:406 templates/hive-qr.php:62 templates/hive.php:118
 msgid "The requested hive is not available."
 msgstr "L’alveare richiesto non è disponibile."
 
-#: templates/hive-form.php:390
+#: templates/hive-form.php:416
 msgid "You do not have permission to add hives."
 msgstr "Non hai i permessi per aggiungere alveari."
 
-#: templates/hive-form.php:391
-#: templates/hive.php:124
+#: templates/hive-form.php:417 templates/hive.php:124
 msgid "You do not have permission to edit this hive."
 msgstr "Non hai i permessi per modificare questo alveare."
 
-#: templates/hive-form.php:436
+#: templates/hive-form.php:462
 msgid "Set Current Location"
 msgstr "Imposta località corrente"
 
-#: templates/hive-form.php:527
+#: templates/hive-form.php:568
 msgid "Getting current location..."
 msgstr "Recupero della posizione attuale..."
 
-#: templates/hive-form.php:528
+#: templates/hive-form.php:569
 msgid "Current location set."
 msgstr "Posizione attuale impostata."
 
-#: templates/hive-form.php:529
+#: templates/hive-form.php:570
 msgid "Location access is unavailable in this browser."
 msgstr "L’accesso alla posizione non è disponibile in questo browser."
 
-#: templates/hive-form.php:530
+#: templates/hive-form.php:571
 msgid "Location access requires HTTPS or localhost."
 msgstr "L’accesso alla posizione richiede HTTPS o localhost."
 
-#: templates/hive-form.php:531
+#: templates/hive-form.php:572
 msgid "Allow location access and try again."
 msgstr "Consenti l’accesso alla posizione e riprova."
 
-#: templates/hive-form.php:532
+#: templates/hive-form.php:573
 msgid "Current location could not be read."
 msgstr "Impossibile leggere la posizione attuale."
 
+#. translators: %s: hive name
 #: templates/hive-qr.php:48
 #, php-format
 msgid "%s QR"
 msgstr "%s QR"
 
-#: templates/hive-qr.php:48
-#: templates/hive.php:257
+#. translators: %s: hive name
+#: templates/hive-qr.php:48 templates/hive.php:254
 msgid "Hive QR"
 msgstr "QR code dell’alveare"
 
@@ -535,104 +485,85 @@ msgstr "QR code dell’alveare"
 msgid "You do not have permission to view this hive QR."
 msgstr "Non hai i permessi per visualizzare questo QR dell’alveare."
 
+#. translators: %s: hive name
 #. translators: %s: the title of the hive.
-#: templates/hive-qr.php:72
-#: templates/hive-qr.php:74
-#: templates/hive.php:254
+#: templates/hive-qr.php:72 templates/hive-qr.php:74 templates/hive.php:251
 #, php-format
 msgid "QR code for %s"
 msgstr "Codice QR per %s"
 
-#: templates/hive.php:138
-#: templates/visit.php:233
-#: templates/visit.php:236
+#: templates/hive.php:138 templates/visit.php:233 templates/visit.php:236
 #: templates/visit.php:320
 msgid "New Visit"
 msgstr "Nuova visita"
 
-#: templates/hive.php:147
-#: templates/hive.php:259
+#: templates/hive.php:256
 msgid "Print QR"
 msgstr "Stampa QR"
 
-#: templates/hive.php:160
+#: templates/hive.php:157
 msgid "Hive updated."
 msgstr "Alveare aggiornato."
 
-#: templates/hive.php:164
-#: templates/visit.php:346
+#: templates/hive.php:161 templates/visit.php:346
 msgid "Visit saved."
 msgstr "Visita salvata."
 
-#: templates/hive.php:168
+#: templates/hive.php:165
 msgid "Visit removed."
 msgstr "Visita rimossa."
 
-#: templates/hive.php:492
+#: templates/hive.php:490
 msgid "Visits"
 msgstr "Visite"
 
-#: templates/hive.php:495
+#: templates/hive.php:493
 msgid "No visits yet."
 msgstr "Ancora nessuna visita."
 
 #. translators: %s: the display name of the user who recorded the harvest.
 #. translators: %s: the display name of the user who recorded the entry.
 #. translators: %s: the display name of the user who recorded the visit.
-#: templates/harvest.php:258
-#: templates/hive.php:336
-#: templates/hive.php:431
-#: templates/hive.php:522
-#: templates/treatment.php:285
-#: templates/visit.php:331
+#: templates/harvest.php:258 templates/hive.php:334 templates/hive.php:429
+#: templates/hive.php:520 templates/treatment.php:285 templates/visit.php:331
 #, php-format
 msgid "by %s"
 msgstr "da %s"
 
-#: templates/harvest.php:259
-#: templates/hive.php:337
-#: templates/hive.php:432
-#: templates/hive.php:523
-#: templates/treatment.php:286
-#: templates/visit.php:332
+#: templates/harvest.php:259 templates/hive.php:335 templates/hive.php:430
+#: templates/hive.php:521 templates/treatment.php:286 templates/visit.php:332
 msgid "Unknown"
 msgstr "Sconosciuto"
 
-#: templates/hive.php:343
-#: templates/hive.php:438
-#: templates/hive.php:529
+#: templates/hive.php:341 templates/hive.php:436 templates/hive.php:527
 msgid "View / Edit"
 msgstr "Visualizza / Modifica"
 
-#: templates/hive.php:539
-#: templates/visit.php:448
+#: templates/hive.php:537 templates/visit.php:448
 msgid "Reason:"
 msgstr "Ragione:"
 
-#: templates/hive.php:548
+#: templates/hive.php:546
 msgid "Registered weather"
 msgstr "Meteo registrato"
 
-#: templates/hive.php:549
-#: templates/visit.php:466
+#: templates/hive.php:547 templates/visit.php:466
 msgid "Registered Weather"
 msgstr "Meteo registrato"
 
-#: templates/hive.php:560
-#: templates/visit.php:454
+#: templates/hive.php:558 templates/visit.php:454
 msgid "No observations marked."
 msgstr "Nessuna osservazione registrata."
 
 #. translators: %d: number of media files attached to a visit.
-#: templates/hive.php:576
+#: templates/hive.php:574
 #, php-format
 msgid "%d media file"
 msgid_plural "%d media files"
 msgstr[0] "%d file media"
 msgstr[1] "%d file media"
 
-#: templates/index.php:50
-#: templates/visit.php:340
+#: templates/index.php:50 templates/visit.php:340
 msgid "WordPress Admin"
 msgstr "Amministrazione WordPress"
 
@@ -648,6 +579,7 @@ msgstr "Apiari salvati"
 msgid "No apiaries yet."
 msgstr "Ancora nessun apiario."
 
+#. translators: %d: number of hives
 #: templates/index.php:89
 #, php-format
 msgid "%d hive"
@@ -655,26 +587,21 @@ msgid_plural "%d hives"
 msgstr[0] "%d alveare"
 msgstr[1] "%d alveari"
 
-#: templates/visit.php:62
-#: templates/visit.php:164
+#: templates/visit.php:62 templates/visit.php:164
 msgid "The visit could not be saved. Reload and try again."
 msgstr "La visita non può essere salvata. Ricarica e riprova."
 
-#: templates/visit.php:64
-#: templates/visit.php:71
-#: templates/visit.php:166
+#: templates/visit.php:64 templates/visit.php:71 templates/visit.php:166
 #: templates/visit.php:173
 msgid "Visit date is invalid."
 msgstr "La data della visita non è valida."
 
-#: templates/visit.php:66
-#: templates/visit.php:168
+#: templates/visit.php:66 templates/visit.php:168
 msgid "Visit time is invalid."
 msgstr "L’ora della visita non è valida."
 
 #. translators: 1: hive title, 2: visit date
-#: templates/visit.php:75
-#: templates/visit.php:177
+#: templates/visit.php:75 templates/visit.php:177
 #, php-format
 msgid "%1$s visit on %2$s"
 msgstr "Visita a %1$s del %2$s"
@@ -727,8 +654,7 @@ msgstr "Non hai i permessi per aggiungere una visita a questo alveare."
 msgid "You do not have permission to edit this visit."
 msgstr "Non hai i permessi per modificare questa visita."
 
-#: templates/harvest.php:245
-#: templates/treatment.php:272
+#: templates/harvest.php:245 templates/treatment.php:272
 #: templates/visit.php:310
 msgid "Back to Hive"
 msgstr "Torna all’alveare"
@@ -805,32 +731,27 @@ msgstr "Rimuovi questa visita dalla scheda dell’alveare."
 msgid "Remove Visit"
 msgstr "Rimuovi visita"
 
-#: templates/hive.php:265
+#: templates/hive.php:262
 msgid "Hive location"
 msgstr "Posizione alveare"
 
-#: src/class-hive.php:271
-#: templates/hive-form.php:553
+#: src/class-hive.php:271 templates/hive-form.php:594
 msgid "White"
 msgstr "Bianco"
 
-#: src/class-hive.php:273
-#: templates/hive-form.php:554
+#: src/class-hive.php:273 templates/hive-form.php:595
 msgid "Yellow"
 msgstr "Giallo"
 
-#: src/class-hive.php:275
-#: templates/hive-form.php:555
+#: src/class-hive.php:275 templates/hive-form.php:596
 msgid "Red"
 msgstr "Rosso"
 
-#: src/class-hive.php:277
-#: templates/hive-form.php:556
+#: src/class-hive.php:277 templates/hive-form.php:597
 msgid "Green"
 msgstr "Verde"
 
-#: src/class-hive.php:279
-#: templates/hive-form.php:557
+#: src/class-hive.php:279 templates/hive-form.php:598
 msgid "Blue"
 msgstr "Blu"
 
@@ -862,8 +783,7 @@ msgstr "Coleottero degli alveari"
 msgid "Wax moth"
 msgstr "Tarma della cera"
 
-#: src/class-harvest.php:44
-#: src/class-treatment.php:84
+#: src/class-harvest.php:44 src/class-treatment.php:84
 msgid "Other"
 msgstr "Altro"
 
@@ -903,8 +823,7 @@ msgstr "dosi"
 msgid "Treatments & Feedings"
 msgstr "Trattamenti e alimentazioni"
 
-#: src/class-treatment.php:116
-#: templates/treatment.php:235
+#: src/class-treatment.php:116 templates/treatment.php:235
 msgid "Treatment / Feeding"
 msgstr "Trattamento / Alimentazione"
 
@@ -932,138 +851,128 @@ msgstr "Cerca trattamenti"
 msgid "Treatments and feedings applied to Apiary Press hives."
 msgstr "Trattamenti e alimentazioni applicati agli alveari di Apiary Press."
 
-#: templates/hive-form.php:118
+#: templates/hive-form.php:125
 msgid "Queen year must be a four-digit year."
 msgstr "L'anno della regina deve essere un numero di quattro cifre."
 
 #. translators: 1: minimum year, 2: maximum year
-#: templates/hive-form.php:126
+#: templates/hive-form.php:133
 #, php-format
 msgid "Queen year must be between %1$d and %2$d."
 msgstr "L'anno della regina deve essere compreso tra %1$d e %2$d."
 
-#: templates/hive-form.php:140
+#: templates/hive-form.php:147
 msgid "Queen install date is not valid."
 msgstr "La data di insediamento della regina non è valida."
 
-#: templates/hive-form.php:355
+#: templates/hive-form.php:381
 msgid "Auto (from year)"
 msgstr "Automatico (dall'anno)"
 
-#: templates/hive-form.php:356
+#: templates/hive-form.php:382
 msgid "White (years ending 1, 6)"
 msgstr "Bianco (anni che terminano per 1, 6)"
 
-#: templates/hive-form.php:357
+#: templates/hive-form.php:383
 msgid "Yellow (years ending 2, 7)"
 msgstr "Giallo (anni che terminano per 2, 7)"
 
-#: templates/hive-form.php:358
+#: templates/hive-form.php:384
 msgid "Red (years ending 3, 8)"
 msgstr "Rosso (anni che terminano per 3, 8)"
 
-#: templates/hive-form.php:359
+#: templates/hive-form.php:385
 msgid "Green (years ending 4, 9)"
 msgstr "Verde (anni che terminano per 4, 9)"
 
-#: templates/hive-form.php:360
+#: templates/hive-form.php:386
 msgid "Blue (years ending 5, 0)"
 msgstr "Blu (anni che terminano per 5, 0)"
 
-#: templates/hive-form.php:447
-#: templates/hive.php:195
+#: templates/hive-form.php:473 templates/hive.php:192
 msgid "Queen"
 msgstr "Regina"
 
-#: templates/hive-form.php:451
-#: templates/hive.php:199
+#: templates/hive-form.php:477 templates/hive.php:196
 msgid "Year"
 msgstr "Anno"
 
-#: templates/hive-form.php:465
-#: templates/hive.php:206
+#: templates/hive-form.php:491 templates/hive.php:203
 msgid "Marking color"
 msgstr "Colore di marcatura"
 
-#: templates/hive-form.php:477
-#: templates/hive.php:219
+#: templates/hive-form.php:503 templates/hive.php:216
 msgid "Installed on"
 msgstr "Insediata il"
 
-#: templates/hive-form.php:487
+#: templates/hive-form.php:513
 msgid "Origin / breeder"
 msgstr "Origine / allevatore"
 
-#: templates/hive-form.php:500
-#: templates/hive.php:237
+#: templates/hive-form.php:526 templates/hive.php:234
 msgid "Marked"
 msgstr "Marcata"
 
-#: templates/hive-form.php:504
-#: templates/hive.php:240
+#: templates/hive-form.php:530 templates/hive.php:237
 msgid "Clipped"
 msgstr "Tarpata"
 
 #. translators: 1: four-digit queen birth year, 2: name of the international marking color (e.g. White, Yellow).
-#: templates/hive-form.php:565
+#: templates/hive-form.php:606
 #, php-format
 msgid "Standard color for %1$s: %2$s."
 msgstr "Colore standard per %1$s: %2$s."
 
-#: templates/hive.php:141
-#: templates/treatment.php:235
+#: templates/hive.php:141 templates/treatment.php:235
 #: templates/treatment.php:238
 msgid "New Treatment / Feeding"
 msgstr "Nuovo trattamento / alimentazione"
 
-#: templates/hive.php:172
+#: templates/hive.php:169
 msgid "Entry removed."
 msgstr "Voce rimossa."
 
-#: templates/hive.php:211
+#: templates/hive.php:208
 msgid "auto from year"
 msgstr "automatico dall'anno"
 
-#: templates/hive.php:226
+#: templates/hive.php:223
 msgid "Origin"
 msgstr "Origine"
 
-#: templates/hive.php:233
+#: templates/hive.php:230
 msgid "Flags"
 msgstr "Caratteristiche"
 
-#: templates/hive.php:393
+#: templates/hive.php:391
 msgid "Treatments &amp; Feedings"
 msgstr "Trattamenti e alimentazioni"
 
 #. translators: %d: the number of treatments currently in progress.
-#: templates/hive.php:400
+#: templates/hive.php:398
 #, php-format
 msgid "%d treatment is currently in progress."
 msgid_plural "%d treatments are currently in progress."
 msgstr[0] "%d trattamento è attualmente in corso."
 msgstr[1] "%d trattamenti sono attualmente in corso."
 
-#: templates/hive.php:408
+#: templates/hive.php:406
 msgid "No treatments or feedings logged."
 msgstr "Nessun trattamento o alimentazione registrato."
 
-#: templates/apiary.php:188
-#: templates/hive.php:450
+#: templates/apiary.php:218 templates/hive.php:448
 msgid "In progress"
 msgstr "In corso"
 
-#: templates/hive.php:457
-#: templates/treatment.php:340
+#: templates/hive.php:455 templates/treatment.php:340
 msgid "Product"
 msgstr "Prodotto"
 
-#: templates/hive.php:464
-#: templates/treatment.php:358
+#: templates/hive.php:462 templates/treatment.php:358
 msgid "Quantity"
 msgstr "Quantità"
 
-#: templates/hive.php:476
+#: templates/hive.php:474
 msgid "End date"
 msgstr "Data di fine"
 
@@ -1073,33 +982,27 @@ msgstr "Data di fine"
 msgid "%1$s — %2$s on %3$s"
 msgstr "%1$s — %2$s il %3$s"
 
-#: templates/treatment.php:88
-#: templates/treatment.php:162
+#: templates/treatment.php:88 templates/treatment.php:162
 msgid "The entry could not be saved. Reload and try again."
 msgstr "Impossibile salvare la voce. Ricarica e riprova."
 
-#: templates/treatment.php:90
-#: templates/treatment.php:164
+#: templates/treatment.php:90 templates/treatment.php:164
 msgid "Applied date is invalid."
 msgstr "La data di applicazione non è valida."
 
-#: templates/treatment.php:92
-#: templates/treatment.php:166
+#: templates/treatment.php:92 templates/treatment.php:166
 msgid "Product is required."
 msgstr "Il prodotto è obbligatorio."
 
-#: templates/treatment.php:94
-#: templates/treatment.php:168
+#: templates/treatment.php:94 templates/treatment.php:168
 msgid "Quantity must be a number."
 msgstr "La quantità deve essere un numero."
 
-#: templates/treatment.php:96
-#: templates/treatment.php:170
+#: templates/treatment.php:96 templates/treatment.php:170
 msgid "End date is invalid."
 msgstr "La data di fine non è valida."
 
-#: templates/treatment.php:98
-#: templates/treatment.php:172
+#: templates/treatment.php:98 templates/treatment.php:172
 msgid "End date must be on or after the applied date."
 msgstr "La data di fine deve essere uguale o successiva alla data di applicazione."
 
@@ -1171,8 +1074,7 @@ msgstr "es. Apivar, acido ossalico, sciroppo 1:1"
 msgid "Target"
 msgstr "Bersaglio"
 
-#: templates/harvest.php:334
-#: templates/treatment.php:347
+#: templates/harvest.php:334 templates/treatment.php:347
 #: templates/treatment.php:373
 msgid "— Select —"
 msgstr "— Seleziona —"
@@ -1209,13 +1111,11 @@ msgstr "Pressato"
 msgid "Comb honey"
 msgstr "Miele in favo"
 
-#: src/class-harvest.php:56
-#: templates/hive.php:290
+#: src/class-harvest.php:56 templates/hive.php:288
 msgid "Harvests"
 msgstr "Smielature"
 
-#: src/class-harvest.php:57
-#: templates/harvest.php:208
+#: src/class-harvest.php:57 templates/harvest.php:208
 msgid "Harvest"
 msgstr "Smielatura"
 
@@ -1223,14 +1123,11 @@ msgstr "Smielatura"
 msgid "Add New Harvest"
 msgstr "Aggiungi nuova smielatura"
 
-#: src/class-harvest.php:59
-#: templates/harvest.php:211
+#: src/class-harvest.php:59 templates/harvest.php:211
 msgid "Edit Harvest"
 msgstr "Modifica smielatura"
 
-#: src/class-harvest.php:60
-#: templates/harvest.php:208
-#: templates/harvest.php:211
+#: src/class-harvest.php:60 templates/harvest.php:208 templates/harvest.php:211
 #: templates/hive.php:144
 msgid "New Harvest"
 msgstr "Nuova smielatura"
@@ -1253,28 +1150,23 @@ msgstr "Voci di smielatura per gli alveari di Apiary Press."
 msgid "%1$s — Harvest on %2$s"
 msgstr "%1$s — Smielatura del %2$s"
 
-#: templates/harvest.php:78
-#: templates/harvest.php:145
+#: templates/harvest.php:78 templates/harvest.php:145
 msgid "The harvest could not be saved. Reload and try again."
 msgstr "Impossibile salvare la smielatura. Ricarica e riprova."
 
-#: templates/harvest.php:80
-#: templates/harvest.php:147
+#: templates/harvest.php:80 templates/harvest.php:147
 msgid "Harvest date is invalid."
 msgstr "La data della smielatura non è valida."
 
-#: templates/harvest.php:82
-#: templates/harvest.php:149
+#: templates/harvest.php:82 templates/harvest.php:149
 msgid "Quantity (kg) is required and must be a number."
 msgstr "La quantità (kg) è obbligatoria e deve essere un numero."
 
-#: templates/harvest.php:84
-#: templates/harvest.php:151
+#: templates/harvest.php:84 templates/harvest.php:151
 msgid "Quantity (kg) must be zero or greater."
 msgstr "La quantità (kg) deve essere zero o superiore."
 
-#: templates/harvest.php:86
-#: templates/harvest.php:153
+#: templates/harvest.php:86 templates/harvest.php:153
 msgid "Frames extracted must be a non-negative whole number."
 msgstr "I telaini estratti devono essere un numero intero non negativo."
 
@@ -1358,56 +1250,110 @@ msgstr "Rimuovere questa smielatura?"
 msgid "Remove Harvest"
 msgstr "Rimuovi smielatura"
 
-#: templates/hive.php:176
+#: templates/hive.php:173
 msgid "Harvest removed."
 msgstr "Smielatura rimossa."
 
-#: templates/hive.php:294
+#: templates/hive.php:292
 msgid "Total harvested"
 msgstr "Totale smielato"
 
 #. translators: %s: kilograms of honey harvested.
-#: templates/apiary.php:178
-#: templates/hive.php:300
-#: templates/hive.php:353
+#: templates/apiary.php:208 templates/hive.php:298 templates/hive.php:351
 #, php-format
 msgid "%s kg"
 msgstr "%s kg"
 
 #. translators: %d: number of harvest entries.
-#: templates/hive.php:310
+#: templates/hive.php:308
 #, php-format
 msgid "over %d entry"
 msgid_plural "over %d entries"
 msgstr[0] "in %d voce"
 msgstr[1] "in %d voci"
 
-#: templates/hive.php:319
+#: templates/hive.php:317
 msgid "No harvests logged yet."
 msgstr "Nessuna smielatura registrata."
 
 #. translators: %d: number of frames extracted.
-#: templates/hive.php:371
+#: templates/hive.php:369
 #, php-format
 msgid "%d frame"
 msgid_plural "%d frames"
 msgstr[0] "%d telaino"
 msgstr[1] "%d telaini"
 
-#: templates/apiary.php:163
+#: templates/apiary.php:193
 msgid "Apiary at a glance"
 msgstr "Riepilogo apiario"
 
-#: templates/apiary.php:184
+#: templates/apiary.php:214
 msgid "Harvested (all time)"
 msgstr "Smielato (totale)"
 
 #. translators: %s: kilograms of honey harvested from one hive.
-#: templates/apiary.php:251
+#: templates/apiary.php:281
 #, php-format
 msgid "%s kg harvested"
 msgstr "%s kg smielati"
 
-#: templates/apiary.php:267
+#: templates/apiary.php:297
 msgid "In treatment"
 msgstr "In trattamento"
+
+#: templates/apiary-form.php:97
+msgid "The apiary could not be removed. Reload and try again."
+msgstr "L’apiario non può essere rimosso. Ricarica e prova di nuovo."
+
+#: templates/apiary-form.php:99
+msgid "You do not have permission to remove this apiary."
+msgstr "Non hai il permesso di rimuovere questo apiario."
+
+#: templates/apiary-form.php:104
+msgid "The apiary could not be removed."
+msgstr "L’apiario non può essere rimosso."
+
+#: templates/apiary-form.php:198
+msgid "Delete this apiary and all hives, visits, treatments, feedings, harvests, and visit media."
+msgstr "Rimuovi questo apiario e tutti gli alveari, le visite, i trattamenti, le alimentazioni, i raccolti e i file multimediali."
+
+#: templates/apiary-form.php:202
+msgid "Delete this apiary and all related records?"
+msgstr "Rimuovere questo apiario e tutti i relativi dati?"
+
+#: templates/apiary-form.php:204
+msgid "Delete Apiary"
+msgstr "Rimuovi apiario"
+
+#: templates/apiary.php:42 templates/hive-form.php:321
+msgid "The hive could not be removed. Reload and try again."
+msgstr "L’alveare non può essere rimosso. Ricarica e prova di nuovo."
+
+#: templates/apiary.php:44
+msgid "The hive is not available for this apiary."
+msgstr "L’alveare non è disponibile per questo apiario."
+
+#: templates/apiary.php:46 templates/hive-form.php:323
+msgid "You do not have permission to remove this hive."
+msgstr "Non hai il permesso per rimuovere questo alveare."
+
+#: templates/apiary.php:51 templates/hive-form.php:328
+msgid "The hive could not be removed."
+msgstr "Questo alveare non può essere rimosso."
+
+#: templates/apiary.php:310 templates/hive-form.php:546
+msgid "Delete this hive and all related records?"
+msgstr "Rimuovere questo alveare e tutti i relativi dati?"
+
+#: templates/apiary.php:312
+msgid "Delete"
+msgstr "Rimuovi"
+
+#: templates/hive-form.php:542
+msgid "Delete this hive and all visits, treatments, feedings, harvests, and visit media."
+msgstr "Rimuovi questo alveare e tutte le visite, i trattamenti, le alimentazioni, i raccolti e i file multimediali."
+
+#: templates/hive-form.php:548
+msgid "Delete Hive"
+msgstr "Rimuovi alveare"

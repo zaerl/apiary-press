@@ -90,6 +90,25 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_apiary && 'update_
 	}
 }
 
+if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_apiary && 'delete_apiary' === $appr_action ) {
+	$appr_nonce = isset( $_POST['ap_delete_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_delete_nonce'] ) ) : '';
+
+	if ( ! wp_verify_nonce( $appr_nonce, 'ap_delete_apiary_' . $appr_apiary_id ) ) {
+		$appr_form_error = __( 'The apiary could not be removed. Reload and try again.', 'apiary-press' );
+	} elseif ( ! current_user_can( 'delete_post', $appr_apiary_id ) ) {
+		$appr_form_error = __( 'You do not have permission to remove this apiary.', 'apiary-press' );
+	} else {
+		$appr_deleted = wp_delete_post( $appr_apiary_id, true );
+
+		if ( ! $appr_deleted ) {
+			$appr_form_error = __( 'The apiary could not be removed.', 'apiary-press' );
+		} else {
+			wp_safe_redirect( add_query_arg( 'deleted', '1', App::get_url() ) );
+			exit;
+		}
+	}
+}
+
 if ( ! $appr_not_found && ! $appr_is_new_apiary ) {
 	$appr_apiary = get_post( $appr_apiary_id );
 }
@@ -171,6 +190,21 @@ if ( $appr_form_error ) {
 
 					<button class="button" type="submit"><?php echo esc_html( $appr_button_text ); ?></button>
 				</form>
+
+				<?php if ( ! $appr_is_new_apiary && current_user_can( 'delete_post', $appr_apiary_id ) ) : ?>
+					<form class="delete-form" method="post" action="<?php echo esc_url( $appr_form_url ); ?>">
+						<input type="hidden" name="ap_action" value="delete_apiary">
+						<?php wp_nonce_field( 'ap_delete_apiary_' . $appr_apiary_id, 'ap_delete_nonce' ); ?>
+						<p class="danger-text"><?php echo esc_html__( 'Delete this apiary and all hives, visits, treatments, feedings, harvests, and visit media.', 'apiary-press' ); ?></p>
+						<button
+							class="button button-danger"
+							type="submit"
+							onclick="return confirm('<?php echo esc_js( __( 'Delete this apiary and all related records?', 'apiary-press' ) ); ?>');"
+						>
+							<?php echo esc_html__( 'Delete Apiary', 'apiary-press' ); ?>
+						</button>
+					</form>
+				<?php endif; ?>
 			</section>
 		<?php endif; ?>
 	</main>

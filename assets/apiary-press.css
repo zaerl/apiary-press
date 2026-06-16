@@ -415,6 +415,9 @@ p.summary { background: transparent; border: 0; border-radius: 0; box-shadow: no
 	min-width: 128px;
 	text-align: right;
 }
+.inline-action-form {
+	margin: 0;
+}
 
 /* ---- Apiary / Hive notes ---- */
 .apiary-notes, .hive-notes, .visit-notes {

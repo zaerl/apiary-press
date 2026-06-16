@@ -314,6 +314,25 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'update_hi
 	}
 }
 
+if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'delete_hive' === $appr_action ) {
+	$appr_nonce = isset( $_POST['ap_delete_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_delete_nonce'] ) ) : '';
+
+	if ( ! wp_verify_nonce( $appr_nonce, 'ap_delete_hive_' . $appr_hive_id ) ) {
+		$appr_form_error = __( 'The hive could not be removed. Reload and try again.', 'apiary-press' );
+	} elseif ( ! current_user_can( 'delete_post', $appr_hive_id ) ) {
+		$appr_form_error = __( 'You do not have permission to remove this hive.', 'apiary-press' );
+	} else {
+		$appr_deleted = wp_delete_post( $appr_hive_id, true );
+
+		if ( ! $appr_deleted ) {
+			$appr_form_error = __( 'The hive could not be removed.', 'apiary-press' );
+		} else {
+			wp_safe_redirect( add_query_arg( 'hive_deleted', '1', App::get_url( 'apiary/' . $appr_apiary_id ) ) );
+			exit;
+		}
+	}
+}
+
 if ( ! $appr_not_found && ! $appr_is_new_hive ) {
 	$appr_hive = get_post( $appr_hive_id );
 }
@@ -515,6 +534,21 @@ $appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 
 					<button class="button" type="submit"><?php echo esc_html( $appr_button_text ); ?></button>
 				</form>
+
+				<?php if ( ! $appr_is_new_hive && current_user_can( 'delete_post', $appr_hive_id ) ) : ?>
+					<form class="delete-form" method="post" action="<?php echo esc_url( $appr_form_url ); ?>">
+						<input type="hidden" name="ap_action" value="delete_hive">
+						<?php wp_nonce_field( 'ap_delete_hive_' . $appr_hive_id, 'ap_delete_nonce' ); ?>
+						<p class="danger-text"><?php echo esc_html__( 'Delete this hive and all visits, treatments, feedings, harvests, and visit media.', 'apiary-press' ); ?></p>
+						<button
+							class="button button-danger"
+							type="submit"
+							onclick="return confirm('<?php echo esc_js( __( 'Delete this hive and all related records?', 'apiary-press' ) ); ?>');"
+						>
+							<?php echo esc_html__( 'Delete Hive', 'apiary-press' ); ?>
+						</button>
+					</form>
+				<?php endif; ?>
 			</section>
 		<?php endif; ?>
 	</main>
