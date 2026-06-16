@@ -120,6 +120,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?php wp_app_title( $appr_apiary ? get_the_title( $appr_apiary ) : __( 'Apiary', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
+	<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Leaflet is loaded only on map views in this standalone app template. ?>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 </head>
 <body>
@@ -221,10 +222,24 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 			<?php endif; ?>
 
 			<section aria-labelledby="hive-list-heading">
-				<h2 id="hive-list-heading"><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></h2>
+				<div class="section-header">
+					<div>
+						<h2 id="hive-list-heading"><?php echo esc_html__( 'Hives', 'apiary-press' ); ?></h2>
+					</div>
+					<div class="section-actions">
+						<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/new' ) ); ?>">
+							<?php echo esc_html__( 'New Hive', 'apiary-press' ); ?>
+						</a>
+					</div>
+				</div>
 
 				<?php if ( empty( $appr_hives ) ) : ?>
-					<div class="empty-state"><?php echo esc_html__( 'No hives yet.', 'apiary-press' ); ?></div>
+					<div class="empty-state">
+						<h3><?php echo esc_html__( 'No hives yet.', 'apiary-press' ); ?></h3>
+						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/new' ) ); ?>">
+							<?php echo esc_html__( 'New Hive', 'apiary-press' ); ?>
+						</a>
+					</div>
 				<?php else : ?>
 					<div class="hive-list">
 						<?php foreach ( $appr_hives as $appr_hive ) : ?>
@@ -265,12 +280,28 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 										<a href="<?php echo esc_url( $appr_hive_url ); ?>">
 											<?php echo esc_html( get_the_title( $appr_hive ) ); ?>
 										</a>
-									</h3>
-									<div class="meta">
-										<?php echo esc_html( sprintf( _n( '%d visit', '%d visits', count( $appr_visit_ids ), 'apiary-press' ), count( $appr_visit_ids ) ) ); ?>
-										<?php if ( $appr_latest_visit_id ) : ?>
-											<?php echo esc_html( ' / ' ); ?>
-											<?php echo esc_html( sprintf( __( 'Last visit %s', 'apiary-press' ), mysql2date( get_option( 'date_format' ), $appr_latest_visit[0]->post_date ) ) ); ?>
+										</h3>
+										<div class="meta">
+											<?php
+											echo esc_html(
+												sprintf(
+													/* translators: %d: number of visits logged for a hive. */
+													_n( '%d visit', '%d visits', count( $appr_visit_ids ), 'apiary-press' ),
+													count( $appr_visit_ids )
+												)
+											);
+											?>
+											<?php if ( $appr_latest_visit_id ) : ?>
+												<?php echo esc_html( ' / ' ); ?>
+												<?php
+												echo esc_html(
+													sprintf(
+														/* translators: %s: formatted date of the latest hive visit. */
+														__( 'Last visit %s', 'apiary-press' ),
+														mysql2date( get_option( 'date_format' ), $appr_latest_visit[0]->post_date )
+													)
+												);
+												?>
 										<?php endif; ?>
 										<?php if ( $appr_hive_kg > 0 ) : ?>
 											<?php echo esc_html( ' / ' ); ?>
@@ -299,20 +330,6 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 									<a class="admin-link" href="<?php echo esc_url( $appr_hive_url ); ?>">
 										<?php echo esc_html__( 'Open', 'apiary-press' ); ?>
 									</a>
-									<?php if ( current_user_can( 'delete_post', $appr_hive->ID ) ) : ?>
-										<form class="inline-action-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id ) ); ?>">
-											<input type="hidden" name="ap_action" value="delete_hive">
-											<input type="hidden" name="ap_hive_id" value="<?php echo esc_attr( (string) $appr_hive->ID ); ?>">
-											<?php wp_nonce_field( 'ap_delete_hive_' . $appr_apiary_id . '_' . $appr_hive->ID, 'ap_delete_nonce' ); ?>
-											<button
-												class="button button-danger"
-												type="submit"
-												onclick="return confirm('<?php echo esc_js( __( 'Delete this hive and all related records?', 'apiary-press' ) ); ?>');"
-											>
-												<?php echo esc_html__( 'Delete', 'apiary-press' ); ?>
-											</button>
-										</form>
-									<?php endif; ?>
 								</div>
 							</article>
 						<?php endforeach; ?>
@@ -325,7 +342,9 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	<?php wp_app_body_close(); ?>
 
 	<?php if ( ! $appr_not_found && ! $appr_forbidden && ! empty( $appr_map_markers ) ) : ?>
+		<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Leaflet is loaded only on map views in this standalone app template. ?>
 		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+		<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- App map boot code is loaded only when map markup is present. ?>
 		<script src="<?php echo esc_url( App::get_asset_url( 'hive-map.js' ) ); ?>"></script>
 	<?php endif; ?>
 </body>

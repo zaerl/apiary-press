@@ -55,7 +55,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_visit && 'create_vis
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
 		: array();
 	$appr_reason_value   = isset( $_POST['ap_visit_reason'] )
-		? Visit::sanitize_reason_meta( wp_unslash( $_POST['ap_visit_reason'] ) )
+		? Visit::sanitize_reason_meta( sanitize_key( wp_unslash( $_POST['ap_visit_reason'] ) ) )
 		: '';
 
 	if ( ! wp_verify_nonce( $appr_nonce, 'ap_create_visit_' . $appr_hive_id ) ) {
@@ -157,7 +157,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'update_v
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
 		: array();
 	$appr_reason_value   = isset( $_POST['ap_visit_reason'] )
-		? Visit::sanitize_reason_meta( wp_unslash( $_POST['ap_visit_reason'] ) )
+		? Visit::sanitize_reason_meta( sanitize_key( wp_unslash( $_POST['ap_visit_reason'] ) ) )
 		: '';
 
 	if ( ! wp_verify_nonce( $appr_nonce, 'ap_update_visit_' . $appr_hive_visit_id ) ) {
@@ -271,7 +271,7 @@ if ( $appr_form_error ) {
 	$appr_visit_date        = isset( $_POST['ap_visit_date'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_date'] ) ) : $appr_visit_date;
 	$appr_visit_time        = isset( $_POST['ap_visit_time'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_visit_time'] ) ) : $appr_visit_time;
 	$appr_visit_notes       = isset( $_POST['ap_visit_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['ap_visit_notes'] ) ) : $appr_visit_notes;
-	$appr_visit_reason      = isset( $_POST['ap_visit_reason'] ) ? Visit::sanitize_reason_meta( wp_unslash( $_POST['ap_visit_reason'] ) ) : $appr_visit_reason;
+	$appr_visit_reason      = isset( $_POST['ap_visit_reason'] ) ? Visit::sanitize_reason_meta( sanitize_key( wp_unslash( $_POST['ap_visit_reason'] ) ) ) : $appr_visit_reason;
 	$appr_form_checked_meta = isset( $_POST['ap_visit_meta'] ) && is_array( $_POST['ap_visit_meta'] )
 		? array_map( 'sanitize_key', wp_unslash( $_POST['ap_visit_meta'] ) )
 		: array();
@@ -422,16 +422,18 @@ if ( $appr_form_error ) {
 						</div>
 
 						<?php if ( current_user_can( 'upload_files' ) ) : ?>
-							<div class="field media-upload">
-								<label for="ap_visit_media"><?php echo esc_html__( 'Add media', 'apiary-press' ); ?></label>
-								<input id="ap_visit_media" name="ap_visit_media[]" type="file" accept="image/*,video/*" multiple>
-								<p class="media-help"><?php echo esc_html__( 'Photos or videos are saved to the media library and linked to this visit.', 'apiary-press' ); ?></p>
-							</div>
-						<?php endif; ?>
+								<div class="field media-upload">
+									<label for="ap_visit_media"><?php echo esc_html__( 'Add media', 'apiary-press' ); ?></label>
+									<input id="ap_visit_media" name="ap_visit_media[]" type="file" accept="image/*,video/*" multiple>
+									<p class="media-help"><?php echo esc_html__( 'Photos or videos are saved to the media library and linked to this visit.', 'apiary-press' ); ?></p>
+								</div>
+							<?php endif; ?>
 
-						<button class="button" type="submit"><?php echo esc_html( $appr_form_button ); ?></button>
-					</form>
-				</section>
+							<div class="form-actions">
+								<button class="button" type="submit"><?php echo esc_html( $appr_form_button ); ?></button>
+							</div>
+						</form>
+					</section>
 
 				<?php if ( ! $appr_is_new_visit ) : ?>
 					<aside class="summary" aria-labelledby="visit-summary-heading">
@@ -473,16 +475,16 @@ if ( $appr_form_error ) {
 								<?php
 								echo Weather::render_symbol_icon_html( $appr_weather_values['symbol_code'] ?? '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								?>
-								<dl class="weather-list">
-									<?php foreach ( $appr_weather_values as $name => $weather_value ) : ?>
-										<?php if ( 'symbol_code' === $name ) : ?>
+								<ul class="weather-list">
+									<?php foreach ( $appr_weather_values as $appr_weather_name => $appr_weather_value ) : ?>
+										<?php if ( 'symbol_code' === $appr_weather_name ) : ?>
 											<?php continue; ?>
 										<?php endif; ?>
-										<div>
-											<?php echo esc_html( $weather_value ); ?>
-										</div>
+										<li>
+											<?php echo esc_html( $appr_weather_value ); ?>
+										</li>
 									<?php endforeach; ?>
-								</dl>
+								</ul>
 							<?php endif; ?>
 						</div>
 

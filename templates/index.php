@@ -52,15 +52,25 @@ $appr_apiaries = get_posts(
 			</div>
 		</header>
 
+		<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
 		<?php if ( isset( $_GET['deleted'] ) ) : ?>
 			<div class="notice"><?php echo esc_html__( 'Apiary removed.', 'apiary-press' ); ?></div>
 		<?php endif; ?>
 
 		<section aria-labelledby="apiary-list-heading">
-			<h2 id="apiary-list-heading"><?php echo esc_html__( 'Saved Apiaries', 'apiary-press' ); ?></h2>
+			<div class="section-header">
+				<div>
+					<h2 id="apiary-list-heading"><?php echo esc_html__( 'Saved Apiaries', 'apiary-press' ); ?></h2>
+				</div>
+			</div>
 
 			<?php if ( empty( $appr_apiaries ) ) : ?>
-				<div class="empty-state"><?php echo esc_html__( 'No apiaries yet.', 'apiary-press' ); ?></div>
+				<div class="empty-state">
+					<h3><?php echo esc_html__( 'No apiaries yet.', 'apiary-press' ); ?></h3>
+					<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/new' ) ); ?>">
+						<?php echo esc_html__( 'New Apiary', 'apiary-press' ); ?>
+					</a>
+				</div>
 			<?php else : ?>
 				<div class="apiary-list">
 					<?php foreach ( $appr_apiaries as $appr_apiary ) : ?>

@@ -188,7 +188,9 @@ if ( $appr_form_error ) {
 						<textarea id="ap_apiary_notes" name="ap_apiary_notes"><?php echo esc_textarea( $appr_apiary_notes ); ?></textarea>
 					</div>
 
-					<button class="button" type="submit"><?php echo esc_html( $appr_button_text ); ?></button>
+					<div class="form-actions">
+						<button class="button" type="submit"><?php echo esc_html( $appr_button_text ); ?></button>
+					</div>
 				</form>
 
 				<?php if ( ! $appr_is_new_apiary && current_user_can( 'delete_post', $appr_apiary_id ) ) : ?>

@@ -346,23 +346,28 @@ $appr_form_url_slug = $appr_is_new_harvest ? 'new' : (string) $appr_harvest_id;
 						<textarea id="ap_harvest_notes" name="ap_harvest_notes"><?php echo esc_textarea( $appr_harvest_notes ); ?></textarea>
 					</div>
 
-					<button class="button" type="submit"><?php echo esc_html( $appr_form_button ); ?></button>
+					<div class="form-actions">
+						<button class="button" type="submit"><?php echo esc_html( $appr_form_button ); ?></button>
+					</div>
 				</form>
 			</section>
 
 			<?php if ( ! $appr_is_new_harvest ) : ?>
-				<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . $appr_harvest_id ) ); ?>">
-					<input type="hidden" name="ap_action" value="delete_harvest">
-					<?php wp_nonce_field( 'ap_delete_harvest_' . $appr_harvest_id, 'ap_delete_nonce' ); ?>
-					<p class="danger-text"><?php echo esc_html__( 'Remove this harvest from the hive record.', 'apiary-press' ); ?></p>
-					<button
-						class="button button-danger"
-						type="submit"
-						onclick="return confirm('<?php echo esc_js( __( 'Remove this harvest?', 'apiary-press' ) ); ?>');"
-					>
-						<?php echo esc_html__( 'Remove Harvest', 'apiary-press' ); ?>
-					</button>
-				</form>
+				<section class="panel danger-zone" aria-labelledby="harvest-danger-heading">
+					<h2 id="harvest-danger-heading"><?php echo esc_html__( 'Danger Zone', 'apiary-press' ); ?></h2>
+					<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . $appr_harvest_id ) ); ?>">
+						<input type="hidden" name="ap_action" value="delete_harvest">
+						<?php wp_nonce_field( 'ap_delete_harvest_' . $appr_harvest_id, 'ap_delete_nonce' ); ?>
+						<p class="danger-text"><?php echo esc_html__( 'Remove this harvest from the hive record.', 'apiary-press' ); ?></p>
+						<button
+							class="button button-danger"
+							type="submit"
+							onclick="return confirm('<?php echo esc_js( __( 'Remove this harvest?', 'apiary-press' ) ); ?>');"
+						>
+							<?php echo esc_html__( 'Remove Harvest', 'apiary-press' ); ?>
+						</button>
+					</form>
+				</section>
 			<?php endif; ?>
 		<?php endif; ?>
 	</main>

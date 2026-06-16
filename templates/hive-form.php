@@ -25,6 +25,7 @@ if ( ! function_exists( 'appr_read_coordinate_input' ) ) {
 	 * @return array An array containing 'value' and 'error' keys.
 	 */
 	function appr_read_coordinate_input( string $field_name, string $label, float $minimum, float $maximum ): array {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- The caller verifies the form nonce before saving.
 		$raw_value = isset( $_POST[ $field_name ] ) ? trim( sanitize_text_field( wp_unslash( $_POST[ $field_name ] ) ) ) : '';
 
 		if ( '' === $raw_value ) {
@@ -91,12 +92,14 @@ if ( ! function_exists( 'appr_read_queen_inputs' ) ) {
 	 * Returns a structured array; validation happens in the caller so errors can short-circuit save.
 	 */
 	function appr_read_queen_inputs(): array {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- The caller verifies the form nonce before saving.
 		$year_raw     = isset( $_POST['ap_queen_year'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['ap_queen_year'] ) ) ) : '';
 		$color_raw    = isset( $_POST['ap_queen_color'] ) ? sanitize_key( wp_unslash( $_POST['ap_queen_color'] ) ) : '';
 		$origin_raw   = isset( $_POST['ap_queen_origin'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_queen_origin'] ) ) : '';
 		$installed_at = isset( $_POST['ap_queen_installed_at'] ) ? sanitize_text_field( wp_unslash( $_POST['ap_queen_installed_at'] ) ) : '';
 		$marked       = isset( $_POST['ap_queen_marked'] );
 		$clipped      = isset( $_POST['ap_queen_clipped'] );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		return array(
 			'year'         => $year_raw,
@@ -529,11 +532,13 @@ $appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 								<input type="checkbox" name="ap_queen_clipped" value="1" <?php checked( $appr_queen_clipped ); ?>>
 								<?php echo esc_html__( 'Clipped', 'apiary-press' ); ?>
 							</label>
-						</div>
-					</fieldset>
+							</div>
+						</fieldset>
 
-					<button class="button" type="submit"><?php echo esc_html( $appr_button_text ); ?></button>
-				</form>
+						<div class="form-actions">
+							<button class="button" type="submit"><?php echo esc_html( $appr_button_text ); ?></button>
+						</div>
+					</form>
 
 				<?php if ( ! $appr_is_new_hive && current_user_can( 'delete_post', $appr_hive_id ) ) : ?>
 					<form class="delete-form" method="post" action="<?php echo esc_url( $appr_form_url ); ?>">

@@ -105,6 +105,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	<title><?php wp_app_title( $appr_hive ? get_the_title( $appr_hive ) : __( 'Hive', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
 	<?php if ( ! empty( $appr_map_marker ) ) : ?>
+		<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Leaflet is loaded only on map views in this standalone app template. ?>
 		<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 	<?php endif; ?>
 </head>
@@ -149,31 +150,50 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				</div>
 			</header>
 
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
 			<?php if ( isset( $_GET['created'] ) ) : ?>
 				<div class="notice"><?php echo esc_html__( 'Hive saved.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
 			<?php if ( isset( $_GET['updated'] ) ) : ?>
 				<div class="notice"><?php echo esc_html__( 'Hive updated.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
 			<?php if ( isset( $_GET['visit_added'] ) ) : ?>
 				<div class="notice"><?php echo esc_html__( 'Visit saved.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
 			<?php if ( isset( $_GET['visit_deleted'] ) ) : ?>
 				<div class="notice"><?php echo esc_html__( 'Visit removed.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
 			<?php if ( isset( $_GET['treatment_deleted'] ) ) : ?>
 				<div class="notice"><?php echo esc_html__( 'Entry removed.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
+			<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
 			<?php if ( isset( $_GET['harvest_deleted'] ) ) : ?>
 				<div class="notice"><?php echo esc_html__( 'Harvest removed.', 'apiary-press' ); ?></div>
 			<?php endif; ?>
 
 			<?php
+			$appr_kind_labels   = Treatment::get_kind_labels();
+			$appr_target_labels = Treatment::get_target_labels();
+			$appr_unit_labels   = Treatment::get_unit_labels();
+			$appr_method_labels = Harvest::get_method_labels();
+			$appr_harvest_total = Harvest::total_kg( $appr_harvests );
+			$appr_ongoing_count = 0;
+
+			foreach ( $appr_treatments as $appr_treatment_post ) {
+				if ( Treatment::is_ongoing( $appr_treatment_post ) ) {
+					++$appr_ongoing_count;
+				}
+			}
+
 			$appr_queen          = Hive::get_queen( $appr_hive_id );
 			$appr_has_queen_info = $appr_queen['year']
 				|| '' !== $appr_queen['color']
@@ -182,6 +202,34 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				|| $appr_queen['marked']
 				|| $appr_queen['clipped'];
 			?>
+
+			<section class="apiary-stats" aria-labelledby="hive-stats-heading">
+				<h2 id="hive-stats-heading" class="visually-hidden"><?php echo esc_html__( 'Hive at a glance', 'apiary-press' ); ?></h2>
+				<div class="apiary-stat">
+					<span class="apiary-stat-value"><?php echo esc_html( (string) count( $appr_visits ) ); ?></span>
+					<span class="apiary-stat-label">
+						<?php echo esc_html( _n( 'Visit', 'Visits', count( $appr_visits ), 'apiary-press' ) ); ?>
+					</span>
+				</div>
+				<div class="apiary-stat">
+					<span class="apiary-stat-value">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %s: kilograms of honey harvested. */
+								__( '%s kg', 'apiary-press' ),
+								Harvest::format_kg( $appr_harvest_total )
+							)
+						);
+						?>
+					</span>
+					<span class="apiary-stat-label"><?php echo esc_html__( 'Harvested', 'apiary-press' ); ?></span>
+				</div>
+				<div class="apiary-stat <?php echo $appr_ongoing_count > 0 ? 'apiary-stat-attention' : ''; ?>">
+					<span class="apiary-stat-value"><?php echo esc_html( (string) $appr_ongoing_count ); ?></span>
+					<span class="apiary-stat-label"><?php echo esc_html__( 'In progress', 'apiary-press' ); ?></span>
+				</div>
+			</section>
 
 			<?php if ( $appr_has_queen_info ) : ?>
 				<?php
@@ -268,24 +316,17 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				</section>
 			<?php endif; ?>
 
-			<?php
-			$appr_kind_labels   = Treatment::get_kind_labels();
-			$appr_target_labels = Treatment::get_target_labels();
-			$appr_unit_labels   = Treatment::get_unit_labels();
-			$appr_ongoing_count = 0;
-
-			foreach ( $appr_treatments as $appr_treatment_post ) {
-				if ( Treatment::is_ongoing( $appr_treatment_post ) ) {
-					++$appr_ongoing_count;
-				}
-			}
-			?>
-			<?php
-			$appr_method_labels = Harvest::get_method_labels();
-			$appr_harvest_total = Harvest::total_kg( $appr_harvests );
-			?>
 			<section aria-labelledby="harvest-list-heading">
-				<h2 id="harvest-list-heading"><?php echo esc_html__( 'Harvests', 'apiary-press' ); ?></h2>
+				<div class="section-header">
+					<div>
+						<h2 id="harvest-list-heading"><?php echo esc_html__( 'Harvests', 'apiary-press' ); ?></h2>
+					</div>
+					<div class="section-actions">
+						<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/new' ) ); ?>">
+							<?php echo esc_html__( 'New Harvest', 'apiary-press' ); ?>
+						</a>
+					</div>
+				</div>
 
 				<?php if ( ! empty( $appr_harvests ) ) : ?>
 					<div class="harvest-total" role="status">
@@ -314,7 +355,12 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				<?php endif; ?>
 
 				<?php if ( empty( $appr_harvests ) ) : ?>
-					<div class="empty-state"><?php echo esc_html__( 'No harvests logged yet.', 'apiary-press' ); ?></div>
+					<div class="empty-state">
+						<h3><?php echo esc_html__( 'No harvests logged yet.', 'apiary-press' ); ?></h3>
+						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/new' ) ); ?>">
+							<?php echo esc_html__( 'New Harvest', 'apiary-press' ); ?>
+						</a>
+					</div>
 				<?php else : ?>
 					<div class="harvest-list">
 						<?php foreach ( $appr_harvests as $appr_harvest_post ) : ?>
@@ -337,7 +383,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 											?>
 										</div>
 									</div>
-									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . absint( $appr_harvest_post->ID ) ) ); ?>" class="muted">
+									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . absint( $appr_harvest_post->ID ) ) ); ?>" class="row-link">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>
 								</div>
@@ -388,7 +434,16 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 			</section>
 
 			<section aria-labelledby="treatment-list-heading">
-				<h2 id="treatment-list-heading"><?php echo esc_html__( 'Treatments &amp; Feedings', 'apiary-press' ); ?></h2>
+				<div class="section-header">
+					<div>
+						<h2 id="treatment-list-heading"><?php echo esc_html__( 'Treatments &amp; Feedings', 'apiary-press' ); ?></h2>
+					</div>
+					<div class="section-actions">
+						<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/new' ) ); ?>">
+							<?php echo esc_html__( 'New Treatment / Feeding', 'apiary-press' ); ?>
+						</a>
+					</div>
+				</div>
 
 				<?php if ( $appr_ongoing_count > 0 ) : ?>
 					<div class="notice notice-attention">
@@ -403,7 +458,12 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				<?php endif; ?>
 
 				<?php if ( empty( $appr_treatments ) ) : ?>
-					<div class="empty-state"><?php echo esc_html__( 'No treatments or feedings logged.', 'apiary-press' ); ?></div>
+					<div class="empty-state">
+						<h3><?php echo esc_html__( 'No treatments or feedings logged.', 'apiary-press' ); ?></h3>
+						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/new' ) ); ?>">
+							<?php echo esc_html__( 'New Treatment / Feeding', 'apiary-press' ); ?>
+						</a>
+					</div>
 				<?php else : ?>
 					<div class="treatment-list">
 						<?php foreach ( $appr_treatments as $appr_treatment_post ) : ?>
@@ -432,7 +492,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 											?>
 										</div>
 									</div>
-									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . absint( $appr_treatment_post->ID ) ) ); ?>" class="muted">
+									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . absint( $appr_treatment_post->ID ) ) ); ?>" class="row-link">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>
 								</div>
@@ -487,10 +547,24 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 			</section>
 
 			<section aria-labelledby="visit-list-heading">
-				<h2 id="visit-list-heading"><?php echo esc_html__( 'Visits', 'apiary-press' ); ?></h2>
+				<div class="section-header">
+					<div>
+						<h2 id="visit-list-heading"><?php echo esc_html__( 'Visits', 'apiary-press' ); ?></h2>
+					</div>
+					<div class="section-actions">
+						<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/new' ) ); ?>">
+							<?php echo esc_html__( 'New Visit', 'apiary-press' ); ?>
+						</a>
+					</div>
+				</div>
 
 				<?php if ( empty( $appr_visits ) ) : ?>
-					<div class="empty-state"><?php echo esc_html__( 'No visits yet.', 'apiary-press' ); ?></div>
+					<div class="empty-state">
+						<h3><?php echo esc_html__( 'No visits yet.', 'apiary-press' ); ?></h3>
+						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/new' ) ); ?>">
+							<?php echo esc_html__( 'New Visit', 'apiary-press' ); ?>
+						</a>
+					</div>
 				<?php else : ?>
 					<div class="visit-list">
 						<?php foreach ( $appr_visits as $appr_visit ) : ?>
@@ -523,7 +597,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 											?>
 										</div>
 									</div>
-									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit->ID ) ) ); ?>" class="muted">
+									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit->ID ) ) ); ?>" class="row-link">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>
 								</div>
@@ -588,7 +662,9 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	<?php wp_app_body_close(); ?>
 
 	<?php if ( ! $appr_not_found && ! $appr_forbidden && ! empty( $appr_map_marker ) ) : ?>
+		<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Leaflet is loaded only on map views in this standalone app template. ?>
 		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+		<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- App map boot code is loaded only when map markup is present. ?>
 		<script src="<?php echo esc_url( App::get_asset_url( 'hive-map.js' ) ); ?>"></script>
 	<?php endif; ?>
 </body>

@@ -397,23 +397,28 @@ $appr_form_url_slug = $appr_is_new_treatment ? 'new' : (string) $appr_treatment_
 						<textarea id="ap_treatment_notes" name="ap_treatment_notes"><?php echo esc_textarea( $appr_treatment_notes ); ?></textarea>
 					</div>
 
-					<button class="button" type="submit"><?php echo esc_html( $appr_form_button ); ?></button>
+					<div class="form-actions">
+						<button class="button" type="submit"><?php echo esc_html( $appr_form_button ); ?></button>
+					</div>
 				</form>
 			</section>
 
 			<?php if ( ! $appr_is_new_treatment ) : ?>
-				<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . $appr_treatment_id ) ); ?>">
-					<input type="hidden" name="ap_action" value="delete_treatment">
-					<?php wp_nonce_field( 'ap_delete_treatment_' . $appr_treatment_id, 'ap_delete_nonce' ); ?>
-					<p class="danger-text"><?php echo esc_html__( 'Remove this entry from the hive record.', 'apiary-press' ); ?></p>
-					<button
-						class="button button-danger"
-						type="submit"
-						onclick="return confirm('<?php echo esc_js( __( 'Remove this entry?', 'apiary-press' ) ); ?>');"
-					>
-						<?php echo esc_html__( 'Remove Entry', 'apiary-press' ); ?>
-					</button>
-				</form>
+				<section class="panel danger-zone" aria-labelledby="treatment-danger-heading">
+					<h2 id="treatment-danger-heading"><?php echo esc_html__( 'Danger Zone', 'apiary-press' ); ?></h2>
+					<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . $appr_treatment_id ) ); ?>">
+						<input type="hidden" name="ap_action" value="delete_treatment">
+						<?php wp_nonce_field( 'ap_delete_treatment_' . $appr_treatment_id, 'ap_delete_nonce' ); ?>
+						<p class="danger-text"><?php echo esc_html__( 'Remove this entry from the hive record.', 'apiary-press' ); ?></p>
+						<button
+							class="button button-danger"
+							type="submit"
+							onclick="return confirm('<?php echo esc_js( __( 'Remove this entry?', 'apiary-press' ) ); ?>');"
+						>
+							<?php echo esc_html__( 'Remove Entry', 'apiary-press' ); ?>
+						</button>
+					</form>
+				</section>
 			<?php endif; ?>
 		<?php endif; ?>
 	</main>

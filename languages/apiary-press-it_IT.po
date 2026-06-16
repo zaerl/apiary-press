@@ -1357,3 +1357,21 @@ msgstr "Rimuovi questo alveare e tutte le visite, i trattamenti, le alimentazion
 #: templates/hive-form.php:548
 msgid "Delete Hive"
 msgstr "Rimuovi alveare"
+
+#: templates/hive.php:199
+msgid "Hive at a glance"
+msgstr "Riepilogo alveare"
+
+#: templates/hive.php:207
+msgid "Visit"
+msgid_plural "Visits"
+msgstr[0] "Visita"
+msgstr[1] "Visite"
+
+#: templates/hive.php:225
+msgid "Harvested"
+msgstr "Smielato"
+
+#: templates/harvest.php:357 templates/treatment.php:408
+msgid "Danger Zone"
+msgstr "Zona pericolosa"
