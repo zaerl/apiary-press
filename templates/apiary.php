@@ -69,7 +69,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	$appr_hives = get_posts(
 		array(
 			'post_type'        => Hive::HIVE_POST_TYPE,
-			'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+			'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 			'post_parent'      => $appr_apiary_id,
 			'numberposts'      => -1,
 			'orderby'          => 'date',
@@ -232,7 +232,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 							$appr_visit_ids = get_posts(
 								array(
 									'post_type'        => Visit::HIVE_VISIT_POST_TYPE,
-									'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+									'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 									'post_parent'      => $appr_hive->ID,
 									'numberposts'      => -1,
 									'fields'           => 'ids',
@@ -243,7 +243,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 							$appr_latest_visit = get_posts(
 								array(
 									'post_type'        => Visit::HIVE_VISIT_POST_TYPE,
-									'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+									'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 									'post_parent'      => $appr_hive->ID,
 									'numberposts'      => 1,
 									'orderby'          => 'date',

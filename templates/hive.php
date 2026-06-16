@@ -63,7 +63,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	$appr_visits = get_posts(
 		array(
 			'post_type'        => Visit::HIVE_VISIT_POST_TYPE,
-			'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+			'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 			'post_parent'      => $appr_hive_id,
 			'numberposts'      => -1,
 			'orderby'          => 'date',
@@ -75,7 +75,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	$appr_treatments = get_posts(
 		array(
 			'post_type'        => Treatment::HIVE_TREATMENT_POST_TYPE,
-			'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+			'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 			'post_parent'      => $appr_hive_id,
 			'numberposts'      => -1,
 			'orderby'          => 'date',
@@ -87,7 +87,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 	$appr_harvests = get_posts(
 		array(
 			'post_type'        => Harvest::HIVE_HARVEST_POST_TYPE,
-			'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+			'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 			'post_parent'      => $appr_hive_id,
 			'numberposts'      => -1,
 			'orderby'          => 'date',

@@ -339,7 +339,7 @@ class Treatment {
 		$posts = get_posts(
 			array(
 				'post_type'        => self::HIVE_TREATMENT_POST_TYPE,
-				'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+				'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 				'post_parent__in'  => $hive_ids,
 				'numberposts'      => -1,
 				'orderby'          => 'date',

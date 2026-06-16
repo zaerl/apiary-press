@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $appr_apiaries = get_posts(
 	array(
 		'post_type'        => Apiary::APIARY_POST_TYPE,
-		'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+		'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 		'author'           => get_current_user_id(),
 		'numberposts'      => -1,
 		'orderby'          => 'date',
@@ -68,7 +68,7 @@ $appr_apiaries = get_posts(
 						$appr_hive_ids = get_posts(
 							array(
 								'post_type'        => Hive::HIVE_POST_TYPE,
-								'post_status'      => array( 'publish', 'draft', 'pending', 'private' ),
+								'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
 								'post_parent'      => $appr_apiary->ID,
 								'numberposts'      => -1,
 								'fields'           => 'ids',
