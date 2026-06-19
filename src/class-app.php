@@ -40,6 +40,23 @@ class App extends BaseApp {
 
 		add_action( 'template_redirect', array( $this, 'maybe_setup_assets' ) );
 		add_action( 'before_delete_post', array( $this, 'delete_related_resources' ), 10, 2 );
+		add_filter( 'my_apps_plugins', array( $this, 'register_my_apps_icon' ) );
+	}
+
+	/**
+	 * Register Apiary Press with the My Apps launcher.
+	 *
+	 * @param array $apps Registered My Apps launcher apps.
+	 * @return array Updated launcher apps.
+	 */
+	public function register_my_apps_icon( array $apps ): array {
+		$apps['apiary-press'] = array(
+			'name'     => __( 'Apiary Press', 'apiary-press' ),
+			'icon_url' => plugins_url( 'assets/icon.svg', dirname( __DIR__ ) . '/apiary-press.php' ),
+			'url'      => home_url( '/' . $this->get_url_path() . '/' ),
+		);
+
+		return $apps;
 	}
 
 	/**
