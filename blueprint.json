@@ -4,9 +4,10 @@
 		"title": "Apiary Press",
 		"description": "Track beehives and record hive visits.",
 		"author": "Francesco Bigiarini",
+		"icon": "https://raw.githubusercontent.com/zaerl/apiary-press/dist/main/assets/icon.svg",
 		"categories": [
 			"Apps",
-			"WordPress"
+			"Productivity"
 		]
 	},
 	"landingPage": "/apiary-press/",
