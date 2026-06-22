@@ -5,6 +5,7 @@
  * Version: 1.0.0
  * Author: Francesco Bigiarini
  * Text Domain: apiary-press
+ * Domain Path: /languages
  * Requires PHP: 7.4
  *
  * @package ApiaryPress
@@ -45,6 +46,8 @@ spl_autoload_register(
 add_action(
 	'plugins_loaded',
 	function () {
+		load_plugin_textdomain( 'apiary-press', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+
 		$app = new App();
 		$app->init();
 	}
