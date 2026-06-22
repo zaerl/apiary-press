@@ -108,7 +108,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_visit && 'create_vis
 					$appr_redirect_args['media_errors'] = count( $appr_media_errors );
 				}
 
-				wp_safe_redirect( add_query_arg( $appr_redirect_args, App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit_id ) ) ) );
+				wp_safe_redirect( add_query_arg( $appr_redirect_args, App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/' . absint( $appr_visit_id ) ) ) );
 				exit;
 			}
 		}
@@ -128,7 +128,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'delete_v
 		if ( ! $appr_deleted ) {
 			$appr_form_error = __( 'The visit could not be removed.', 'apiary-press' );
 		} else {
-			wp_safe_redirect( add_query_arg( 'visit_deleted', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'visit_deleted', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ) );
 			exit;
 		}
 	}
@@ -143,7 +143,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'delete_v
 	} elseif ( ! Visit::delete_visit_media( $appr_attachment_id, $appr_hive_visit_id ) ) {
 		$appr_form_error = __( 'The media could not be removed.', 'apiary-press' );
 	} else {
-		wp_safe_redirect( add_query_arg( 'media_removed', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ) );
+		wp_safe_redirect( add_query_arg( 'media_removed', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/' . $appr_hive_visit_id ) ) );
 		exit;
 	}
 }
@@ -206,7 +206,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_visit && 'update_v
 					$appr_redirect_args['media_errors'] = count( $appr_media_errors );
 				}
 
-				wp_safe_redirect( add_query_arg( $appr_redirect_args, App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ) );
+				wp_safe_redirect( add_query_arg( $appr_redirect_args, App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/' . $appr_hive_visit_id ) ) );
 				exit;
 			}
 		}
@@ -307,12 +307,12 @@ if ( $appr_form_error ) {
 					);
 					?>
 				</p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_hive ) ); ?></a>
+					<a class="crumb" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_hive ) ); ?></a>
 					<h1>
 						<?php
 						echo esc_html(
@@ -374,7 +374,7 @@ if ( $appr_form_error ) {
 			<div class="layout <?php echo $appr_is_new_visit ? 'layout-single' : ''; ?>">
 				<section class="panel" aria-labelledby="edit-visit-heading">
 					<h2 id="edit-visit-heading"><?php echo esc_html( $appr_form_heading ); ?></h2>
-					<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_form_url_visit ) ); ?>">
+					<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/' . $appr_form_url_visit ) ); ?>">
 						<input type="hidden" name="ap_action" value="<?php echo esc_attr( $appr_form_action ); ?>">
 						<?php wp_nonce_field( $appr_form_nonce, 'ap_nonce' ); ?>
 
@@ -490,7 +490,7 @@ if ( $appr_form_error ) {
 
 						<?php
 						$appr_visit_media = Visit::get_visit_media( $appr_hive_visit_id );
-						$appr_visit_url   = App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id );
+						$appr_visit_url   = App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/' . $appr_hive_visit_id );
 						?>
 						<div class="summary-section" aria-labelledby="visit-media-heading">
 							<h3 id="visit-media-heading"><?php echo esc_html__( 'Media', 'apiary-press' ); ?></h3>
@@ -544,7 +544,7 @@ if ( $appr_form_error ) {
 							<?php endif; ?>
 						</div>
 
-						<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . $appr_hive_visit_id ) ); ?>">
+						<form class="delete-form" method="post" action="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/' . $appr_hive_visit_id ) ); ?>">
 							<input type="hidden" name="ap_action" value="delete_visit">
 							<?php wp_nonce_field( 'ap_delete_visit_' . $appr_hive_visit_id, 'ap_delete_nonce' ); ?>
 							<p class="danger-text"><?php echo esc_html__( 'Remove this visit from the hive record.', 'apiary-press' ); ?></p>
