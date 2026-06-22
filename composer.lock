@@ -8,11 +8,17 @@
     "packages": [
         {
             "name": "akirk/wp-app",
-            "version": "1.2.7",
-            "dist": {
-                "type": "path",
-                "url": "/home/alex/wp-app",
+            "version": "v1.2.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/akirk/wp-app.git",
                 "reference": "6f023ad02d6f4db4ed6e822a00dc55ab662edca6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/akirk/wp-app/zipball/6f023ad02d6f4db4ed6e822a00dc55ab662edca6",
+                "reference": "6f023ad02d6f4db4ed6e822a00dc55ab662edca6",
+                "shasum": ""
             },
             "require": {
                 "php": ">=7.4"
@@ -35,22 +41,7 @@
                     "src/functions.php"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "WpApp\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ],
-                "phpcs": [
-                    "phpcs"
-                ],
-                "phpcbf": [
-                    "phpcbf"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -60,10 +51,11 @@
                 }
             ],
             "description": "A lightweight framework for building web applications on WordPress with routing, admin bar integration, and theme isolation",
-            "transport-options": {
-                "symlink": true,
-                "relative": false
-            }
+            "support": {
+                "issues": "https://github.com/akirk/wp-app/issues",
+                "source": "https://github.com/akirk/wp-app/tree/v1.2.7"
+            },
+            "time": "2026-06-22T07:25:31+00:00"
         },
         {
             "name": "chillerlan/php-qrcode",
