@@ -36,7 +36,7 @@ if ( $appr_not_found ) {
 } elseif ( $appr_forbidden ) {
 	status_header( 403 );
 } else {
-	$appr_hive_url = App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id );
+	$appr_hive_url = App::get_hive_url( $appr_hive_id, $appr_apiary_id );
 	$appr_hive_qr  = ( new QRCode() )->render( $appr_hive_url );
 }
 ?>
