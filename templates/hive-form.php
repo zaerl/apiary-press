@@ -202,6 +202,50 @@ if ( ! function_exists( 'appr_save_queen_meta' ) ) {
 	}
 }
 
+if ( ! function_exists( 'appr_get_default_apiary_id' ) ) {
+	/**
+	 * Get or create the current user's default apiary for direct hive creation.
+	 *
+	 * @return int|\WP_Error The apiary post ID, or a WP_Error when creation fails.
+	 */
+	function appr_get_default_apiary_id() {
+		$appr_default_apiary_slug = 'default-apiary-' . get_current_user_id();
+		$appr_existing_apiaries   = get_posts(
+			array(
+				'post_type'        => Apiary::APIARY_POST_TYPE,
+				'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
+				'author'           => get_current_user_id(),
+				'name'             => $appr_default_apiary_slug,
+				'numberposts'      => 1,
+				'fields'           => 'ids',
+				'suppress_filters' => false,
+			)
+		);
+
+		if ( ! empty( $appr_existing_apiaries ) ) {
+			return absint( $appr_existing_apiaries[0] );
+		}
+
+		$appr_apiary_id = wp_insert_post(
+			array(
+				'post_type'    => Apiary::APIARY_POST_TYPE,
+				'post_status'  => 'publish',
+				'post_title'   => __( 'Default Apiary', 'apiary-press' ),
+				'post_content' => __( 'Automatically created when saving a hive directly.', 'apiary-press' ),
+				'post_name'    => $appr_default_apiary_slug,
+				'post_author'  => get_current_user_id(),
+			),
+			true
+		);
+
+		if ( is_wp_error( $appr_apiary_id ) ) {
+			return $appr_apiary_id;
+		}
+
+		return absint( $appr_apiary_id );
+	}
+}
+
 global $wp_app_route;
 
 $appr_route_params = isset( $wp_app_route['params'] ) && is_array( $wp_app_route['params'] ) ? $wp_app_route['params'] : array();
@@ -212,10 +256,12 @@ $appr_apiary       = $appr_apiary_id ? get_post( $appr_apiary_id ) : null;
 $appr_hive         = $appr_hive_id ? get_post( $appr_hive_id ) : null;
 $appr_form_error   = '';
 
-$appr_not_found = ! $appr_apiary
-	|| Apiary::APIARY_POST_TYPE !== $appr_apiary->post_type
+$appr_has_apiary = 0 !== $appr_apiary_id;
+
+$appr_not_found = ( ! $appr_has_apiary && ! $appr_is_new_hive )
+	|| ( $appr_has_apiary && ( ! $appr_apiary || Apiary::APIARY_POST_TYPE !== $appr_apiary->post_type ) )
 	|| ( ! $appr_is_new_hive && ( ! $appr_hive || Hive::HIVE_POST_TYPE !== $appr_hive->post_type || absint( $appr_hive->post_parent ) !== $appr_apiary_id ) );
-$appr_forbidden = ! $appr_not_found && ( $appr_is_new_hive ? ! current_user_can( 'edit_post', $appr_apiary_id ) : ! current_user_can( 'edit_post', $appr_hive_id ) );
+$appr_forbidden = ! $appr_not_found && ( $appr_is_new_hive ? ! current_user_can( $appr_has_apiary ? 'edit_post' : 'edit_posts', $appr_apiary_id ) : ! current_user_can( 'edit_post', $appr_hive_id ) );
 
 if ( $appr_not_found ) {
 	status_header( 404 );
@@ -247,27 +293,34 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_hive && 'create_hive
 	} elseif ( $appr_queen_validated['error'] ) {
 		$appr_form_error = $appr_queen_validated['error'];
 	} else {
-		$appr_new_hive_id = wp_insert_post(
-			array(
-				'post_type'    => Hive::HIVE_POST_TYPE,
-				'post_status'  => 'publish',
-				'post_title'   => $appr_title,
-				'post_content' => $appr_notes,
-				'post_parent'  => $appr_apiary_id,
-				'post_author'  => get_current_user_id(),
-			),
-			true
-		);
+		$appr_target_apiary_id = $appr_apiary_id ? $appr_apiary_id : appr_get_default_apiary_id();
 
-		if ( is_wp_error( $appr_new_hive_id ) ) {
-			$appr_form_error = $appr_new_hive_id->get_error_message();
+		if ( is_wp_error( $appr_target_apiary_id ) ) {
+			$appr_form_error = $appr_target_apiary_id->get_error_message();
 		} else {
-			appr_update_coordinate_meta( $appr_new_hive_id, 'latitude', $appr_latitude_input['value'] );
-			appr_update_coordinate_meta( $appr_new_hive_id, 'longitude', $appr_longitude_input['value'] );
-			appr_save_queen_meta( $appr_new_hive_id, $appr_queen_validated );
+			$appr_target_apiary_id = absint( $appr_target_apiary_id );
 
-			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . absint( $appr_new_hive_id ) ) ) );
-			exit;
+			$appr_new_hive_id = wp_insert_post(
+				array(
+					'post_type'    => Hive::HIVE_POST_TYPE,
+					'post_status'  => 'publish',
+					'post_title'   => $appr_title,
+					'post_content' => $appr_notes,
+					'post_parent'  => $appr_target_apiary_id,
+					'post_author'  => get_current_user_id(),
+				),
+				true
+			);
+
+			if ( is_wp_error( $appr_new_hive_id ) ) {
+				$appr_form_error = $appr_new_hive_id->get_error_message();
+			} else {
+				appr_update_coordinate_meta( $appr_new_hive_id, 'latitude', $appr_latitude_input['value'] );
+				appr_update_coordinate_meta( $appr_new_hive_id, 'longitude', $appr_longitude_input['value'] );
+				appr_save_queen_meta( $appr_new_hive_id, $appr_queen_validated );
+				wp_safe_redirect( add_query_arg( 'created', '1', App::get_hive_url( absint( $appr_new_hive_id ), $appr_target_apiary_id ) ) );
+				exit;
+			}
 		}
 	}
 }
@@ -311,7 +364,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'update_hi
 			appr_update_coordinate_meta( $appr_hive_id, 'longitude', $appr_longitude_input['value'] );
 			appr_save_queen_meta( $appr_hive_id, $appr_queen_validated );
 
-			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ) );
 			exit;
 		}
 	}
@@ -330,7 +383,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_hive && 'delete_hi
 		if ( ! $appr_deleted ) {
 			$appr_form_error = __( 'The hive could not be removed.', 'apiary-press' );
 		} else {
-			wp_safe_redirect( add_query_arg( 'hive_deleted', '1', App::get_url( 'apiary/' . $appr_apiary_id ) ) );
+			wp_safe_redirect( add_query_arg( 'hive_deleted', '1', $appr_has_apiary ? App::get_url( 'apiary/' . $appr_apiary_id ) : App::get_url() ) );
 			exit;
 		}
 	}
@@ -364,7 +417,9 @@ $appr_queen_clipped   = (bool) $appr_queen['clipped'];
 $appr_page_title  = $appr_is_new_hive ? __( 'New Hive', 'apiary-press' ) : __( 'Edit Hive', 'apiary-press' );
 $appr_form_action = $appr_is_new_hive ? 'create_hive' : 'update_hive';
 $appr_form_nonce  = $appr_is_new_hive ? 'ap_create_hive' : 'ap_update_hive_' . $appr_hive_id;
-$appr_form_url    = $appr_is_new_hive ? App::get_url( 'apiary/' . $appr_apiary_id . '/hive/new' ) : App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/edit' );
+$appr_form_url    = $appr_is_new_hive
+	? App::get_url( $appr_has_apiary ? 'apiary/' . $appr_apiary_id . '/hive/new' : 'hive/new' )
+	: App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'edit' );
 $appr_button_text = $appr_is_new_hive ? __( 'Save Hive', 'apiary-press' ) : __( 'Update Hive', 'apiary-press' );
 
 if ( $appr_form_error ) {
@@ -426,8 +481,8 @@ $appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( $appr_is_new_hive ? App::get_url( 'apiary/' . $appr_apiary_id ) : App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>">
-						<?php echo esc_html( $appr_is_new_hive ? get_the_title( $appr_apiary ) : get_the_title( $appr_hive ) ); ?>
+					<a class="crumb" href="<?php echo esc_url( $appr_is_new_hive ? ( $appr_has_apiary ? App::get_url( 'apiary/' . $appr_apiary_id ) : App::get_url() ) : App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ); ?>">
+						<?php echo esc_html( $appr_is_new_hive ? ( $appr_has_apiary ? get_the_title( $appr_apiary ) : __( 'Hives', 'apiary-press' ) ) : get_the_title( $appr_hive ) ); ?>
 					</a>
 					<h1><?php echo esc_html( $appr_page_title ); ?></h1>
 				</div>

@@ -24,13 +24,14 @@ $appr_apiaries = get_posts(
 		'suppress_filters' => false,
 	)
 );
+
 ?>
 <!DOCTYPE html>
 <html <?php wp_app_language_attributes(); ?>>
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_app_title( __( 'Apiaries', 'apiary-press' ) ); ?></title>
+	<title><?php wp_app_title( __( 'Hives & Apiaries', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
 </head>
 <body>
@@ -40,9 +41,12 @@ $appr_apiaries = get_posts(
 		<header class="topbar">
 			<div>
 				<p class="eyebrow"><?php echo esc_html__( 'Apiary Press', 'apiary-press' ); ?></p>
-				<h1><?php echo esc_html__( 'Apiaries', 'apiary-press' ); ?></h1>
+				<h1><?php echo esc_html__( 'Hives & Apiaries', 'apiary-press' ); ?></h1>
 			</div>
 			<div class="actions">
+				<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'hive/new' ) ); ?>">
+					<?php echo esc_html__( 'New Hive', 'apiary-press' ); ?>
+				</a>
 				<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/new' ) ); ?>">
 					<?php echo esc_html__( 'New Apiary', 'apiary-press' ); ?>
 				</a>
@@ -55,6 +59,11 @@ $appr_apiaries = get_posts(
 		<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
 		<?php if ( isset( $_GET['deleted'] ) ) : ?>
 			<div class="notice"><?php echo esc_html__( 'Apiary removed.', 'apiary-press' ); ?></div>
+		<?php endif; ?>
+
+		<?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Post-redirect query flag used only for a notice. ?>
+		<?php if ( isset( $_GET['hive_deleted'] ) ) : ?>
+			<div class="notice"><?php echo esc_html__( 'Hive removed.', 'apiary-press' ); ?></div>
 		<?php endif; ?>
 
 		<section aria-labelledby="apiary-list-heading">

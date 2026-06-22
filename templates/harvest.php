@@ -107,7 +107,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_harvest && 'create_h
 			update_post_meta( $appr_new_harvest, Harvest::FRAMES_META_KEY, Harvest::sanitize_frames_meta( $appr_frames_raw ) );
 			update_post_meta( $appr_new_harvest, Harvest::METHOD_META_KEY, Harvest::sanitize_method_meta( $appr_method_raw ) );
 
-			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . absint( $appr_new_harvest ) ) ) );
+			wp_safe_redirect( add_query_arg( 'created', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'harvest/' . absint( $appr_new_harvest ) ) ) );
 			exit;
 		}
 	}
@@ -126,7 +126,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_harvest && 'delete
 		if ( ! $appr_deleted ) {
 			$appr_form_error = __( 'The harvest could not be removed.', 'apiary-press' );
 		} else {
-			wp_safe_redirect( add_query_arg( 'harvest_deleted', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'harvest_deleted', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ) );
 			exit;
 		}
 	}
@@ -172,7 +172,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_harvest && 'update
 			update_post_meta( $appr_harvest_id, Harvest::FRAMES_META_KEY, Harvest::sanitize_frames_meta( $appr_frames_raw ) );
 			update_post_meta( $appr_harvest_id, Harvest::METHOD_META_KEY, Harvest::sanitize_method_meta( $appr_method_raw ) );
 
-			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . $appr_harvest_id ) ) );
+			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'harvest/' . $appr_harvest_id ) ) );
 			exit;
 		}
 	}
@@ -242,12 +242,12 @@ $appr_form_url_slug = $appr_is_new_harvest ? 'new' : (string) $appr_harvest_id;
 					);
 					?>
 				</p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_hive ) ); ?></a>
+					<a class="crumb" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_hive ) ); ?></a>
 					<h1><?php echo esc_html( $appr_page_title ); ?></h1>
 					<?php if ( ! $appr_is_new_harvest ) : ?>
 						<?php $appr_author_name = get_the_author_meta( 'display_name', (int) $appr_harvest->post_author ); ?>
@@ -278,7 +278,7 @@ $appr_form_url_slug = $appr_is_new_harvest ? 'new' : (string) $appr_harvest_id;
 
 			<section class="panel" aria-labelledby="edit-harvest-heading">
 				<h2 id="edit-harvest-heading"><?php echo esc_html( $appr_form_heading ); ?></h2>
-				<form method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . $appr_form_url_slug ) ); ?>">
+				<form method="post" action="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'harvest/' . $appr_form_url_slug ) ); ?>">
 					<input type="hidden" name="ap_action" value="<?php echo esc_attr( $appr_form_action ); ?>">
 					<?php wp_nonce_field( $appr_form_nonce, 'ap_nonce' ); ?>
 
@@ -355,7 +355,7 @@ $appr_form_url_slug = $appr_is_new_harvest ? 'new' : (string) $appr_harvest_id;
 			<?php if ( ! $appr_is_new_harvest ) : ?>
 				<section class="panel danger-zone" aria-labelledby="harvest-danger-heading">
 					<h2 id="harvest-danger-heading"><?php echo esc_html__( 'Danger Zone', 'apiary-press' ); ?></h2>
-					<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . $appr_harvest_id ) ); ?>">
+					<form class="delete-form" method="post" action="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'harvest/' . $appr_harvest_id ) ); ?>">
 						<input type="hidden" name="ap_action" value="delete_harvest">
 						<?php wp_nonce_field( 'ap_delete_harvest_' . $appr_harvest_id, 'ap_delete_nonce' ); ?>
 						<p class="danger-text"><?php echo esc_html__( 'Remove this harvest from the hive record.', 'apiary-press' ); ?></p>
