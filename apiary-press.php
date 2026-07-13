@@ -44,10 +44,15 @@ spl_autoload_register(
 );
 
 add_action(
-	'plugins_loaded',
+	'init',
 	function () {
 		load_plugin_textdomain( 'apiary-press', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+	}
+);
 
+add_action(
+	'plugins_loaded',
+	function () {
 		$app = new App();
 		$app->init();
 	}
