@@ -28,7 +28,7 @@ jobs:
       DIST_REF: dist/${{ github.ref_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -39,6 +39,42 @@ jobs:
       - name: Install production dependencies
         if: hashFiles('composer.json') != ''
         run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Stamp plugin version with source commit
+        run: |
+          PLUGIN_FILE="$(php -r '
+          foreach ( glob("*.php") as $file ) {
+              $contents = file_get_contents($file);
+              if ( preg_match("/^\\s*\\*\\s*Plugin Name:/m", $contents) ) {
+                  echo $file;
+                  exit(0);
+              }
+          }
+          fwrite(STDERR, "Could not find plugin main file.\n");
+          exit(1);
+          ')"
+          SOURCE_COMMIT="$(git rev-parse --short=12 HEAD)"
+          echo "PLUGIN_FILE=${PLUGIN_FILE}" >> "${GITHUB_ENV}"
+          PLUGIN_FILE="${PLUGIN_FILE}" SOURCE_COMMIT="${SOURCE_COMMIT}" php -r '
+          $path = getenv("PLUGIN_FILE");
+          $contents = file_get_contents($path);
+          $commit = getenv("SOURCE_COMMIT");
+          $updated = preg_replace_callback(
+              "/^(\\s*\\*\\s*Version:\\s*)([^\\r\\n]+)/m",
+              static function ( $matches ) use ( $commit ) {
+                  $base_version = preg_replace("/\\+[0-9a-f]+$/i", "", trim($matches[2]));
+                  return $matches[1] . $base_version . "+" . $commit;
+              },
+              $contents,
+              1,
+              $count
+          );
+          if ( 1 !== $count ) {
+              fwrite(STDERR, "Could not find plugin Version header in {$path}.\n");
+              exit(1);
+          }
+          file_put_contents($path, $updated);
+          '
 
       - name: Point blueprint at dist branch
         run: |
@@ -62,6 +98,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${PLUGIN_FILE}"
           git add blueprint.json
           if [ -d vendor ]; then
             git add -f vendor/
@@ -76,7 +113,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Add Playground link to PR description
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
         with:
@@ -120,7 +157,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Delete dist branch and remove stale PR links
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           BRANCH_NAME: ${{ github.event.ref }}
         with:
