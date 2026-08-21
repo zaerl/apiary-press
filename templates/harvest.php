@@ -217,7 +217,7 @@ $appr_form_url_slug = $appr_is_new_harvest ? 'new' : (string) $appr_harvest_id;
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_app_title( $appr_page_title ); ?></title>
+	<title><?php echo wp_app_title( $appr_page_title ); ?></title>
 	<?php wp_app_head(); ?>
 </head>
 <body>

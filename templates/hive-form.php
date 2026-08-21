@@ -345,6 +345,32 @@ $appr_hive_notes     = ! $appr_not_found && ! $appr_is_new_hive ? $appr_hive->po
 $appr_hive_latitude  = ! $appr_not_found && ! $appr_is_new_hive ? get_post_meta( $appr_hive_id, 'latitude', true ) : '';
 $appr_hive_longitude = ! $appr_not_found && ! $appr_is_new_hive ? get_post_meta( $appr_hive_id, 'longitude', true ) : '';
 
+$appr_context_markers = array();
+if ( ! $appr_not_found && ! $appr_forbidden ) {
+	$appr_sibling_hives = get_posts(
+		array(
+			'post_type'        => Hive::HIVE_POST_TYPE,
+			'post_status'      => array( 'publish', 'future', 'draft', 'pending', 'private' ),
+			'post_parent'      => $appr_apiary_id,
+			'numberposts'      => -1,
+			'exclude'          => $appr_is_new_hive ? array() : array( $appr_hive_id ),
+			'fields'           => 'ids',
+			'suppress_filters' => false,
+		)
+	);
+
+	foreach ( $appr_sibling_hives as $appr_sibling_id ) {
+		$appr_coords = Hive::get_coordinates( (int) $appr_sibling_id );
+		if ( empty( $appr_coords ) ) {
+			continue;
+		}
+		$appr_context_markers[] = array(
+			'latitude'  => $appr_coords['latitude'],
+			'longitude' => $appr_coords['longitude'],
+		);
+	}
+}
+
 $appr_queen           = ! $appr_not_found && ! $appr_is_new_hive ? Hive::get_queen( $appr_hive_id ) : array(
 	'year'           => 0,
 	'color'          => '',
@@ -396,8 +422,10 @@ $appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_app_title( $appr_page_title ); ?></title>
+	<title><?php echo wp_app_title( $appr_page_title ); ?></title>
 	<?php wp_app_head(); ?>
+	<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Leaflet is loaded only on map views in this standalone app template. ?>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 </head>
 <body>
 	<?php wp_app_body_open(); ?>
@@ -459,6 +487,19 @@ $appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 							<input id="ap_hive_longitude" name="ap_hive_longitude" type="number" inputmode="decimal" min="-180" max="180" step="any" value="<?php echo esc_attr( $appr_hive_longitude ); ?>">
 						</div>
 					</div>
+
+					<div
+						id="ap_hive_map_picker"
+						class="hive-map hive-map-picker"
+						role="application"
+						aria-label="<?php echo esc_attr__( 'Hive location map', 'apiary-press' ); ?>"
+						data-ap-hive-map
+						data-ap-map-picker
+						data-lat-input="ap_hive_latitude"
+						data-lng-input="ap_hive_longitude"
+						data-markers="<?php echo esc_attr( wp_json_encode( $appr_context_markers ) ); ?>"
+					></div>
+					<p class="muted"><?php echo esc_html__( 'Tap the map to place the hive, or drag the marker to move it.', 'apiary-press' ); ?></p>
 
 					<div class="coordinate-actions">
 						<button id="ap_use_current_location" class="button button-secondary" type="button">
@@ -559,6 +600,12 @@ $appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 	</main>
 
 	<?php wp_app_body_close(); ?>
+	<?php if ( ! $appr_not_found && ! $appr_forbidden ) : ?>
+		<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Leaflet is loaded only on map views in this standalone app template. ?>
+		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+		<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- App map boot code is loaded only when map markup is present. ?>
+		<script src="<?php echo esc_url( App::get_asset_url( 'hive-map.js' ) ); ?>"></script>
+	<?php endif; ?>
 	<script>
 		(function() {
 			const locationButton = document.getElementById('ap_use_current_location');
@@ -665,6 +712,10 @@ $appr_queen_max_year = (int) gmdate( 'Y' ) + 1;
 					function(position) {
 						latitudeInput.value = position.coords.latitude.toFixed(6);
 						longitudeInput.value = position.coords.longitude.toFixed(6);
+						const picker = document.getElementById('ap_hive_map_picker');
+						if (picker && typeof picker.apHiveMapSync === 'function') {
+							picker.apHiveMapSync();
+						}
 						setStatus(messages.ready);
 						locationButton.disabled = false;
 					},

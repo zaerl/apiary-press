@@ -510,6 +510,12 @@ p.summary { background: transparent; border: 0; border-radius: 0; box-shadow: no
 	padding: 0;
 	border-radius: var(--ap-radius-md);
 }
+.hive-map-picker {
+	height: 300px;
+	margin: 12px 0 6px;
+	border: 1px solid var(--ap-line);
+	cursor: crosshair;
+}
 .leaflet-popup-content-wrapper {
 	border-radius: 8px !important;
 	box-shadow: var(--ap-shadow-md) !important;
