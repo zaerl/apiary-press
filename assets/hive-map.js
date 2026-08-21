@@ -13,19 +13,145 @@
 			.replace(/>/g, '&gt;');
 	}
 
+	function addTiles(map) {
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		}).addTo(map);
+	}
+
+	function parseMarkers(container) {
+		try {
+			const markers = JSON.parse(container.getAttribute('data-markers') || '[]');
+			return Array.isArray(markers) ? markers : [];
+		} catch (e) {
+			return [];
+		}
+	}
+
+	/**
+	 * Interactive picker: a draggable marker bound to two inputs.
+	 * Clicking the map places the marker; dragging it, or editing the inputs, keeps both in sync.
+	 */
+	function renderPicker(container) {
+		if (container.dataset.apHiveMapReady === '1' || !window.L) {
+			return;
+		}
+
+		const latInput = document.getElementById(container.getAttribute('data-lat-input') || '');
+		const lngInput = document.getElementById(container.getAttribute('data-lng-input') || '');
+		if (!latInput || !lngInput) {
+			return;
+		}
+
+		const context = parseMarkers(container);
+		const singleZoom = parseInt(container.getAttribute('data-zoom') || '15', 10);
+		const map = L.map(container);
+		container.dataset.apHiveMapReady = '1';
+		addTiles(map);
+
+		context.forEach(function (item) {
+			L.circleMarker([item.latitude, item.longitude], {
+				radius: 6,
+				color: '#fff',
+				weight: 2,
+				opacity: 1,
+				fillColor: RING_COLOR,
+				fillOpacity: 0.5,
+				interactive: false
+			}).addTo(map);
+		});
+
+		let marker = null;
+
+		function readInputs() {
+			const lat = parseFloat(latInput.value);
+			const lng = parseFloat(lngInput.value);
+			if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+				return null;
+			}
+			return L.latLng(lat, lng);
+		}
+
+		function writeInputs(latLng) {
+			latInput.value = latLng.lat.toFixed(6);
+			lngInput.value = latLng.lng.toFixed(6);
+		}
+
+		function placeMarker(latLng) {
+			if (marker) {
+				marker.setLatLng(latLng);
+				return;
+			}
+			marker = L.marker(latLng, { draggable: true, autoPan: true }).addTo(map);
+			marker.on('dragend', function () {
+				writeInputs(marker.getLatLng());
+			});
+		}
+
+		function syncFromInputs(pan) {
+			const latLng = readInputs();
+			if (!latLng) {
+				if (marker) {
+					map.removeLayer(marker);
+					marker = null;
+				}
+				return;
+			}
+			placeMarker(latLng);
+			if (pan) {
+				map.setView(latLng, Math.max(map.getZoom(), singleZoom));
+			}
+		}
+
+		map.on('click', function (e) {
+			placeMarker(e.latlng);
+			writeInputs(e.latlng);
+		});
+
+		[latInput, lngInput].forEach(function (input) {
+			input.addEventListener('input', function () {
+				syncFromInputs(false);
+			});
+			input.addEventListener('change', function () {
+				syncFromInputs(true);
+			});
+		});
+
+		// Initial view: the current position, else the other hives, else the world.
+		const initial = readInputs();
+		if (initial) {
+			placeMarker(initial);
+			map.setView(initial, singleZoom);
+		} else if (context.length === 1) {
+			map.setView([context[0].latitude, context[0].longitude], singleZoom);
+		} else if (context.length > 1) {
+			map.fitBounds(L.latLngBounds(context.map(function (c) {
+				return [c.latitude, c.longitude];
+			})), { padding: [24, 24] });
+		} else {
+			map.setView([20, 0], 2);
+		}
+
+		// Let the rest of the page (e.g. the geolocation button) push a position in.
+		container.apHiveMapSync = function () {
+			syncFromInputs(true);
+		};
+	}
+
 	function renderMap(container) {
 		if (container.dataset.apHiveMapReady === '1') {
 			return;
 		}
 
-		let markers;
-		try {
-			markers = JSON.parse(container.getAttribute('data-markers') || '[]');
-		} catch (e) {
+		if (container.hasAttribute('data-ap-map-picker')) {
+			renderPicker(container);
 			return;
 		}
 
-		if (!window.L || !Array.isArray(markers) || !markers.length) {
+		const markers = parseMarkers(container);
+
+		if (!window.L || !markers.length) {
 			return;
 		}
 
@@ -33,10 +159,7 @@
 		const map = L.map(container);
 		container.dataset.apHiveMapReady = '1';
 
-		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			maxZoom: 19,
-			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-		}).addTo(map);
+		addTiles(map);
 
 		const circleLayer = L.layerGroup().addTo(map);
 
@@ -79,6 +202,9 @@
 				const title = escapeHtml(marker.title || '');
 				const popup = marker.url ? '<a href="' + marker.url + '">' + title + '</a>' : title;
 				leafletMarker.bindPopup(popup);
+				if (marker.title) {
+					leafletMarker.bindTooltip(marker.title, { direction: 'top', offset: [0, -8] });
+				}
 			}
 
 			leafletMarker.on('click', function () {

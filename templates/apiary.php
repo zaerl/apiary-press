@@ -118,7 +118,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_app_title( $appr_apiary ? get_the_title( $appr_apiary ) : __( 'Apiary', 'apiary-press' ) ); ?></title>
+	<title><?php echo wp_app_title( $appr_apiary ? get_the_title( $appr_apiary ) : __( 'Apiary', 'apiary-press' ) ); ?></title>
 	<?php wp_app_head(); ?>
 	<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Leaflet is loaded only on map views in this standalone app template. ?>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
