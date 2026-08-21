@@ -47,7 +47,7 @@ $appr_harvests   = array();
 $appr_map_marker = array();
 
 if ( ! $appr_not_found && ! $appr_forbidden ) {
-	$appr_hive_url = App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id );
+	$appr_hive_url = App::get_hive_url( $appr_hive_id, $appr_apiary_id );
 	$appr_hive_qr  = ( new QRCode() )->render( $appr_hive_url );
 
 	$appr_coords = Hive::get_coordinates( $appr_hive_id );
@@ -135,16 +135,16 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 					<?php endif; ?>
 				</div>
 				<div class="actions">
-					<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/new' ) ); ?>">
+					<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/new' ) ); ?>">
 						<?php echo esc_html__( 'New Visit', 'apiary-press' ); ?>
 					</a>
-					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/new' ) ); ?>">
+					<a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'treatment/new' ) ); ?>">
 						<?php echo esc_html__( 'New Treatment / Feeding', 'apiary-press' ); ?>
 					</a>
-					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/new' ) ); ?>">
+					<a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'harvest/new' ) ); ?>">
 						<?php echo esc_html__( 'New Harvest', 'apiary-press' ); ?>
 					</a>
-					<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/edit' ) ); ?>">
+					<a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'edit' ) ); ?>">
 						<?php echo esc_html__( 'Edit Hive', 'apiary-press' ); ?>
 					</a>
 				</div>
@@ -301,7 +301,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 					<div>
 						<h2 id="hive-qr-heading"><?php echo esc_html__( 'Hive QR', 'apiary-press' ); ?></h2>
 						<a class="qr-link" href="<?php echo esc_url( $appr_hive_url ); ?>"><?php echo esc_html( $appr_hive_url ); ?></a>
-						<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/qr' ) ); ?>"><?php echo esc_html__( 'Print QR', 'apiary-press' ); ?></a></p>
+						<p><a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'qr' ) ); ?>"><?php echo esc_html__( 'Print QR', 'apiary-press' ); ?></a></p>
 					</div>
 					<?php if ( ! empty( $appr_map_marker ) ) : ?>
 						<div
@@ -322,7 +322,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 						<h2 id="harvest-list-heading"><?php echo esc_html__( 'Harvests', 'apiary-press' ); ?></h2>
 					</div>
 					<div class="section-actions">
-						<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/new' ) ); ?>">
+						<a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'harvest/new' ) ); ?>">
 							<?php echo esc_html__( 'New Harvest', 'apiary-press' ); ?>
 						</a>
 					</div>
@@ -357,7 +357,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				<?php if ( empty( $appr_harvests ) ) : ?>
 					<div class="empty-state">
 						<h3><?php echo esc_html__( 'No harvests logged yet.', 'apiary-press' ); ?></h3>
-						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/new' ) ); ?>">
+						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'harvest/new' ) ); ?>">
 							<?php echo esc_html__( 'New Harvest', 'apiary-press' ); ?>
 						</a>
 					</div>
@@ -383,7 +383,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 											?>
 										</div>
 									</div>
-									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/harvest/' . absint( $appr_harvest_post->ID ) ) ); ?>" class="row-link">
+									<a href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'harvest/' . absint( $appr_harvest_post->ID ) ) ); ?>" class="row-link">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>
 								</div>
@@ -439,7 +439,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 						<h2 id="treatment-list-heading"><?php echo esc_html__( 'Treatments &amp; Feedings', 'apiary-press' ); ?></h2>
 					</div>
 					<div class="section-actions">
-						<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/new' ) ); ?>">
+						<a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'treatment/new' ) ); ?>">
 							<?php echo esc_html__( 'New Treatment / Feeding', 'apiary-press' ); ?>
 						</a>
 					</div>
@@ -460,7 +460,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				<?php if ( empty( $appr_treatments ) ) : ?>
 					<div class="empty-state">
 						<h3><?php echo esc_html__( 'No treatments or feedings logged.', 'apiary-press' ); ?></h3>
-						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/new' ) ); ?>">
+						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'treatment/new' ) ); ?>">
 							<?php echo esc_html__( 'New Treatment / Feeding', 'apiary-press' ); ?>
 						</a>
 					</div>
@@ -492,7 +492,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 											?>
 										</div>
 									</div>
-									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . absint( $appr_treatment_post->ID ) ) ); ?>" class="row-link">
+									<a href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'treatment/' . absint( $appr_treatment_post->ID ) ) ); ?>" class="row-link">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>
 								</div>
@@ -552,7 +552,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 						<h2 id="visit-list-heading"><?php echo esc_html__( 'Visits', 'apiary-press' ); ?></h2>
 					</div>
 					<div class="section-actions">
-						<a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/new' ) ); ?>">
+						<a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/new' ) ); ?>">
 							<?php echo esc_html__( 'New Visit', 'apiary-press' ); ?>
 						</a>
 					</div>
@@ -561,7 +561,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				<?php if ( empty( $appr_visits ) ) : ?>
 					<div class="empty-state">
 						<h3><?php echo esc_html__( 'No visits yet.', 'apiary-press' ); ?></h3>
-						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/new' ) ); ?>">
+						<a class="admin-link admin-link-primary" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/new' ) ); ?>">
 							<?php echo esc_html__( 'New Visit', 'apiary-press' ); ?>
 						</a>
 					</div>
@@ -597,7 +597,7 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 											?>
 										</div>
 									</div>
-									<a href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/visit/' . absint( $appr_visit->ID ) ) ); ?>" class="row-link">
+									<a href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'visit/' . absint( $appr_visit->ID ) ) ); ?>" class="row-link">
 										<?php echo esc_html__( 'View / Edit', 'apiary-press' ); ?>
 									</a>
 								</div>

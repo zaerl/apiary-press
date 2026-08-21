@@ -98,6 +98,7 @@ class App extends BaseApp {
 		$this->app->route( 'apiary/{id}/edit', 'apiary-form.php' );
 
 		// Hive routes.
+		$this->app->route( 'hive/new', 'hive-form.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/new', 'hive-form.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}', 'hive.php' );
 		$this->app->route( 'apiary/{apiary_id}/hive/{id}/edit', 'hive-form.php' );
@@ -288,5 +289,33 @@ class App extends BaseApp {
 	 */
 	public static function get_url( string $path = '' ): string {
 		return trailingslashit( home_url( '/apiary-press/' . ltrim( $path, '/' ) ) );
+	}
+
+	/**
+	 * Helper function to generate a path for a hive, scoped to an apiary when one exists.
+	 *
+	 * @param int    $hive_id   The hive post ID.
+	 * @param int    $apiary_id Optional apiary post ID.
+	 * @param string $suffix    Optional path suffix, such as "edit" or "visit/new".
+	 * @return string The app-relative hive path.
+	 */
+	public static function get_hive_path( int $hive_id, int $apiary_id = 0, string $suffix = '' ): string {
+		$path = $apiary_id
+			? 'apiary/' . absint( $apiary_id ) . '/hive/' . absint( $hive_id )
+			: 'hive/' . absint( $hive_id );
+
+		return '' === $suffix ? $path : trailingslashit( $path ) . ltrim( $suffix, '/' );
+	}
+
+	/**
+	 * Helper function to generate a URL for a hive.
+	 *
+	 * @param int    $hive_id   The hive post ID.
+	 * @param int    $apiary_id Optional apiary post ID.
+	 * @param string $suffix    Optional path suffix, such as "edit" or "visit/new".
+	 * @return string The full hive URL.
+	 */
+	public static function get_hive_url( int $hive_id, int $apiary_id = 0, string $suffix = '' ): string {
+		return self::get_url( self::get_hive_path( $hive_id, $apiary_id, $suffix ) );
 	}
 }

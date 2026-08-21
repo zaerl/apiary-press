@@ -121,7 +121,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && $appr_is_new_treatment && 'create
 			update_post_meta( $appr_new_treatment, Treatment::UNIT_META_KEY, Treatment::sanitize_unit_meta( $appr_unit_raw ) );
 			update_post_meta( $appr_new_treatment, Treatment::END_DATE_META_KEY, Treatment::KIND_TREATMENT === $appr_kind ? Treatment::sanitize_date_meta( $appr_end_raw ) : '' );
 
-			wp_safe_redirect( add_query_arg( 'created', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . absint( $appr_new_treatment ) ) ) );
+			wp_safe_redirect( add_query_arg( 'created', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'treatment/' . absint( $appr_new_treatment ) ) ) );
 			exit;
 		}
 	}
@@ -140,7 +140,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_treatment && 'dele
 		if ( ! $appr_deleted ) {
 			$appr_form_error = __( 'The entry could not be removed.', 'apiary-press' );
 		} else {
-			wp_safe_redirect( add_query_arg( 'treatment_deleted', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ) );
+			wp_safe_redirect( add_query_arg( 'treatment_deleted', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ) );
 			exit;
 		}
 	}
@@ -193,7 +193,7 @@ if ( ! $appr_not_found && ! $appr_forbidden && ! $appr_is_new_treatment && 'upda
 			update_post_meta( $appr_treatment_id, Treatment::UNIT_META_KEY, Treatment::sanitize_unit_meta( $appr_unit_raw ) );
 			update_post_meta( $appr_treatment_id, Treatment::END_DATE_META_KEY, Treatment::KIND_TREATMENT === $appr_kind ? Treatment::sanitize_date_meta( $appr_end_raw ) : '' );
 
-			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . $appr_treatment_id ) ) );
+			wp_safe_redirect( add_query_arg( 'updated', '1', App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'treatment/' . $appr_treatment_id ) ) );
 			exit;
 		}
 	}
@@ -269,12 +269,12 @@ $appr_form_url_slug = $appr_is_new_treatment ? 'new' : (string) $appr_treatment_
 					);
 					?>
 				</p>
-				<p><a class="admin-link" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
+				<p><a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php else : ?>
 			<header class="topbar">
 				<div>
-					<a class="crumb" href="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_hive ) ); ?></a>
+					<a class="crumb" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id ) ); ?>"><?php echo esc_html( get_the_title( $appr_hive ) ); ?></a>
 					<h1><?php echo esc_html( $appr_page_title ); ?></h1>
 					<?php if ( ! $appr_is_new_treatment ) : ?>
 						<?php $appr_author_name = get_the_author_meta( 'display_name', (int) $appr_treatment->post_author ); ?>
@@ -305,7 +305,7 @@ $appr_form_url_slug = $appr_is_new_treatment ? 'new' : (string) $appr_treatment_
 
 			<section class="panel" aria-labelledby="edit-treatment-heading">
 				<h2 id="edit-treatment-heading"><?php echo esc_html( $appr_form_heading ); ?></h2>
-				<form method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . $appr_form_url_slug ) ); ?>">
+				<form method="post" action="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'treatment/' . $appr_form_url_slug ) ); ?>">
 					<input type="hidden" name="ap_action" value="<?php echo esc_attr( $appr_form_action ); ?>">
 					<?php wp_nonce_field( $appr_form_nonce, 'ap_nonce' ); ?>
 
@@ -406,7 +406,7 @@ $appr_form_url_slug = $appr_is_new_treatment ? 'new' : (string) $appr_treatment_
 			<?php if ( ! $appr_is_new_treatment ) : ?>
 				<section class="panel danger-zone" aria-labelledby="treatment-danger-heading">
 					<h2 id="treatment-danger-heading"><?php echo esc_html__( 'Danger Zone', 'apiary-press' ); ?></h2>
-					<form class="delete-form" method="post" action="<?php echo esc_url( App::get_url( 'apiary/' . $appr_apiary_id . '/hive/' . $appr_hive_id . '/treatment/' . $appr_treatment_id ) ); ?>">
+					<form class="delete-form" method="post" action="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'treatment/' . $appr_treatment_id ) ); ?>">
 						<input type="hidden" name="ap_action" value="delete_treatment">
 						<?php wp_nonce_field( 'ap_delete_treatment_' . $appr_treatment_id, 'ap_delete_nonce' ); ?>
 						<p class="danger-text"><?php echo esc_html__( 'Remove this entry from the hive record.', 'apiary-press' ); ?></p>
