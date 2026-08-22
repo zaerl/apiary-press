@@ -6,6 +6,7 @@
  * Author: Francesco Bigiarini
  * Text Domain: apiary-press
  * Domain Path: /languages
+ * Tested up to: 7.1
  * Requires PHP: 7.4
  *
  * @package ApiaryPress
