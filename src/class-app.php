@@ -130,7 +130,41 @@ class App extends BaseApp {
 	/**
 	 * Register the Apiary Press custom post types.
 	 */
+	public static function require_login_for_rest( $result, $server, $request ) {
+		if ( is_user_logged_in() ) {
+			return $result;
+		}
+
+		$route = $request->get_route();
+		$bases = array(
+			Apiary::APIARY_POST_TYPE,
+			Hive::HIVE_POST_TYPE,
+			Visit::HIVE_VISIT_POST_TYPE,
+			Treatment::HIVE_TREATMENT_POST_TYPE,
+			Harvest::HIVE_HARVEST_POST_TYPE,
+		);
+		foreach ( $bases as $base ) {
+			if ( 0 === strpos( $route, '/wp/v2/' . $base ) ) {
+				return new \WP_Error(
+					'rest_login_required',
+					__( 'Authentication is required to read this data.', 'apiary-press' ),
+					array( 'status' => rest_authorization_required_code() )
+				);
+			}
+		}
+
+		return $result;
+	}
+
 	public function register_post_types(): void {
+		// Front-end require_login does not cover the REST API, and core keys
+		// anonymous read access off show_in_rest alone (not 'public'). Each CPT is
+		// gated with wp-app's Access gate; if an older wp-app without it is the
+		// loaded copy, fall back to a request filter.
+		if ( ! class_exists( '\\WpApp\\Rest\\Access' ) ) {
+			add_filter( 'rest_pre_dispatch', array( __CLASS__, 'require_login_for_rest' ), 10, 3 );
+		}
+
 		Apiary::register_post_types();
 		Hive::register_post_types();
 		Visit::register_post_types();
