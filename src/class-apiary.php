@@ -17,7 +17,6 @@ class Apiary {
 	 * Register the apiary custom post types.
 	 */
 	public static function register_post_types(): void {
-		$rest_gate = class_exists( '\\WpApp\\Rest\\Access' );
 		register_post_type(
 			self::APIARY_POST_TYPE,
 			array(
@@ -35,7 +34,6 @@ class Apiary {
 				'show_ui'      => true,
 				'show_in_menu' => true,
 				'show_in_rest' => true,
-				'rest_controller_class' => $rest_gate ? \WpApp\Rest\Access::protect_post_type( self::APIARY_POST_TYPE, 'read' ) : null,
 				'menu_icon'    => 'dashicons-location-alt',
 				'supports'     => array( 'title', 'editor', 'author' ),
 				'map_meta_cap' => true,

@@ -27,7 +27,16 @@ class App extends BaseApp {
 				'require_capability'  => 'edit_posts',
 				'app_name'            => 'Apiary Press',
 				'app_name_textdomain' => 'apiary-press',
-				'my_apps_icon'        => plugins_url( 'assets/icon.svg', dirname( __DIR__ ) . '/apiary-press.php' ),
+				'app_icon'            => plugins_url( 'assets/icon.svg', dirname( __DIR__ ) . '/apiary-press.php' ),
+				// Owned content: REST reads are gated with the app's capability and
+				// OpenStation keeps these menus out of its dock.
+				'post_types'          => array(
+					Apiary::APIARY_POST_TYPE             => 'read',
+					Hive::HIVE_POST_TYPE                 => 'read',
+					Visit::HIVE_VISIT_POST_TYPE          => 'read',
+					Treatment::HIVE_TREATMENT_POST_TYPE => 'read',
+					Harvest::HIVE_HARVEST_POST_TYPE      => 'read',
+				),
 			)
 		);
 
@@ -157,10 +166,9 @@ class App extends BaseApp {
 	}
 
 	public function register_post_types(): void {
-		// Front-end require_login does not cover the REST API, and core keys
-		// anonymous read access off show_in_rest alone (not 'public'). Each CPT is
-		// gated with wp-app's Access gate; if an older wp-app without it is the
-		// loaded copy, fall back to a request filter.
+		// REST reads are gated by wp-app via the 'post_types' app option. If an
+		// older wp-app without that gate is the loaded copy, fall back to a
+		// request filter.
 		if ( ! class_exists( '\\WpApp\\Rest\\Access' ) ) {
 			add_filter( 'rest_pre_dispatch', array( __CLASS__, 'require_login_for_rest' ), 10, 3 );
 		}
