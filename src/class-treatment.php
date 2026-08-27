@@ -108,7 +108,6 @@ class Treatment {
 	 * Register the treatment custom post type.
 	 */
 	public static function register_post_types(): void {
-		$rest_gate = class_exists( '\\WpApp\\Rest\\Access' );
 		register_post_type(
 			self::HIVE_TREATMENT_POST_TYPE,
 			array(
@@ -126,7 +125,6 @@ class Treatment {
 				'show_ui'      => true,
 				'show_in_menu' => 'edit.php?post_type=' . Hive::HIVE_POST_TYPE,
 				'show_in_rest' => true,
-				'rest_controller_class' => $rest_gate ? \WpApp\Rest\Access::protect_post_type( self::HIVE_TREATMENT_POST_TYPE, 'read' ) : null,
 				'supports'     => array( 'title', 'editor', 'author', 'custom-fields' ),
 				'map_meta_cap' => true,
 			)
