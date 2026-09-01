@@ -60,7 +60,7 @@ class App extends BaseApp {
 			$asset_url  = plugins_url( 'assets/apiary-press.css', dirname( __DIR__ ) . '/apiary-press.php' );
 			$version    = file_exists( $asset_path ) ? (string) filemtime( $asset_path ) : '1.0.0';
 
-			wp_app_enqueue_style( 'apiary-press', $asset_url, array(), $version );
+			wp_app_enqueue_style( 'apiary-press', $asset_url, array(), $version, $this->get_url_path() );
 		}
 	}
 
