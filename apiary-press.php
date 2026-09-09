@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Apiary Press
  * Description: Take care of your 🐝
- * Version: 1.0.0
+ * Version: 1.0.0+99a78c15f756
  * Author: Francesco Bigiarini
  * Text Domain: apiary-press
  * Domain Path: /languages
