@@ -37,7 +37,9 @@ if ( $appr_not_found ) {
 	status_header( 403 );
 } else {
 	$appr_hive_url = App::get_hive_url( $appr_hive_id, $appr_apiary_id );
-	$appr_hive_qr  = ( new QRCode() )->render( $appr_hive_url );
+	if ( class_exists( QRCode::class ) ) {
+		$appr_hive_qr = ( new QRCode() )->render( $appr_hive_url );
+	}
 }
 ?>
 <!DOCTYPE html>
@@ -68,11 +70,17 @@ if ( $appr_not_found ) {
 				<p><?php echo esc_html__( 'You do not have permission to view this hive QR.', 'apiary-press' ); ?></p>
 				<p><a class="admin-link" href="<?php echo esc_url( App::get_url() ); ?>"><?php echo esc_html__( 'Back to Apiaries', 'apiary-press' ); ?></a></p>
 			</section>
-		<?php else : ?>
+		<?php elseif ( $appr_hive_qr ) : ?>
 			<section class="print-sheet" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: hive name */ __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>">
 				<div class="qr-frame">
 					<img src="<?php echo esc_attr( $appr_hive_qr ); ?>" alt="<?php echo esc_attr( sprintf( /* translators: %s: hive name */ __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>">
 				</div>
+			</section>
+		<?php else : ?>
+			<section class="message">
+				<h1><?php echo esc_html__( 'Hive QR', 'apiary-press' ); ?></h1>
+				<p><?php echo esc_html__( 'QR codes are not available in this installation.', 'apiary-press' ); ?></p>
+				<p><a class="admin-link" href="<?php echo esc_url( $appr_hive_url ); ?>"><?php echo esc_html__( 'Back to Hive', 'apiary-press' ); ?></a></p>
 			</section>
 		<?php endif; ?>
 	</main>
