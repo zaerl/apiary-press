@@ -541,6 +541,15 @@ p.summary { background: transparent; border: 0; border-radius: 0; box-shadow: no
 	border: 1px solid var(--ap-line);
 }
 .qr-panel h2 { margin-bottom: 6px; }
+.qr-panel-unavailable {
+	align-items: stretch;
+	flex-direction: column;
+}
+.qr-unavailable-note {
+	color: var(--ap-ink-soft);
+	font-size: 13px;
+	margin: 0;
+}
 .qr-link {
 	color: var(--ap-ink-soft);
 	display: inline-block;

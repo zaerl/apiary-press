@@ -294,22 +294,21 @@ if ( ! $appr_not_found && ! $appr_forbidden ) {
 				</section>
 			<?php endif; ?>
 
-			<section class="qr-panel" aria-labelledby="hive-qr-heading">
+			<section class="qr-panel<?php echo $appr_hive_qr ? '' : ' qr-panel-unavailable'; ?>" aria-labelledby="hive-qr-heading">
 				<?php if ( $appr_hive_qr ) : ?>
 					<img
 						src="<?php echo esc_attr( $appr_hive_qr ); ?>"
 						alt="<?php /* translators: %s: the title of the hive. */ echo esc_attr( sprintf( __( 'QR code for %s', 'apiary-press' ), get_the_title( $appr_hive ) ) ); ?>"
 					>
-				<?php endif; ?>
-				<div>
-					<h2 id="hive-qr-heading"><?php echo esc_html__( 'Hive QR', 'apiary-press' ); ?></h2>
-					<?php if ( $appr_hive_qr ) : ?>
+					<div>
+						<h2 id="hive-qr-heading"><?php echo esc_html__( 'Hive QR', 'apiary-press' ); ?></h2>
 						<a class="qr-link" href="<?php echo esc_url( $appr_hive_url ); ?>"><?php echo esc_html( $appr_hive_url ); ?></a>
 						<p><a class="admin-link" href="<?php echo esc_url( App::get_hive_url( $appr_hive_id, $appr_apiary_id, 'qr' ) ); ?>"><?php echo esc_html__( 'Print QR', 'apiary-press' ); ?></a></p>
-					<?php else : ?>
-						<p class="muted"><?php echo esc_html__( 'QR codes are not available in this installation.', 'apiary-press' ); ?></p>
-					<?php endif; ?>
-				</div>
+					</div>
+				<?php else : ?>
+					<h2 id="hive-qr-heading" class="visually-hidden"><?php echo esc_html__( 'Hive QR', 'apiary-press' ); ?></h2>
+					<p class="qr-unavailable-note"><?php echo esc_html__( 'A QR code for this hive could be displayed here, but the QR library is currently unavailable.', 'apiary-press' ); ?></p>
+				<?php endif; ?>
 				<?php if ( ! empty( $appr_map_marker ) ) : ?>
 					<div
 						class="qr-panel-map"
