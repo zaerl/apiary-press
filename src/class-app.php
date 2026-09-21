@@ -31,11 +31,11 @@ class App extends BaseApp {
 				// Owned content: REST reads are gated with the app's capability and
 				// OpenStation keeps these menus out of its dock.
 				'post_types'          => array(
-					Apiary::APIARY_POST_TYPE             => 'read',
-					Hive::HIVE_POST_TYPE                 => 'read',
-					Visit::HIVE_VISIT_POST_TYPE          => 'read',
+					Apiary::APIARY_POST_TYPE            => 'read',
+					Hive::HIVE_POST_TYPE                => 'read',
+					Visit::HIVE_VISIT_POST_TYPE         => 'read',
 					Treatment::HIVE_TREATMENT_POST_TYPE => 'read',
-					Harvest::HIVE_HARVEST_POST_TYPE      => 'read',
+					Harvest::HIVE_HARVEST_POST_TYPE     => 'read',
 				),
 			)
 		);
@@ -137,7 +137,12 @@ class App extends BaseApp {
 	}
 
 	/**
-	 * Register the Apiary Press custom post types.
+	 * Require authentication for REST requests targeting Apiary Press post types.
+	 *
+	 * @param mixed            $result  Response to replace the requested version with.
+	 * @param \WP_REST_Server  $server  REST server instance.
+	 * @param \WP_REST_Request $request Request used to generate the response.
+	 * @return mixed|\WP_Error The original response or an authentication error.
 	 */
 	public static function require_login_for_rest( $result, $server, $request ) {
 		if ( is_user_logged_in() ) {
@@ -165,6 +170,9 @@ class App extends BaseApp {
 		return $result;
 	}
 
+	/**
+	 * Register the Apiary Press custom post types.
+	 */
 	public function register_post_types(): void {
 		// REST reads are gated by wp-app via the 'post_types' app option. If an
 		// older wp-app without that gate is the loaded copy, fall back to a
