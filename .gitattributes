@@ -1,0 +1,4 @@
+# Development-only regression assets are not part of installable source archives.
+.gitattributes export-ignore
+.github export-ignore
+tests export-ignore
