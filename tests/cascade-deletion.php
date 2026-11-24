@@ -46,8 +46,11 @@ try {
 		$appr_check( get_post( $appr_id ) === null, 'Deleting an apiary must also remove its ' . $appr_kind . '.' );
 	}
 	$appr_check( ! is_file( $appr_files['deleted'] ), 'Deleting a visit must remove its actual photo file, not only the attachment post.' );
-	foreach ( $appr_trees['retained'] as $appr_kind => $appr_id ) {
-		$appr_check( get_post( $appr_id ) instanceof WP_Post, 'Deleting one apiary must preserve the unrelated ' . $appr_kind . '.' );
+	$appr_other = $appr_trees['retained'];
+	$appr_parents = array( 'apiary' => 0, 'hive' => $appr_other['apiary'], 'visit' => $appr_other['hive'], 'treatment' => $appr_other['hive'], 'feeding' => $appr_other['hive'], 'harvest' => $appr_other['hive'], 'photo' => $appr_other['visit'] );
+	foreach ( $appr_other as $appr_kind => $appr_id ) {
+		$appr_post = get_post( $appr_id );
+		$appr_check( $appr_post instanceof WP_Post && (int) $appr_post->post_parent === $appr_parents[ $appr_kind ], 'Deleting one apiary must preserve the unrelated ' . $appr_kind . ' and its parent relationship.' );
 	}
 	$appr_check( is_file( $appr_files['retained'] ), 'An unrelated visit photo file must survive the cascade.' );
 	$appr_check( get_post_meta( $appr_trees['retained']['harvest'], \ApiaryPress\Harvest::QUANTITY_META_KEY, true ) === '12.5', 'The unrelated harvest data must remain unchanged.' );
