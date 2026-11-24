@@ -234,6 +234,7 @@ class App extends BaseApp {
 			array(
 				'post_type'        => $post_types,
 				'post_status'      => get_post_stati( array(), 'names' ),
+				'post_parent'      => $parent_id,
 				'numberposts'      => -1,
 				'fields'           => 'ids',
 				'suppress_filters' => false,
